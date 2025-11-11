@@ -39,10 +39,10 @@ namespace Imagine.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(BaseResponse<List<CategoryDto>>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<BaseResponse<List<CategoryDto>>>> GetCategories(GetCategoriesListQuery query,
+        public async Task<ActionResult<BaseResponse<List<CategoryDto>>>> GetCategories(
+            [FromQuery] GetCategoriesListQuery query,
             CancellationToken cancellationToken = default)
         {
-
             var result = await _mediator.Send(query, cancellationToken);
 
             return Ok(result);

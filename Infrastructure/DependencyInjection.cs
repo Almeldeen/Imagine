@@ -2,6 +2,7 @@ using Application.Common.Interfaces;
 using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Persistence;
+using Infrastructure.Persistence.Seeds;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
@@ -61,6 +62,9 @@ namespace Infrastructure
 
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IQueryService, QueryService>();
+
+            // Register Database Seeder
+            services.AddScoped<DatabaseSeeder>();
 
             return services;
         }
