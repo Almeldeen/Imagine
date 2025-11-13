@@ -1,4 +1,5 @@
 using Application;
+using Application.Common.Mappings;
 using Infrastructure;
 using Infrastructure.Persistence.Seeds;
 using System.Text.Json.Serialization;
@@ -13,7 +14,7 @@ namespace Imagine
 
             builder.Services.AddApplicationServices();
             builder.Services.AddInfrastructureServices(builder.Configuration);
-
+           
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {

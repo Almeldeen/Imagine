@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Application.Common.Mappings;
 using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Persistence;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Infrastructure
 {
@@ -65,6 +67,13 @@ namespace Infrastructure
 
             // Register Database Seeder
             services.AddScoped<DatabaseSeeder>();
+
+
+            // AutoMapper
+           
+
+
+
 
             return services;
         }
