@@ -20,8 +20,18 @@ namespace Infrastructure.Services
         {
             _environment = environment;
             _logger = logger;
-            _uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
+            // Ensure WebRootPath is available even if wwwroot folder doesn't exist yet
+            var webRoot = string.IsNullOrWhiteSpace(_environment.WebRootPath)
+                ? Path.Combine(AppContext.BaseDirectory, "wwwroot")
+                : _environment.WebRootPath;
 
+            // Ensure webroot and uploads directories exist
+            if (!Directory.Exists(webRoot))
+            {
+                Directory.CreateDirectory(webRoot);
+            }
+
+            _uploadsFolder = Path.Combine(webRoot, "uploads");
             if (!Directory.Exists(_uploadsFolder))
             {
                 Directory.CreateDirectory(_uploadsFolder);
@@ -139,7 +149,10 @@ namespace Infrastructure.Services
             }
 
             var relativePath = imageUrl.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
-            return Path.Combine(_environment.WebRootPath, relativePath);
+            var webRoot = string.IsNullOrWhiteSpace(_environment.WebRootPath)
+                ? Path.Combine(AppContext.BaseDirectory, "wwwroot")
+                : _environment.WebRootPath;
+            return Path.Combine(webRoot, relativePath);
         }
 
         public bool ImageExists(string imageUrl)
