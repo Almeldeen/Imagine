@@ -1,0 +1,37 @@
+<!-- Admin Dashboard -->
+<div class="admin-dashboard">
+  
+  <!-- Dashboard Header -->
+  <div class="dashboard-header">
+    <div>
+      <h1 class="dashboard-title">Dashboard Overview</h1>
+      <p class="dashboard-subtitle">Welcome back! Here's what's happening with your store today.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-action">
+        <i class="fas fa-download"></i>
+        <span>Export Report</span>
+      </button>
+      <button class="btn-action primary">
+        <i class="fas fa-plus"></i>
+        <span>Add Product</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats Cards Component -->
+  <app-stats-cards></app-stats-cards>
+
+  <!-- Charts & Tables Row -->
+  <div class="dashboard-row">
+    <!-- Sales Chart Component -->
+    <app-sales-chart></app-sales-chart>
+
+    <!-- Top Products Component -->
+    <app-top-products></app-top-products>
+  </div>
+
+  <!-- Recent Orders Component -->
+  <app-recent-orders></app-recent-orders>
+
+</div>

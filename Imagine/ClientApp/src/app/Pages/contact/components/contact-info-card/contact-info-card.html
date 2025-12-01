@@ -1,0 +1,13 @@
+<div class="contact-info-card">
+  <div class="icon-wrap">
+    <i [class]="icon"></i>
+  </div>
+  <div class="text-wrap">
+    <p class="label">{{ label }}</p>
+    <p class="value" *ngIf="!link">{{ value }}</p>
+    <a class="value link" *ngIf="link" [href]="link" target="_blank" rel="noopener noreferrer">
+      {{ value }}
+    </a>
+    <p class="description" *ngIf="description">{{ description }}</p>
+  </div>
+</div>

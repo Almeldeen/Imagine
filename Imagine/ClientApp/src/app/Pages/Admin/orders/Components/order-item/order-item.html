@@ -1,0 +1,371 @@
+<!-- Order Item Card -->
+<div class="order-card" (click)="openOrderDetails(orderDetailsModal)">
+  <!-- Order Header -->
+  <div class="order-header">
+    <div class="order-info">
+      <div class="order-number">#ORD-2024-001847</div>
+      <div class="order-date">
+        <i class="fas fa-calendar"></i>
+        <span>Nov 17, 2024 - 2:30 PM</span>
+      </div>
+    </div>
+    
+    <div class="order-status">
+      <span class="status-badge processing">
+        <i class="fas fa-cog fa-spin"></i>
+        Processing
+      </span>
+    </div>
+  </div>
+  
+  <!-- Compact Order Summary (card view only) -->
+  <div class="order-card-summary">
+    <div class="order-card-total">
+      <span class="order-card-total-label">Total</span>
+      <span class="order-card-total-value">$172.76</span>
+    </div>
+  </div>
+
+  <!-- Order Actions -->
+  <div class="order-actions" (click)="$event.stopPropagation()">
+    <button class="btn-action btn-view" title="View Details" (click)="openOrderDetails(orderDetailsModal); $event.stopPropagation()">
+      <i class="fas fa-eye"></i>
+      View Details
+    </button>
+    <button class="btn-action btn-update" title="Update Status" (click)="openStatusModal(statusModal); $event.stopPropagation()">
+      <i class="fas fa-edit"></i>
+      Update Status
+    </button>
+    <button class="btn-action btn-track" title="Track Package" (click)="openTrackingModal(trackingModal); $event.stopPropagation()">
+      <i class="fas fa-map-marker-alt"></i>
+      Track
+    </button>
+    <button class="btn-action btn-more" title="More Options">
+      <i class="fas fa-ellipsis-v"></i>
+    </button>
+  </div>
+
+  <!-- Order Details Modal Template -->
+  <ng-template #orderDetailsModal let-modal>
+    <div class="order-modal-wrapper">
+      <div class="order-modal-header">
+        <div class="order-modal-title-block">
+          <div class="order-number">#ORD-2024-001847</div>
+          <div class="order-date">
+            <i class="fas fa-calendar"></i>
+            <span>Nov 17, 2024 - 2:30 PM</span>
+          </div>
+        </div>
+        <div class="order-modal-status-block">
+          <span class="status-badge processing">
+            <i class="fas fa-cog fa-spin"></i>
+            Processing
+          </span>
+          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+        </div>
+      </div>
+
+      <div class="order-modal-body">
+        <!-- Left: customer + timeline -->
+        <div class="order-modal-main">
+          <!-- Customer Info (reused) -->
+          <div class="customer-section">
+            <div class="customer-avatar">
+              <img src="/assets/images/avatar-placeholder.jpg" alt="Customer">
+              <div class="customer-badge vip">VIP</div>
+            </div>
+            <div class="customer-details">
+              <div class="customer-label-row">
+                <span class="customer-label">Customer</span>
+              </div>
+              <h4 class="customer-name">Sarah Johnson</h4>
+              <div class="customer-contact-row">
+                <div class="customer-contact-item">
+                  <i class="fas fa-envelope"></i>
+                  <span class="customer-email">sarah.johnson@email.com</span>
+                </div>
+                <div class="customer-contact-item">
+                  <i class="fas fa-phone-alt"></i>
+                  <span class="customer-phone">+1 (555) 123-4567</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Timeline (reused) -->
+          <div class="order-timeline">
+            <div class="timeline-item completed">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <span class="timeline-label">Order Placed</span>
+                <span class="timeline-time">Nov 17, 2:30 PM</span>
+              </div>
+            </div>
+            <div class="timeline-item completed">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <span class="timeline-label">Payment Confirmed</span>
+                <span class="timeline-time">Nov 17, 2:32 PM</span>
+              </div>
+            </div>
+            <div class="timeline-item active">
+              <div class="timeline-dot">
+                <i class="fas fa-cog fa-spin"></i>
+              </div>
+              <div class="timeline-content">
+                <span class="timeline-label">Processing</span>
+                <span class="timeline-time">In Progress</span>
+              </div>
+            </div>
+            <div class="timeline-item pending">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <span class="timeline-label">Shipped</span>
+                <span class="timeline-time">Pending</span>
+              </div>
+            </div>
+            <div class="timeline-item pending">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <span class="timeline-label">Delivered</span>
+                <span class="timeline-time">Pending</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: items + summary + shipping -->
+        <div class="order-modal-side">
+          <!-- Items (reused) -->
+          <div class="order-items">
+            <div class="items-header">
+              <h5>Order Items (3)</h5>
+            </div>
+            <div class="items-list">
+              <!-- Standard product -->
+              <div class="item-card standard">
+                <div class="item-image">
+                  <img src="/assets/images/product-placeholder.jpg" alt="Product">
+                </div>
+                <div class="item-details">
+                  <div class="item-header">
+                    <span class="item-badge standard">Standard</span>
+                    <h6 class="item-name">Premium T-Shirt</h6>
+                  </div>
+                  <div class="item-specs">
+                    <span class="item-color">
+                      <div class="color-dot" style="background: #FF5722;"></div>
+                      Orange
+                    </span>
+                    <span class="item-quantity">Qty: 2</span>
+                  </div>
+                  <div class="item-pricing">
+                    <span class="item-price-label">Unit</span>
+                    <span class="item-price">$29.99</span>
+                    <span class="item-multiply">× 2</span>
+                    <span class="item-line-total">$59.98</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Custom AI product -->
+              <div class="item-card custom">
+                <div class="item-image ai-preview-image" (click)="openCustomPreviewModal(customPreviewModal)">
+                  <img src="/assets/images/custom-design-placeholder.jpg" alt="Custom Design">
+                </div>
+                <div class="item-details">
+                  <div class="item-header">
+                    <span class="item-badge custom">Custom</span>
+                    <span class="item-badge ai">AI Generated</span>
+                    <h6 class="item-name">Custom Hoodie Design</h6>
+                  </div>
+                  <div class="item-specs">
+                    <span class="item-color">
+                      <div class="color-dot" style="background: #2196F3;"></div>
+                      Custom Blue
+                    </span>
+                    <span class="item-quantity">Qty: 1</span>
+                  </div>
+                  <div class="item-pricing">
+                    <span class="item-price-label">Custom Total</span>
+                    <span class="item-line-total">$89.99</span>
+                  </div>
+                  <div class="custom-status">
+                    <span class="custom-badge approved">
+                      <i class="fas fa-check"></i>
+                      Design Approved
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Summary + payment (reused) -->
+          <div class="order-summary">
+            <div class="summary-section">
+              <div class="summary-row">
+                <span class="summary-label">Subtotal:</span>
+                <span class="summary-value">$149.97</span>
+              </div>
+              <div class="summary-row">
+                <span class="summary-label">Shipping:</span>
+                <span class="summary-value">$9.99</span>
+              </div>
+              <div class="summary-row">
+                <span class="summary-label">Tax:</span>
+                <span class="summary-value">$12.80</span>
+              </div>
+              <div class="summary-row total">
+                <span class="summary-label">Total:</span>
+                <span class="summary-value">$172.76</span>
+              </div>
+            </div>
+
+            <div class="payment-info">
+              <div class="payment-method">
+                <i class="fab fa-cc-visa"></i>
+                <span>•••• 4532</span>
+                <span class="payment-status paid">Paid</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Shipping (reused) -->
+          <div class="shipping-section">
+            <h6 class="section-title">
+              <i class="fas fa-shipping-fast"></i>
+              Shipping Address
+            </h6>
+            <div class="shipping-address">
+              <div class="address-line">123 Main Street, Apt 4B</div>
+              <div class="address-line">New York, NY 10001</div>
+              <div class="address-line">United States</div>
+            </div>
+            <div class="tracking-info">
+              <div class="tracking-number">
+                <i class="fas fa-barcode"></i>
+                <span>Tracking: TRK123456789</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- Update Status Modal -->
+  <ng-template #statusModal let-modal>
+    <div class="order-status-modal">
+      <div class="order-status-header">
+        <h5>Update Order Status</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+      </div>
+      <div class="order-status-body">
+        <div class="status-steps">
+          <button class="status-step active">
+            <span class="step-label">Pending</span>
+          </button>
+          <button class="status-step">
+            <span class="step-label">Processing</span>
+          </button>
+          <button class="status-step">
+            <span class="step-label">Shipped</span>
+          </button>
+          <button class="status-step">
+            <span class="step-label">Delivered</span>
+          </button>
+          <button class="status-step alt">
+            <span class="step-label">Cancelled</span>
+          </button>
+        </div>
+
+        <div class="status-form">
+          <div class="form-group">
+            <label>Tracking Number (optional)</label>
+            <input type="text" class="form-control form-control-sm" placeholder="Add or update tracking number">
+          </div>
+          <div class="form-group">
+            <label>Admin Notes</label>
+            <textarea class="form-control form-control-sm" rows="3" placeholder="Add internal notes about this status change"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="order-status-footer">
+        <button type="button" class="btn btn-outline-light btn-sm" (click)="modal.dismiss()">Cancel</button>
+        <button type="button" class="btn btn-primary btn-sm" (click)="modal.close('save')">Save Status</button>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- Tracking Modal -->
+  <ng-template #trackingModal let-modal>
+    <div class="order-tracking-modal">
+      <div class="order-status-header">
+        <h5>Tracking Information</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+      </div>
+      <div class="order-status-body">
+        <div class="tracking-summary">
+          <div class="tracking-number-row">
+            <span class="label">Tracking:</span>
+            <span class="value">TRK123456789</span>
+          </div>
+          <div class="tracking-number-row">
+            <span class="label">Carrier:</span>
+            <span class="value">DHL Express</span>
+          </div>
+        </div>
+        <div class="tracking-progress">
+          <div class="progress-label-row">
+            <span>In Transit</span>
+            <span>60%</span>
+          </div>
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 60%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="order-status-footer">
+        <button type="button" class="btn btn-outline-light btn-sm" (click)="modal.dismiss()">Close</button>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- Custom Product Preview Modal -->
+  <ng-template #customPreviewModal let-modal>
+    <div class="custom-preview-modal">
+      <div class="order-status-header">
+        <h5>Custom Product Preview</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+      </div>
+      <div class="custom-preview-body">
+        <div class="preview-columns">
+          <div class="preview-panel">
+            <div class="panel-label">User Design Upload</div>
+            <div class="preview-box user-design">
+              <span>Customer Uploaded Design</span>
+            </div>
+          </div>
+          <div class="preview-panel">
+            <div class="panel-label">AI Rendered Preview</div>
+            <div class="preview-box ai-preview">
+              <span>AI Rendered Hoodie Preview</span>
+            </div>
+          </div>
+        </div>
+        <div class="preview-colors">
+          <div class="panel-label">Chosen Colors</div>
+          <div class="color-chips">
+            <div class="color-chip" style="background: #2196F3"></div>
+            <div class="color-chip" style="background: #111827"></div>
+            <div class="color-chip" style="background: #FFFFFF"></div>
+          </div>
+        </div>
+      </div>
+      <div class="order-status-footer">
+        <button type="button" class="btn btn-outline-light btn-sm" (click)="modal.dismiss()">Close</button>
+      </div>
+    </div>
+  </ng-template>
+</div>

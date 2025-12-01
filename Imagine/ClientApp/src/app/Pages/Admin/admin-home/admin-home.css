@@ -1,0 +1,126 @@
+/* ========================================
+   ADMIN HOME PAGE
+   ======================================== */
+
+.admin-dashboard {
+  width: 100%;
+}
+
+/* Dashboard Header */
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.dashboard-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ffffff;
+  font-family: 'Orbitron', sans-serif;
+  margin: 0;
+  background: linear-gradient(90deg, #00D9FF, #8B5CF6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dashboard-subtitle {
+  font-size: 0.95rem;
+  color: #8888aa;
+  margin: 0.5rem 0 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-action {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(74, 144, 226, 0.1);
+  border: 1px solid rgba(74, 144, 226, 0.2);
+  border-radius: 10px;
+  color: #b8b8d1;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-action:hover {
+  background: rgba(74, 144, 226, 0.2);
+  border-color: rgba(0, 217, 255, 0.3);
+  color: #00D9FF;
+  transform: translateY(-2px);
+}
+
+.btn-action.primary {
+  background: linear-gradient(135deg, #00D9FF, #8B5CF6);
+  border: none;
+  color: #ffffff;
+}
+
+.btn-action.primary:hover {
+  box-shadow: 0 10px 30px rgba(0, 217, 255, 0.4);
+}
+
+/* Dashboard Row */
+.dashboard-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 1200px) {
+  .dashboard-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 991px) {
+  .dashboard-title {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .btn-action {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .dashboard-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 575px) {
+  .dashboard-title {
+    font-size: 1.3rem;
+  }
+
+  .dashboard-subtitle {
+    font-size: 0.85rem;
+  }
+}

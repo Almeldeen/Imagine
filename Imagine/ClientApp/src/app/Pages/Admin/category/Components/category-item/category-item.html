@@ -1,0 +1,46 @@
+<!-- Category Item Card -->
+<div class="category-card" *ngFor="let cat of categories">
+  <div class="card-image">
+<img [src]="cat.imageUrl" alt="{{cat.name}}" 
+     (error)="cat.imageUrl='/assets/images/category-placeholder.jpg'">    <div class="image-overlay">
+      <button class="overlay-btn">
+        <i class="fas fa-eye"></i>
+      </button>
+      <button class="overlay-btn">
+        <i class="fas fa-edit"></i>
+      </button>
+    </div>
+    <span class="status-badge active">{{ cat.isActive ? 'Active' : 'Inactive' }}</span>
+  </div>
+
+  <div class="card-content">
+    <h3 class="category-name">{{ cat.name }}</h3>
+    <p class="category-description">{{ cat.description }}</p>
+
+    <div class="category-stats">
+      <div class="stat-item">
+        <i class="fas fa-box"></i>
+        <span>{{ cat.productCount }} Products</span>
+      </div>
+      <div class="stat-item">
+        <i class="fas fa-shopping-cart"></i>
+        <span>{{ cat.salesCount }} Sales</span>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <span class="created-date">
+        <i class="fas fa-calendar"></i>
+        Created: {{ cat.createdAt }}
+      </span>
+      <div class="card-actions">
+        <button class="action-btn edit">
+          <i class="fas fa-edit"></i>
+        </button>
+        <button class="action-btn delete">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

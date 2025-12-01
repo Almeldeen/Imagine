@@ -1,0 +1,29 @@
+.contact-input {
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 0.9rem;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  color: #e5e7eb;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.9rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, transform 0.15s ease;
+}
+
+.contact-input::placeholder {
+  color: rgba(148, 163, 184, 0.8);
+}
+
+.contact-input:focus {
+  outline: none;
+  border-color: #0ea5e9;
+  background: rgba(15, 23, 42, 0.98);
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.6), 0 12px 35px rgba(15, 23, 42, 0.9);
+  transform: translateY(-1px);
+}
+
+.contact-textarea {
+  resize: vertical;
+}
+
+.contact-submit {
+  padding-inline: 1.5rem;
+}

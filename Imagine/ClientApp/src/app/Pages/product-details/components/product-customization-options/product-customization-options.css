@@ -1,0 +1,65 @@
+.pd-customizations {
+  color: #e5e7eb;
+}
+
+.pd-section-title {
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+.pd-customization-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.pd-customization-card {
+  width: 100%;
+  text-align: left;
+  background: rgba(15, 23, 42, 0.95);
+  border-radius: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  padding: 0.75rem 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
+}
+
+.pd-customization-card.selected {
+  border-color: rgba(56, 189, 248, 0.9);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.95);
+  transform: translateY(-1px);
+}
+
+.pd-customization-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.pd-customization-header .name {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.pd-customization-header .badge {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.9);
+  color: #7dd3fc;
+}
+
+.description {
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+.price {
+  font-size: 0.85rem;
+  color: #e5e7eb;
+}

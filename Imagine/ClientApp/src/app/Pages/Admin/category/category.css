@@ -1,0 +1,65 @@
+/* ========================================
+   CATEGORY PAGE
+   ======================================== */
+
+.category-page {
+  width: 100%;
+}
+
+/* ========================================
+   NG-BOOTSTRAP MODAL CUSTOMIZATION
+   ======================================== */
+
+:host ::ng-deep .category-modal .modal-content {
+  background: #1a1a2e;
+  border: 1px solid rgba(0, 217, 255, 0.3);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 217, 255, 0.3), 
+              0 0 100px rgba(139, 92, 246, 0.2);
+  overflow: hidden;
+}
+
+:host ::ng-deep .category-modal .modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+:host ::ng-deep .category-modal .modal-dialog {
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+/* Modal Animation */
+:host ::ng-deep .category-modal .modal-dialog {
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Responsive Modal */
+@media (max-width: 767px) {
+  :host ::ng-deep .category-modal .modal-dialog {
+    margin: 1rem;
+    max-width: calc(100% - 2rem);
+  }
+  
+  :host ::ng-deep .category-modal .modal-content {
+    border-radius: 16px;
+  }
+}
+
+@media (max-width: 575px) {
+  :host ::ng-deep .category-modal .modal-dialog {
+    margin: 0.5rem;
+    max-width: calc(100% - 1rem);
+  }
+}

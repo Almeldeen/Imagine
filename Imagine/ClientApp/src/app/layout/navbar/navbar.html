@@ -1,0 +1,46 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNavbar">
+  <div class="container-fluid px-4">
+    <!-- Logo -->
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <span class="brand-text gradient-text">IMAGINE</span>
+    </a>
+
+    <!-- Mobile Toggle Button -->
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navbar Content -->
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <!-- Navigation Links -->
+      <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/Home" routerLinkActive="active">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/Products" routerLinkActive="active">Products</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/About" routerLinkActive="active">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/Contact" routerLinkActive="active">Contact</a>
+        </li>
+      </ul>
+
+      <!-- Right Side Actions -->
+      <div class="d-flex align-items-center gap-3">
+        <!-- Cart Icon -->
+        <a class="cart-icon position-relative" routerLink="/Cart" routerLinkActive="active">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-badge">3</span>
+        </a>
+
+        <!-- Auth Buttons -->
+        <button class="btn btn-outline-custom btn-sm" routerLink="/Login">Login</button>
+        <button class="btn btn-primary-custom btn-sm" routerLink="/Register">Sign Up</button>
+      </div>
+    </div>
+  </div>
+</nav>

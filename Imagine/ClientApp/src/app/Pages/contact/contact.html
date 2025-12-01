@@ -1,0 +1,51 @@
+<section class="contact-page">
+  <div class="contact-background">
+    <div class="contact-orb orb-left"></div>
+    <div class="contact-orb orb-right"></div>
+    <div class="contact-grid"></div>
+  </div>
+
+  <div class="container position-relative">
+    <div class="row mb-5">
+      <div class="col-12 text-center">
+        <p class="badge-text">Contact</p>
+        <h2 class="contact-title">
+          Let's build something
+          <span class="highlight">incredible</span>
+          together
+        </h2>
+        <p class="contact-subtitle">
+          Have a question, idea, or collaboration in mind? Drop us a line and we'll get back to you.
+        </p>
+      </div>
+    </div>
+
+    <div class="row g-4 align-items-start">
+      <div class="col-lg-7">
+        <div class="contact-card">
+          <app-contact-form></app-contact-form>
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="contact-card contact-info-wrapper">
+          <h3 class="info-title">Reach us directly</h3>
+          <div class="info-list">
+            <app-contact-info-card
+              *ngFor="let item of contactInfoItems"
+              [icon]="item.icon"
+              [label]="item.label"
+              [value]="item.value"
+              [description]="item.description"
+              [link]="item.link"
+            ></app-contact-info-card>
+          </div>
+        </div>
+
+        <div class="contact-card contact-map-wrapper mt-4">
+          <app-contact-map></app-contact-map>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,136 @@
+/* ========================================
+   NAVBAR STYLES
+   ======================================== */
+
+#mainNavbar {
+  background: rgba(15, 15, 30, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(74, 144, 226, 0.2);
+  padding: 1rem 0;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+#mainNavbar.scrolled {
+  background: rgba(15, 15, 30, 0.98);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgba(74, 144, 226, 0.4);
+}
+
+/* Logo Styles */
+.navbar-logo {
+  height: 45px;
+  width: auto;
+  max-width: 150px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(74, 144, 226, 0.5)) brightness(1.1);
+  transition: transform 0.3s ease;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.navbar-brand:hover .navbar-logo {
+  transform: scale(1.05);
+}
+
+.brand-text {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  animation: fadeInDown 0.8s ease-out 0.1s both;
+}
+
+/* Navigation Links */
+.navbar-nav .nav-link {
+  color: var(--text-secondary);
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 0.5rem 1.2rem;
+  margin: 0 0.2rem;
+  position: relative;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+  animation: fadeInDown 0.6s ease-out both;
+}
+
+.navbar-nav .nav-item:nth-child(1) .nav-link { animation-delay: 0.2s; }
+.navbar-nav .nav-item:nth-child(2) .nav-link { animation-delay: 0.3s; }
+.navbar-nav .nav-item:nth-child(3) .nav-link { animation-delay: 0.4s; }
+.navbar-nav .nav-item:nth-child(4) .nav-link { animation-delay: 0.5s; }
+
+.navbar-nav .nav-link::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--gradient-glow);
+  transform: translateX(-50%);
+  transition: width 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: var(--text-primary);
+}
+
+.navbar-nav .nav-link:hover::before,
+.navbar-nav .nav-link.active::before {
+  width: 80%;
+}
+
+/* Cart Icon */
+.cart-icon {
+  color: var(--text-primary);
+  font-size: 1.3rem;
+  transition: all 0.3s ease;
+  position: relative;
+  animation: fadeInDown 0.6s ease-out 0.6s both;
+}
+
+.cart-icon:hover {
+  color: var(--accent-cyan);
+  transform: scale(1.1);
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--gradient-primary);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 50%;
+  min-width: 20px;
+  text-align: center;
+  box-shadow: var(--glow-purple);
+}
+
+/* Mobile Menu */
+.navbar-toggler {
+  color: var(--text-primary);
+  border: 2px solid var(--primary-blue) !important;
+  padding: 0.5rem 0.75rem;
+  animation: fadeInDown 0.6s ease-out 0.3s both;
+}
+
+.d-flex.align-items-center.gap-3 .btn {
+  animation: fadeInDown 0.6s ease-out both;
+}
+
+.d-flex.align-items-center.gap-3 .btn:first-of-type {
+  animation-delay: 0.7s;
+}
+
+.d-flex.align-items-center.gap-3 .btn:last-of-type {
+  animation-delay: 0.8s;
+}
+
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.3);
+}

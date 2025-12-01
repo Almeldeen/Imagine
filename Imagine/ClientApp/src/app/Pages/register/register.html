@@ -1,0 +1,125 @@
+<section class="auth-page">
+  <div class="auth-background">
+    <div class="auth-orb orb-left"></div>
+    <div class="auth-orb orb-right"></div>
+    <div class="auth-grid"></div>
+  </div>
+
+  <div class="container position-relative">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-5">
+        <div class="auth-card">
+          <p class="auth-eyebrow">Create account</p>
+          <h1 class="auth-title">Join Imagine</h1>
+          <p class="auth-subtitle">
+            Let&apos;s create your smart profile — tailored by AI.
+          </p>
+
+          <ngb-alert
+            *ngIf="errorMessage"
+            type="danger"
+            class="mt-2 mb-2"
+            [dismissible]="false"
+          >
+            {{ errorMessage }}
+          </ngb-alert>
+
+          <ngb-alert
+            *ngIf="successMessage"
+            type="success"
+            class="mt-1 mb-2"
+            [dismissible]="false"
+          >
+            {{ successMessage }}
+          </ngb-alert>
+
+          <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)" novalidate>
+            <div class="mb-3">
+              <label class="form-label text-light">Full name</label>
+              <input
+                type="text"
+                name="fullName"
+                class="form-control auth-input"
+                [(ngModel)]="model.fullName"
+                required
+                placeholder="Your full name"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label text-light">Email</label>
+              <input
+                type="email"
+                name="email"
+                class="form-control auth-input"
+                [(ngModel)]="model.email"
+                required
+                email
+                placeholder="you@example.com"
+              />
+            </div>
+
+            <div class="mb-3 position-relative">
+              <label class="form-label text-light">Password</label>
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                name="password"
+                class="form-control auth-input pe-5"
+                [(ngModel)]="model.password"
+                required
+                minlength="6"
+                placeholder="Create a password"
+              />
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="togglePasswordVisibility()"
+                aria-label="Toggle password visibility"
+              >
+                <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+              </button>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label text-light">Confirm password</label>
+              <input
+                type="password"
+                name="confirmPassword"
+                class="form-control auth-input"
+                [(ngModel)]="model.confirmPassword"
+                required
+                minlength="6"
+                placeholder="Repeat your password"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label text-light">Phone (optional)</label>
+              <input
+                type="tel"
+                name="phone"
+                class="form-control auth-input"
+                [(ngModel)]="model.phone"
+                placeholder="e.g. +1 555 123 4567"
+              />
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-primary-custom w-100 mb-2"
+              [disabled]="registerForm.invalid || submitting"
+            >
+              <span *ngIf="!submitting">Create account</span>
+              <span *ngIf="submitting">Setting things up...</span>
+            </button>
+          </form>
+
+          <p class="auth-footer text-center mb-0">
+            Already have an account?
+            <a routerLink="/Login" class="auth-link">Log in</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

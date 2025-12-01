@@ -1,0 +1,34 @@
+<div class="pd-add-to-cart d-flex flex-wrap align-items-center gap-3">
+  <div class="pd-qty-control d-inline-flex align-items-center">
+    <button class="qty-btn" type="button" (click)="onDecrement()">
+      <i class="fas fa-minus"></i>
+    </button>
+    <input
+      type="number"
+      class="qty-input"
+      [value]="quantity"
+      (input)="onQuantityInput($any($event.target).value)"
+      min="1"
+    />
+    <button class="qty-btn" type="button" (click)="onIncrement()">
+      <i class="fas fa-plus"></i>
+    </button>
+  </div>
+
+  <button
+    class="btn btn-primary-custom flex-grow-1 pd-add-btn"
+    type="button"
+    [disabled]="!inStock"
+    (click)="onAddToCartClick()"
+  >
+    <div class="d-flex justify-content-between align-items-center w-100">
+      <span>Add to cart</span>
+      <span class="pd-add-price">{{ totalPrice | currency:'USD':'symbol' }}</span>
+    </div>
+  </button>
+
+  <p class="pd-add-caption mb-0 w-100">
+    <span *ngIf="inStock">Per item: {{ finalPricePerItem | currency:'USD':'symbol' }}</span>
+    <span *ngIf="!inStock">Currently out of stock</span>
+  </p>
+</div>

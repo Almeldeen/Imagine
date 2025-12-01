@@ -1,0 +1,49 @@
+.pd-add-to-cart {
+  color: #e5e7eb;
+}
+
+.pd-qty-control {
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  overflow: hidden;
+}
+
+.qty-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: #e5e7eb;
+}
+
+.qty-btn:hover {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+.qty-input {
+  width: 48px;
+  border: none;
+  background: transparent;
+  text-align: center;
+  color: #e5e7eb;
+  font-size: 0.9rem;
+}
+
+.qty-input:focus {
+  outline: none;
+}
+
+.pd-add-btn {
+  min-width: 0;
+}
+
+.pd-add-price {
+  font-weight: 600;
+}
+
+.pd-add-caption {
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}

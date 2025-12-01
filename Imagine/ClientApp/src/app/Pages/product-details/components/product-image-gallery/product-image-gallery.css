@@ -1,0 +1,39 @@
+.pd-gallery-card {
+  background: rgba(15, 23, 42, 0.96);
+  border-radius: 1.6rem;
+  border: 1px solid rgba(74, 144, 226, 0.45);
+  padding: 1.25rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65);
+}
+
+.pd-main-image-wrap {
+  position: relative;
+  border-radius: 1.4rem;
+  overflow: hidden;
+  background: radial-gradient(circle at top left, rgba(0, 217, 255, 0.3), rgba(15, 23, 42, 1));
+}
+
+.pd-main-image {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.pd-main-image-wrap:hover .pd-main-image {
+  transform: scale(1.03);
+}
+
+.pd-main-image-overlay {
+  position: absolute;
+  inset: auto 1rem 1rem auto;
+}
+
+.pd-tag {
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(56, 189, 248, 0.8);
+  font-size: 0.75rem;
+  color: #7dd3fc;
+}

@@ -1,0 +1,18 @@
+<!-- Orders Page -->
+<div class="orders-page">
+  <!-- Order Header -->
+  <app-order-header 
+    (filterChange)="onFilterChange($event)"
+    (viewChange)="onViewChange($event)"
+    (sortChange)="onSortChange($event)"
+    (searchChange)="onSearchChange($event)"
+    (dateRangeChange)="onDateRangeChange($event)">
+  </app-order-header>
+
+  <!-- Order List Component (when orders exist) -->
+  <app-order-list *ngIf="hasOrders"></app-order-list>
+
+  <!-- Empty State Component (when no orders) -->
+  <app-order-empty-state *ngIf="!hasOrders">
+  </app-order-empty-state>
+</div>

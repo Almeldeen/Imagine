@@ -1,0 +1,68 @@
+/* Highlighted mission/vision content block */
+
+.about-text-block {
+  position: relative;
+  background: rgba(15, 23, 42, 0.98);
+  border-radius: 24px;
+  border: 1px solid rgba(74, 144, 226, 0.35);
+  padding: 1.8rem 1.6rem;
+  color: #e5e7eb;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+
+.block-icon-wrapper {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.block-icon-glow {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(0, 217, 255, 0.4), transparent 70%);
+  filter: blur(12px);
+  opacity: 0.7;
+}
+
+.block-icon {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #00D9FF 0%, #8B5CF6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.3rem;
+}
+
+.block-label {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #a5b4fc;
+  margin-bottom: 0.4rem;
+}
+
+.block-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  font-family: 'Orbitron', sans-serif;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.block-text {
+  font-size: 0.95rem;
+  color: #cbd5f5;
+  line-height: 1.7;
+}
+
+@media (max-width: 767px) {
+  .about-text-block {
+    padding: 1.5rem 1.3rem;
+  }
+}

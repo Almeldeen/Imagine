@@ -1,0 +1,33 @@
+.cart-empty-card {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 2.25rem 1.75rem;
+  border-radius: 1.7rem;
+  background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.9));
+  border: 1px solid rgba(148, 163, 184, 0.55);
+  color: #e5e7eb;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.95);
+}
+
+.cart-empty-card .icon-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, rgba(0, 217, 255, 0.28), transparent 70%);
+  color: #7dd3fc;
+  font-size: 1.4rem;
+}
+
+.empty-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.empty-text {
+  font-size: 0.9rem;
+  color: #9ca3af;
+}

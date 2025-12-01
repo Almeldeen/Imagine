@@ -1,0 +1,119 @@
+<!-- About Page -->
+<section class="about-page" id="about">
+  <div class="about-background">
+    <div class="about-orb orb-left"></div>
+    <div class="about-orb orb-right"></div>
+    <div class="about-grid"></div>
+  </div>
+
+  <div class="container position-relative">
+    <!-- Intro Section -->
+    <app-about-section-header
+      badgeLabel="About Imagine"
+      title="Built for"
+      highlight="Creators"
+      subtitle="Imagine is a space where AI, design, and premium apparel meet to help you turn ideas into products that feel truly yours.">
+    </app-about-section-header>
+
+    <div class="row g-4 align-items-stretch mt-4">
+      <div class="col-lg-6">
+        <app-about-text-block
+          icon="fas fa-bullseye"
+          label="Our Mission"
+          [title]="'Empower Your Creativity'"
+          [text]="mission">
+        </app-about-text-block>
+      </div>
+      <div class="col-lg-6">
+        <app-about-text-block
+          icon="fas fa-eye"
+          label="Our Vision"
+          [title]="'A Smarter Product Studio'"
+          [text]="vision">
+        </app-about-text-block>
+      </div>
+    </div>
+
+    <!-- Story / Values -->
+    <div class="row g-4 mt-4">
+      <div class="col-lg-6">
+        <div class="about-story-card">
+          <h3 class="story-title">Our Story</h3>
+          <p class="story-text">
+            Imagine started as a simple prototype to make AI-generated art feel more tangible. We wanted creators to
+            see their ideas on real fabrics, in real lighting, with details that actually ship.
+          </p>
+          <p class="story-text">
+            Today, Imagine powers a full pipeline from AI concept to production-ready previews, combining smart
+            defaults with room for deep customization.
+          </p>
+          <div class="accordion about-accordion" ngbAccordion [closeOthers]="true">
+            <div ngbAccordionItem>
+              <h2 ngbAccordionHeader>
+                <button ngbAccordionButton>
+                  How we design the experience
+                </button>
+              </h2>
+              <div ngbAccordionCollapse>
+                <div ngbAccordionBody>
+                  <ng-template>
+                    We focus on smooth transitions, clear feedback, and layouts that keep you in the creative flow, not
+                    fighting the interface.
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+            <div ngbAccordionItem>
+              <h2 ngbAccordionHeader>
+                <button ngbAccordionButton>
+                  Built to grow with your team
+                </button>
+              </h2>
+              <div ngbAccordionCollapse>
+                <div ngbAccordionBody>
+                  <ng-template>
+                    From solo designers to full teams, Imagine is structured around reusable components and consistent
+                    patterns so your catalog can scale.
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="about-values-card">
+          <h3 class="values-title">What we stand for</h3>
+          <div class="values-list">
+            <div class="value-item" *ngFor="let value of values">
+              <div class="value-icon">
+                <i class="fas fa-sparkles"></i>
+              </div>
+              <div class="value-content">
+                <h4 class="value-title">{{ value.title }}</h4>
+                <p class="value-text">{{ value.text }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team Section -->
+    <div class="about-team-section mt-5">
+      <app-about-section-header
+        badgeLabel="The Team"
+        title="People behind"
+        highlight="Imagine"
+        subtitle="A small, focused team blending design, engineering, and AI to keep your experience sharp and reliable."
+        align="center">
+      </app-about-section-header>
+
+      <div class="row g-4 mt-2">
+        <div class="col-md-4" *ngFor="let member of team">
+          <app-about-team-card [member]="member"></app-about-team-card>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,213 @@
+/* ========================================
+   RECENT ORDERS COMPONENT
+   ======================================== */
+
+.dashboard-card {
+  background: rgba(26, 26, 46, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(74, 144, 226, 0.2);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(74, 144, 226, 0.2);
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.card-subtitle {
+  font-size: 0.85rem;
+  color: #8888aa;
+  margin: 0.3rem 0 0;
+}
+
+.btn-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: none;
+  color: #00D9FF;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-link:hover {
+  color: #8B5CF6;
+  transform: translateX(5px);
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+/* Data Table */
+.table-responsive {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table thead {
+  background: rgba(74, 144, 226, 0.1);
+}
+
+.data-table th {
+  padding: 1rem;
+  text-align: left;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #b8b8d1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(74, 144, 226, 0.2);
+}
+
+.data-table tbody tr {
+  border-bottom: 1px solid rgba(74, 144, 226, 0.1);
+  transition: all 0.3s ease;
+}
+
+.data-table tbody tr:hover {
+  background: rgba(74, 144, 226, 0.05);
+}
+
+.data-table td {
+  padding: 1rem;
+  font-size: 0.9rem;
+  color: #b8b8d1;
+}
+
+.order-id {
+  font-weight: 700;
+  color: #00D9FF;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.customer-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.customer-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 2px solid rgba(0, 217, 255, 0.3);
+}
+
+.amount {
+  font-weight: 700;
+  color: #ffffff;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.completed {
+  background: rgba(76, 175, 80, 0.2);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  color: #4CAF50;
+}
+
+.status-badge.pending {
+  background: rgba(255, 193, 7, 0.2);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  color: #FFC107;
+}
+
+.status-badge.processing {
+  background: rgba(0, 217, 255, 0.2);
+  border: 1px solid rgba(0, 217, 255, 0.3);
+  color: #00D9FF;
+}
+
+.status-badge.cancelled {
+  background: rgba(255, 110, 199, 0.2);
+  border: 1px solid rgba(255, 110, 199, 0.3);
+  color: #FF6EC7;
+}
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(74, 144, 226, 0.1);
+  border: 1px solid rgba(74, 144, 226, 0.2);
+  border-radius: 8px;
+  color: #b8b8d1;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-icon:hover {
+  background: rgba(74, 144, 226, 0.2);
+  border-color: rgba(0, 217, 255, 0.3);
+  color: #00D9FF;
+  transform: scale(1.1);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 767px) {
+  .data-table {
+    font-size: 0.85rem;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 0.8rem 0.5rem;
+  }
+}
+
+@media (max-width: 575px) {
+  .card-body {
+    padding: 1rem;
+  }
+
+  .data-table {
+    font-size: 0.8rem;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 0.6rem 0.4rem;
+  }
+
+  .customer-avatar {
+    width: 30px;
+    height: 30px;
+  }
+}

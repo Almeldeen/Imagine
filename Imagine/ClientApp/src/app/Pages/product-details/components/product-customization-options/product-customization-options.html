@@ -1,0 +1,20 @@
+<div class="pd-customizations">
+  <p class="pd-section-title mb-2">Customization</p>
+  <div class="pd-customization-list">
+    <button
+      *ngFor="let opt of options"
+      type="button"
+      class="pd-customization-card"
+      [class.selected]="opt.id === selectedId"
+      (click)="onSelect(opt.id)"
+    >
+      <div class="pd-customization-header">
+        <span class="name">{{ opt.name }}</span>
+        <span class="badge" *ngIf="opt.badge">{{ opt.badge }}</span>
+      </div>
+      <p class="description mb-1">{{ opt.description }}</p>
+      <p class="price" *ngIf="opt.extraPrice > 0">+{{ opt.extraPrice | currency:'USD':'symbol' }}</p>
+      <p class="price" *ngIf="opt.extraPrice === 0">Included</p>
+    </button>
+  </div>
+</div>

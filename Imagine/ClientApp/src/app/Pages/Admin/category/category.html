@@ -1,0 +1,24 @@
+<!-- Category Page -->
+<div class="category-page">
+  <!-- Header Component -->
+  <app-category-header
+    [categories]="categories"
+    [currentFilter]="currentFilter"
+    (addCategory)="openAddCategoryForm()"
+    (searchChange)="onSearchChange($event)"
+    (filterChange)="onFilterChange($event)"
+    (viewChange)="onViewChange($event)"
+  >
+  </app-category-header>
+  <app-category-list
+    *ngIf="hasCategories"
+    [categories]="categories"
+    [viewMode]="currentView"
+    (refresh)="loadCategories()"
+  >
+  </app-category-list>
+
+  <!-- Empty State Component (when no categories) -->
+  <app-category-empty-state *ngIf="!hasCategories" (createCategory)="openAddCategoryForm()">
+  </app-category-empty-state>
+</div>

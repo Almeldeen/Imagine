@@ -1,0 +1,40 @@
+/* ========================================
+   ADMIN LAYOUT
+   ======================================== */
+
+.admin-layout {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 50%, #16213e 100%);
+}
+
+.admin-content {
+  margin-left: 280px;
+  margin-top: 70px;
+  min-height: calc(100vh - 70px);
+  padding: 2rem;
+  transition: margin-left 0.3s ease;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 991px) {
+  .admin-content {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .admin-content {
+    margin-top: 60px;
+    min-height: calc(100vh - 60px);
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 575px) {
+  .admin-content {
+    padding: 1rem;
+  }
+}

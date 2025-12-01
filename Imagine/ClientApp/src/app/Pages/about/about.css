@@ -1,0 +1,164 @@
+/* About Page - follows landing/All Products visual language */
+
+.about-page {
+  position: relative;
+  padding: 7rem 0 5rem 0;
+  background: linear-gradient(135deg,
+    #1a1a2e 0%,
+    #16213e 25%,
+    #0f3460 50%,
+    #16213e 75%,
+    #1a1a2e 100%
+  );
+  overflow: hidden;
+}
+
+.about-background {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.about-orb {
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  filter: blur(130px);
+  opacity: 0.35;
+  animation: float 16s ease-in-out infinite;
+}
+
+.orb-left {
+  top: 15%;
+  left: -10%;
+  background: radial-gradient(circle, rgba(0, 217, 255, 0.7) 0%, transparent 70%);
+}
+
+.orb-right {
+  bottom: 10%;
+  right: -10%;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.7) 0%, transparent 70%);
+}
+
+.about-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(74, 144, 226, 0.06) 0px, transparent 1px, transparent 40px),
+    repeating-linear-gradient(90deg, rgba(74, 144, 226, 0.04) 0px, transparent 1px, transparent 40px);
+  opacity: 0.4;
+}
+
+.about-story-card,
+.about-values-card {
+  position: relative;
+  background: rgba(15, 23, 42, 0.95);
+  border-radius: 24px;
+  border: 1px solid rgba(74, 144, 226, 0.35);
+  padding: 2rem;
+  color: #e5e7eb;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+
+.about-story-card::before,
+.about-values-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top left, rgba(0, 217, 255, 0.25), transparent 60%);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.story-title,
+.values-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+.story-text {
+  font-size: 0.95rem;
+  color: #cbd5f5;
+  line-height: 1.7;
+  margin-bottom: 0.75rem;
+}
+
+.about-accordion ::ng-deep .accordion-item {
+  background-color: transparent;
+  border-color: rgba(148, 163, 184, 0.3);
+}
+
+.about-accordion ::ng-deep .accordion-button {
+  background-color: rgba(15, 23, 42, 0.95);
+  color: #e5e7eb;
+}
+
+.about-accordion ::ng-deep .accordion-button:not(.collapsed) {
+  color: #00D9FF;
+  box-shadow: none;
+}
+
+.values-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.value-item {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+}
+
+.value-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: radial-gradient(circle, rgba(0, 217, 255, 0.25), transparent 70%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #00D9FF;
+}
+
+.value-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 0.2rem;
+}
+
+.value-text {
+  font-size: 0.9rem;
+  color: #cbd5f5;
+}
+
+.about-team-section {
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-18px);
+  }
+}
+
+@media (max-width: 767px) {
+  .about-page {
+    padding: 5rem 0 3.5rem 0;
+  }
+
+  .about-story-card,
+  .about-values-card {
+    padding: 1.5rem;
+  }
+}

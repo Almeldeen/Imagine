@@ -1,0 +1,60 @@
+<!-- Filters and Sort Bar -->
+<div class="products-filter">
+  <div class="filter-left">
+    <!-- Search -->
+    <div class="search-box">
+      <i class="fas fa-search search-icon"></i>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search products..."
+        [(ngModel)]="search"
+        (ngModelChange)="onSearchChange()">
+    </div>
+
+    <!-- Category Pills -->
+    <div class="category-pills">
+      <button
+        class="pill"
+        [class.active]="selectedCategory === 'all'"
+        (click)="setCategory('all')">
+        All
+      </button>
+      <button
+        class="pill"
+        [class.active]="selectedCategory === 'Hoodies'"
+        (click)="setCategory('Hoodies')">
+        Hoodies
+      </button>
+      <button
+        class="pill"
+        [class.active]="selectedCategory === 'T-Shirts'"
+        (click)="setCategory('T-Shirts')">
+        T-Shirts
+      </button>
+      <button
+        class="pill"
+        [class.active]="selectedCategory === 'Accessories'"
+        (click)="setCategory('Accessories')">
+        Accessories
+      </button>
+    </div>
+  </div>
+
+  <div class="filter-right">
+    <!-- AI Only Toggle -->
+    <button class="ai-toggle" [class.active]="aiOnly" (click)="toggleAiOnly()">
+      <i class="fas fa-robot"></i>
+      <span>AI Only</span>
+    </button>
+
+    <!-- Sort Dropdown -->
+    <div class="sort-dropdown">
+      <select class="sort-select" [ngModel]="sortKey" (ngModelChange)="onSortChange($event)">
+        <option value="name">Sort by Name</option>
+        <option value="price">Sort by Price</option>
+      </select>
+      <i class="fas fa-chevron-down sort-icon"></i>
+    </div>
+  </div>
+</div>

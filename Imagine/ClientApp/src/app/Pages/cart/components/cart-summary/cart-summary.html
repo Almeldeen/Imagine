@@ -1,0 +1,30 @@
+<div class="cart-summary-card">
+  <h3 class="summary-title">Order summary</h3>
+
+  <div class="summary-row">
+    <span>Items ({{ itemCount }})</span>
+    <span>{{ subtotal | currency:'USD':'symbol' }}</span>
+  </div>
+
+  <div class="summary-row" ngbTooltip="Estimated tax based on your region">
+    <span>Tax</span>
+    <span>{{ tax | currency:'USD':'symbol' }}</span>
+  </div>
+
+  <div class="summary-row" ngbTooltip="Flat shipping rate for standard delivery">
+    <span>Shipping</span>
+    <span *ngIf="shipping > 0">{{ shipping | currency:'USD':'symbol' }}</span>
+    <span *ngIf="shipping === 0">Free</span>
+  </div>
+
+  <div class="summary-divider"></div>
+
+  <div class="summary-row summary-total">
+    <span>Total</span>
+    <span>{{ total | currency:'USD':'symbol' }}</span>
+  </div>
+
+  <button class="btn btn-primary-custom w-100 mt-3" type="button" (click)="onCheckout()">
+    Proceed to checkout
+  </button>
+</div>

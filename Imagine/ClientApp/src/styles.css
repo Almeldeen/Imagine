@@ -1,0 +1,192 @@
+/* ========================================
+   IMAGINE - AI-Inspired eCommerce Theme
+   ======================================== */
+
+/* CSS Variables for AI-Inspired Theme */
+:root {
+  /* Primary Colors - Blue/Purple Gradient */
+  --primary-blue: #4A90E2;
+  --primary-purple: #8B5CF6;
+  --primary-dark: #1a1a2e;
+  --primary-darker: #0f0f1e;
+  
+  /* Accent Colors */
+  --accent-cyan: #00D9FF;
+  --accent-pink: #FF6EC7;
+  --accent-neon: #00FFF0;
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-hero: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  --gradient-glow: linear-gradient(90deg, #00D9FF, #8B5CF6, #FF6EC7);
+  
+  /* Text Colors */
+  --text-primary: #ffffff;
+  --text-secondary: #b8b8d1;
+  --text-muted: #8888aa;
+  
+  /* Spacing */
+  --navbar-height: 80px;
+  
+  /* Fonts */
+  --font-heading: 'Orbitron', sans-serif;
+  --font-body: 'Poppins', sans-serif;
+  
+  /* Shadows & Glows */
+  --glow-blue: 0 0 20px rgba(74, 144, 226, 0.5);
+  --glow-purple: 0 0 20px rgba(139, 92, 246, 0.5);
+  --glow-cyan: 0 0 30px rgba(0, 217, 255, 0.6);
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--primary-darker);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--primary-darker);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--primary-blue), var(--primary-purple));
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--accent-cyan), var(--primary-purple));
+}
+
+/* Utility Classes */
+.glow-text {
+  text-shadow: 0 0 10px rgba(74, 144, 226, 0.8),
+               0 0 20px rgba(139, 92, 246, 0.6);
+}
+
+.gradient-text {
+  background: var(--gradient-glow);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Button Styles */
+.btn-primary-custom {
+  background: var(--gradient-primary);
+  border: none;
+  color: white;
+  padding: 12px 32px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--glow-blue);
+}
+
+.btn-primary-custom:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--glow-cyan);
+}
+
+.btn-primary-custom::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.btn-primary-custom:hover::before {
+  left: 100%;
+}
+
+.btn-outline-custom {
+  background: transparent;
+  border: 2px solid var(--primary-blue);
+  color: var(--text-primary);
+  padding: 10px 28px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-custom:hover {
+  background: var(--primary-blue);
+  box-shadow: var(--glow-blue);
+  transform: translateY(-2px);
+}
+
+/* Animated Background Elements */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Particle Effect */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Glass Morphism Effect */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}

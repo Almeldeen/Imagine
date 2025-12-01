@@ -1,0 +1,18 @@
+<div class="pd-color-selector">
+  <p class="pd-section-title mb-2">Color</p>
+  <div class="pd-color-swatches">
+    <button
+      *ngFor="let color of colors"
+      type="button"
+      class="pd-color-swatch"
+      [class.selected]="color.key === selectedKey"
+      [style.background]="color.swatch"
+      (click)="onSelect(color.key)"
+    >
+      <span class="sr-only">{{ color.label }}</span>
+    </button>
+  </div>
+  <p class="pd-color-caption" *ngIf="selectedLabel">
+    {{ selectedLabel }}
+  </p>
+</div>

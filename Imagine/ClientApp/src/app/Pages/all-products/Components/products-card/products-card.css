@@ -1,0 +1,353 @@
+/* User-facing product card - based on landing trending cards */
+
+.product-card {
+  position: relative;
+  background: rgba(26, 26, 46, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(74, 144, 226, 0.2);
+  border-radius: 24px;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card:hover {
+  transform: translateY(-12px);
+  border-color: rgba(0, 217, 255, 0.5);
+  box-shadow: 0 25px 70px rgba(0, 217, 255, 0.25);
+  background: rgba(26, 26, 46, 0.8);
+}
+
+.product-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  overflow: hidden;
+  border-radius: 24px 24px 0 0;
+  background: rgba(15, 15, 30, 0.4);
+}
+
+.product-glow-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: conic-gradient(from 0deg, #00D9FF, #8B5CF6, #FF6EC7, #00D9FF);
+  transform: translate(-50%, -50%);
+  filter: blur(30px);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  animation: rotate 10s linear infinite;
+}
+
+.product-card:hover .product-glow-ring {
+  opacity: 0.5;
+}
+
+.product-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 1;
+  transform: scale(1);
+  transition: all 0.4s ease;
+  z-index: 2;
+}
+
+.product-card:hover .product-image {
+  transform: scale(1.05);
+}
+
+.product-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: 2;
+}
+
+.product-card:hover .product-overlay {
+  opacity: 1;
+}
+
+.quick-view {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  font-size: 1.3rem;
+  color: white;
+  z-index: 3;
+  transition: all 0.4s ease;
+}
+
+.product-card:hover .quick-view {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.quick-view:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+  box-shadow: 0 10px 30px rgba(0, 217, 255, 0.5);
+}
+
+.product-info {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-category {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #00D9FF;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.product-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.product-description {
+  font-size: 0.9rem;
+  color: #b8b8d1;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.color-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 0;
+  border-top: 1px solid rgba(74, 144, 226, 0.1);
+  border-bottom: 1px solid rgba(74, 144, 226, 0.1);
+}
+
+.color-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #b8b8d1;
+}
+
+.color-options {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.color-swatch {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+  overflow: hidden;
+}
+
+.color-swatch:hover {
+  transform: scale(1.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.color-swatch.active {
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+.swatch-check {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.7rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.color-swatch.active .swatch-check {
+  opacity: 1;
+}
+
+.product-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.product-price {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.price-label {
+  font-size: 0.8rem;
+  color: #b8b8d1;
+}
+
+.price-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  font-family: 'Orbitron', sans-serif;
+  color: #00D9FF;
+}
+
+.price-extra {
+  font-size: 0.8rem;
+  color: #b8b8d1;
+}
+
+.product-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.btn-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.1rem;
+  background: linear-gradient(135deg, #00D9FF 0%, #8B5CF6 100%);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-add:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 217, 255, 0.4);
+}
+
+.btn-outline {
+  padding: 0.6rem 1rem;
+  background: transparent;
+  border-radius: 10px;
+  border: 1px solid rgba(74, 144, 226, 0.5);
+  color: #b8b8d1;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+  border-color: #00D9FF;
+  color: #00D9FF;
+}
+
+.card-particles-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.product-card:hover .card-particles-effect {
+  opacity: 1;
+}
+
+.card-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #00D9FF;
+  border-radius: 50%;
+  animation: productCardParticle 3s ease-in-out infinite;
+}
+
+.card-particle:nth-child(1) {
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.card-particle:nth-child(2) {
+  top: 60%;
+  right: 15%;
+  animation-delay: 1s;
+}
+
+.card-particle:nth-child(3) {
+  bottom: 30%;
+  left: 20%;
+  animation-delay: 2s;
+}
+
+@keyframes productCardParticle {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-20px) scale(1.5);
+    opacity: 1;
+  }
+}
+
+@keyframes rotate {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@media (max-width: 767px) {
+  .product-image-wrapper {
+    height: 220px;
+  }
+
+  .product-info {
+    padding: 1.2rem;
+  }
+
+  .product-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .product-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}

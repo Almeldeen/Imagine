@@ -1,0 +1,9 @@
+<ngb-pagination
+  [collectionSize]="total"
+  [(page)]="page"
+  [pageSize]="pageSize"
+  [maxSize]="5"
+  [ellipses]="true"
+  [boundaryLinks]="false"
+  (pageChange)="pageChange.emit($event)">
+</ngb-pagination>

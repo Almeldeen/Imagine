@@ -1,0 +1,13 @@
+<div class="section-header" [ngClass]="{'text-center': align === 'center', 'text-start': align === 'left'}">
+  <div class="section-badge">
+    <span class="badge-dot"></span>
+    <span>{{ badgeLabel }}</span>
+  </div>
+  <h2 class="section-title">
+    {{ title }}
+    <span class="gradient-text">{{ highlight }}</span>
+  </h2>
+  <p class="section-subtitle" *ngIf="subtitle">
+    {{ subtitle }}
+  </p>
+</div>

@@ -1,0 +1,143 @@
+<!-- Category Form Modal using ng-bootstrap -->
+<div class="modal-header">
+  <h2 class="modal-title">Add New Category</h2>
+  <button
+    type="button"
+    class="btn-close"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
+    <i class="fas fa-times"></i>
+  </button>
+</div>
+
+<div class="modal-body">
+  <form class="category-form" (submit)="onSave($event)">
+    <!-- Category Name -->
+    <div class="form-group">
+      <label class="form-label">
+        <i class="fas fa-tag"></i>
+        Category Name
+      </label>
+      <input
+        type="text"
+        class="form-input"
+        placeholder="e.g., Hoodies"
+        name="name"
+        [(ngModel)]="categoryobj.name"
+      />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">
+        <i class="fas fa-align-left"></i>
+         Product Count
+      </label>
+      <input
+        type="number"
+        class="form-input"
+        placeholder="e.g., 1"
+        name="productCount"
+        [(ngModel)]="categoryobj.productCount"
+      />
+    </div>
+
+    <!-- Category Description -->
+    <div class="form-group">
+      <label class="form-label">
+        <i class="fas fa-align-left"></i>
+        Description
+      </label>
+      <textarea
+        rows="4"
+        name="description"
+        [(ngModel)]="categoryobj.description"
+        class="form-textarea"
+        placeholder="Describe this category..."
+      ></textarea>
+    </div>
+
+    <!-- Category Image Upload -->
+    <div class="form-group">
+      <label class="form-label">
+        <i class="fas fa-image"></i>
+        Category Image
+      </label>
+      <div class="image-upload">
+        <input
+            type="file"
+            #fileInput
+            class="file-input hidden-input"
+            accept="image/*"
+            style="display: none;"
+            (change)="onFileSelected($event)"
+          />
+        
+        <div class="upload-area" (click)="fileInput.click()" *ngIf="!imagePreviewUrl">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <p class="upload-text">Drag & drop or click to upload</p>
+          <span class="upload-hint">PNG, JPG up to 5MB</span>
+        </div>
+
+        <div class="image-preview" *ngIf="imagePreviewUrl">
+          <img [src]="imagePreviewUrl" alt="Selected image preview" />
+          <button type="button" class="btn-remove" (click)="clearImage($event); fileInput.value = ''">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="image-actions" *ngIf="imagePreviewUrl">
+          <button type="button" class="btn-change" (click)="fileInput.click()">
+            <i class="fas fa-edit"></i>
+            Change Image
+          </button>
+        </div>
+      </div>
+    </div>
+
+  
+    <!-- Category Status -->
+    <div class="form-group">
+      <label class="form-label">
+        <i class="fas fa-toggle-on"></i>
+        Status
+      </label>
+      <div class="status-toggle">
+        <label class="toggle-option">
+          <input
+            type="radio"
+            name="status"
+            value="active"
+            [(ngModel)]="categoryobj.isActive"
+            [ngModel]="categoryobj.isActive"
+            (change)="categoryobj.isActive = true"
+          />
+          <span class="option-label active">
+            <i class="fas fa-check-circle"></i>
+            Active
+          </span>
+        </label>
+        <label class="toggle-option">
+          <input
+            type="radio"
+            name="status"
+            value="archived"
+            (change)="categoryobj.isActive = false"
+          />
+          <span class="option-label archived">
+            <i class="fas fa-archive"></i>
+            Archived
+          </span>
+        </label>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn-cancel" (click)="onCancel()">Cancel</button>
+  <button type="button" class="btn-submit" (click)="onSave($event)">
+    <i class="fas fa-save"></i>
+    Save Category
+  </button>
+</div>

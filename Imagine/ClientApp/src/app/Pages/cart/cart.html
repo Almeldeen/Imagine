@@ -1,0 +1,57 @@
+<section class="cart-page">
+  <div class="cart-background">
+    <div class="cart-orb orb-left"></div>
+    <div class="cart-orb orb-right"></div>
+    <div class="cart-grid"></div>
+  </div>
+
+  <div class="container position-relative">
+    <div class="row mb-4">
+      <div class="col-12 text-center">
+        <p class="badge-text">Cart</p>
+        <h2 class="cart-title">
+          Review your
+          <span class="highlight">selection</span>
+        </h2>
+        <p class="cart-subtitle" *ngIf="hasItems; else emptySubtitle">
+          Adjust quantities, review details, and get ready to check out.
+        </p>
+        <ng-template #emptySubtitle>
+          <p class="cart-subtitle">
+            Your cart is currently empty. Start exploring products and bring your ideas to life.
+          </p>
+        </ng-template>
+      </div>
+    </div>
+
+    <ng-container *ngIf="hasItems; else emptyCart">
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <div class="cart-items-stack">
+            <app-cart-item
+              *ngFor="let item of items"
+              [item]="item"
+              (quantityChange)="onQuantityChange($event)"
+              (remove)="onRemoveItem($event)"
+            ></app-cart-item>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <app-cart-summary
+            [itemCount]="itemCount"
+            [subtotal]="subtotal"
+            [tax]="tax"
+            [shipping]="shipping"
+            [total]="total"
+            (checkout)="onCheckout()"
+          ></app-cart-summary>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #emptyCart>
+      <app-cart-empty-state></app-cart-empty-state>
+    </ng-template>
+  </div>
+</section>

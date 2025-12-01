@@ -1,0 +1,165 @@
+<!-- Order Header -->
+<div class="order-header">
+  <div class="header-content">
+    <!-- Page Title and Actions -->
+    <div class="header-top">
+      <div class="header-left">
+        <h1 class="page-title">
+          <i class="fas fa-shopping-cart"></i>
+          Orders Management
+        </h1>
+        <p class="page-subtitle">Track and manage customer orders, payments, and shipments</p>
+      </div>
+      
+      <div class="header-actions">
+        <button class="btn-export">
+          <i class="fas fa-download"></i>
+          Export Orders
+        </button>
+        <button class="btn-create">
+          <i class="fas fa-plus"></i>
+          Manual Order
+        </button>
+      </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="header-controls">
+      <!-- Search Box -->
+      <div class="search-container">
+        <div class="search-box">
+          <i class="fas fa-search search-icon"></i>
+          <input 
+            type="text" 
+            class="search-input" 
+            placeholder="Search by order number, customer name, or email..."
+            (input)="onSearchChange($event)">
+        </div>
+      </div>
+
+      <!-- Date Range Filter -->
+      <div class="date-filter">
+        <div class="date-input-group">
+          <i class="fas fa-calendar-alt date-icon"></i>
+          <input 
+            type="date" 
+            class="date-input" 
+            placeholder="From Date"
+            (change)="onDateRangeChange($event)">
+          <span class="date-separator">to</span>
+          <input 
+            type="date" 
+            class="date-input" 
+            placeholder="To Date"
+            (change)="onDateRangeChange($event)">
+        </div>
+      </div>
+    </div>
+
+    <!-- Status Filter Buttons -->
+    <div class="filter-section">
+      <div class="filter-buttons">
+        <button class="filter-btn active" (click)="onFilterChange('all')">
+          <span class="filter-text">All Orders</span>
+          <span class="filter-count">1,847</span>
+        </button>
+        <button class="filter-btn status-pending" (click)="onFilterChange('pending')">
+          <span class="filter-text">Pending</span>
+          <span class="filter-count">234</span>
+        </button>
+        <button class="filter-btn status-processing" (click)="onFilterChange('processing')">
+          <span class="filter-text">Processing</span>
+          <span class="filter-count">156</span>
+        </button>
+        <button class="filter-btn status-shipped" (click)="onFilterChange('shipped')">
+          <span class="filter-text">Shipped</span>
+          <span class="filter-count">89</span>
+        </button>
+        <button class="filter-btn status-delivered" (click)="onFilterChange('delivered')">
+          <span class="filter-text">Delivered</span>
+          <span class="filter-count">1,298</span>
+        </button>
+        <button class="filter-btn status-cancelled" (click)="onFilterChange('cancelled')">
+          <span class="filter-text">Cancelled</span>
+          <span class="filter-count">45</span>
+        </button>
+        <button class="filter-btn status-refunded" (click)="onFilterChange('refunded')">
+          <span class="filter-text">Refunded</span>
+          <span class="filter-count">25</span>
+        </button>
+      </div>
+
+      <!-- Sort and View Controls -->
+      <div class="control-group">
+        <!-- Sort Dropdown -->
+        <div class="sort-container">
+          <select class="sort-select" (change)="onSortChange($event)">
+            <option value="date-desc">Newest First</option>
+            <option value="date-asc">Oldest First</option>
+            <option value="amount-desc">Highest Amount</option>
+            <option value="amount-asc">Lowest Amount</option>
+            <option value="status">By Status</option>
+            <option value="customer">By Customer</option>
+          </select>
+          <i class="fas fa-chevron-down sort-icon"></i>
+        </div>
+
+        <!-- View Toggle -->
+        <div class="view-toggle">
+          <button class="view-btn active" (click)="onViewChange('cards')" title="Card View">
+            <i class="fas fa-th-large"></i>
+          </button>
+          <button class="view-btn" (click)="onViewChange('table')" title="Table View">
+            <i class="fas fa-table"></i>
+          </button>
+          <button class="view-btn" (click)="onViewChange('timeline')" title="Timeline View">
+            <i class="fas fa-stream"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="quick-stats">
+      <div class="stat-card">
+        <div class="stat-icon pending">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value">234</span>
+          <span class="stat-label">Pending Orders</span>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon processing">
+          <i class="fas fa-cog"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value">156</span>
+          <span class="stat-label">Processing</span>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon shipped">
+          <i class="fas fa-shipping-fast"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value">89</span>
+          <span class="stat-label">Shipped Today</span>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon revenue">
+          <i class="fas fa-dollar-sign"></i>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value">$47,892</span>
+          <span class="stat-label">Today's Revenue</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

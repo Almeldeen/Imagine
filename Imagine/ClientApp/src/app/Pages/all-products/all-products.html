@@ -1,0 +1,49 @@
+<!-- All Products Page -->
+<section class="all-products-section" id="all-products">
+  <div class="container position-relative">
+    <!-- Section Header -->
+    <div class="section-header text-center mb-4">
+      <div class="section-badge">
+        <span class="badge-dot"></span>
+        <span>Product Catalog</span>
+      </div>
+      <h2 class="section-title">
+        All <span class="gradient-text">Products</span>
+      </h2>
+      <p class="section-subtitle">
+        Browse all AI-enhanced products and custom designs. Use filters to find your perfect match.
+      </p>
+    </div>
+
+    <!-- Filters / Sort -->
+    <app-products-filter
+      (searchChange)="onSearchChange($event)"
+      (filterChange)="onFilterChange($event)"
+      (sortChange)="onSortChange($event)">
+    </app-products-filter>
+
+    <!-- Products Grid -->
+    <div class="row g-4 products-grid">
+      <div class="col-xl-4 col-md-6" *ngFor="let product of pagedProducts">
+        <app-products-card [product]="product"></app-products-card>
+      </div>
+
+      <div class="col-12" *ngIf="filteredProducts.length === 0">
+        <div class="empty-state text-center">
+          <h4>No products found</h4>
+          <p>Try adjusting your filters or search term.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-wrapper" *ngIf="filteredProducts.length > pageSize">
+      <app-products-pagination
+        [page]="currentPage"
+        [pageSize]="pageSize"
+        [total]="filteredProducts.length"
+        (pageChange)="onPageChange($event)">
+      </app-products-pagination>
+    </div>
+  </div>
+</section>

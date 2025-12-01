@@ -1,0 +1,83 @@
+<section class="auth-page">
+  <div class="auth-background">
+    <div class="auth-orb orb-left"></div>
+    <div class="auth-orb orb-right"></div>
+    <div class="auth-grid"></div>
+  </div>
+
+  <div class="container position-relative">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-5">
+        <div class="auth-card">
+          <p class="auth-eyebrow">Welcome back</p>
+          <h1 class="auth-title">Log in to Imagine</h1>
+          <p class="auth-subtitle">
+            Your personalized AI workspace is ready.
+          </p>
+
+          <ngb-alert
+            *ngIf="errorMessage"
+            type="danger"
+            class="mt-2 mb-3"
+            [dismissible]="false"
+          >
+            {{ errorMessage }}
+          </ngb-alert>
+
+          <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" novalidate>
+            <div class="mb-3">
+              <label class="form-label text-light">Email</label>
+              <input
+                type="email"
+                name="email"
+                class="form-control auth-input"
+                [(ngModel)]="model.email"
+                required
+                email
+                placeholder="you@example.com"
+              />
+            </div>
+
+            <div class="mb-2 position-relative">
+              <label class="form-label text-light">Password</label>
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                name="password"
+                class="form-control auth-input pe-5"
+                [(ngModel)]="model.password"
+                required
+                placeholder="Enter your password"
+              />
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="togglePasswordVisibility()"
+                aria-label="Toggle password visibility"
+              >
+                <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+              </button>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <a href="#" class="auth-link">Forgot password?</a>
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-primary-custom w-100 mb-2"
+              [disabled]="loginForm.invalid || submitting"
+            >
+              <span *ngIf="!submitting">Log in</span>
+              <span *ngIf="submitting">Signing you in...</span>
+            </button>
+          </form>
+
+          <p class="auth-footer text-center mb-0">
+            Don&apos;t have an account?
+            <a routerLink="/Register" class="auth-link">Create one</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

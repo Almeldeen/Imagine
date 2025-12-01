@@ -1,0 +1,765 @@
+/* ========================================
+   HOW IT WORKS SECTION
+   ======================================== */
+
+.how-it-works {
+  position: relative;
+  padding: 8rem 0;
+  background: linear-gradient(135deg, 
+    #16213e 0%, 
+    #0f3460 25%,
+    #1a1a2e 50%,
+    #0f3460 75%,
+    #16213e 100%
+  );
+  overflow: hidden;
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(139, 92, 246, 0.3) 20%,
+    rgba(0, 217, 255, 0.4) 50%,
+    rgba(139, 92, 246, 0.3) 80%,
+    transparent 100%
+  ) 1;
+  box-shadow: 0 -1px 20px rgba(139, 92, 246, 0.15);
+}
+
+.how-it-works::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 70% 20%, rgba(139, 92, 246, 0.18) 0%, transparent 50%),
+    radial-gradient(circle at 30% 80%, rgba(0, 217, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(74, 144, 226, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Section Background */
+.works-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.works-orb {
+  position: absolute;
+  width: 550px;
+  height: 550px;
+  border-radius: 50%;
+  filter: blur(140px);
+  opacity: 0.3;
+  animation: float 14s ease-in-out infinite;
+}
+
+.orb-top {
+  top: -15%;
+  right: 10%;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.5) 0%, transparent 70%);
+  animation-delay: 0s;
+}
+
+.orb-bottom {
+  bottom: -15%;
+  left: 10%;
+  background: radial-gradient(circle, rgba(0, 217, 255, 0.5) 0%, transparent 70%);
+  animation-delay: 4s;
+}
+
+.animated-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    repeating-linear-gradient(0deg, rgba(0, 217, 255, 0.03) 0px, transparent 1px, transparent 60px),
+    repeating-linear-gradient(90deg, rgba(0, 217, 255, 0.03) 0px, transparent 1px, transparent 60px);
+  opacity: 0.6;
+  animation: gridMove 20s linear infinite;
+}
+
+@keyframes gridMove {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(60px, 60px);
+  }
+}
+
+/* Section Header */
+.section-header {
+  position: relative;
+  z-index: 2;
+  animation: fadeInUp 1s ease-out;
+}
+
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.2rem;
+  background: rgba(74, 144, 226, 0.1);
+  border: 1px solid rgba(74, 144, 226, 0.3);
+  border-radius: 50px;
+  color: #00D9FF;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  animation: fadeInDown 0.8s ease-out 0.2s both;
+}
+
+.badge-dot {
+  width: 8px;
+  height: 8px;
+  background: #00D9FF;
+  border-radius: 50%;
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(0, 217, 255, 0.7);
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(0, 217, 255, 0);
+    opacity: 0.8;
+  }
+}
+
+.section-title {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #00D9FF, #8B5CF6, #FF6EC7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  color: #b8b8d1;
+  max-width: 600px;
+  margin: 0 auto;
+  animation: fadeInUp 0.8s ease-out 0.6s both;
+}
+
+/* Steps Container */
+.steps-container {
+  position: relative;
+  margin-top: 4rem;
+}
+
+/* Connecting Lines SVG */
+.connecting-lines {
+  position: absolute;
+  top: 80px;
+  left: 0;
+  width: 100%;
+  height: 400px;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.flow-line {
+  stroke-dasharray: 10 5;
+  animation: flowDash 2s linear infinite;
+}
+
+@keyframes flowDash {
+  to {
+    stroke-dashoffset: -15;
+  }
+}
+
+.flow-dot {
+  filter: drop-shadow(0 0 8px currentColor);
+  opacity: 0.8;
+}
+
+.flow-line-bg {
+  stroke-dasharray: 5 5;
+}
+
+/* Progress Indicator */
+.progress-indicator {
+  position: absolute;
+  top: 70px;
+  left: 10%;
+  right: 10%;
+  height: 4px;
+  background: rgba(74, 144, 226, 0.1);
+  border-radius: 10px;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.progress-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  animation: progressFill 8s ease-in-out infinite;
+  box-shadow: 0 0 15px rgba(0, 217, 255, 0.6);
+}
+
+@keyframes progressFill {
+  0%, 100% {
+    width: 0%;
+  }
+  25% {
+    width: 33%;
+  }
+  50% {
+    width: 66%;
+  }
+  75%, 100% {
+    width: 100%;
+  }
+}
+
+/* Steps Grid */
+.steps-grid {
+  position: relative;
+  z-index: 2;
+}
+
+.steps-grid > div {
+  animation: fadeInUp 1s ease-out both;
+}
+
+.steps-grid > div:nth-child(1) {
+  animation-delay: 0.8s;
+}
+
+.steps-grid > div:nth-child(2) {
+  animation-delay: 1s;
+}
+
+.steps-grid > div:nth-child(3) {
+  animation-delay: 1.2s;
+}
+
+.steps-grid > div:nth-child(4) {
+  animation-delay: 1.4s;
+}
+
+/* Step Card */
+.step-card {
+  position: relative;
+  background: rgba(26, 26, 46, 0.5);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(74, 144, 226, 0.2);
+  border-radius: 20px;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  overflow: hidden;
+  height: 100%;
+}
+
+.step-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  border-color: rgba(0, 217, 255, 0.5);
+  box-shadow: 0 20px 60px rgba(0, 217, 255, 0.2);
+  background: rgba(26, 26, 46, 0.7);
+}
+
+/* Featured Step (AI Preview) */
+.step-card.featured-step {
+  border-color: rgba(0, 217, 255, 0.4);
+  background: rgba(26, 26, 46, 0.7);
+}
+
+.step-card.featured-step:hover {
+  border-color: rgba(0, 217, 255, 0.6);
+  box-shadow: 0 20px 60px rgba(0, 217, 255, 0.3);
+}
+
+/* AI Badge */
+.ai-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.7rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 15px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: white;
+  z-index: 3;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.ai-badge i {
+  font-size: 0.65rem;
+}
+
+/* Step Number */
+.step-number {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  border: 3px solid #1a1a2e;
+  z-index: 3;
+  transition: all 0.3s ease;
+}
+
+.step-card:hover .step-number {
+  transform: translateX(-50%) scale(1.1);
+  box-shadow: 0 10px 30px rgba(0, 217, 255, 0.5);
+}
+
+.number-inner {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: white;
+  font-family: 'Orbitron', sans-serif;
+  position: relative;
+  z-index: 2;
+}
+
+.number-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(0, 217, 255, 0.4), transparent 70%);
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  transition: transform 0.5s ease;
+}
+
+.step-card:hover .number-glow {
+  transform: translate(-50%, -50%) scale(2);
+}
+
+/* Step Icon Wrapper */
+.step-icon-wrapper {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 2rem auto 1.5rem;
+}
+
+.icon-glow-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: conic-gradient(
+    from 0deg,
+    #00D9FF,
+    #8B5CF6,
+    #FF6EC7,
+    #00D9FF
+  );
+  transform: translate(-50%, -50%);
+  filter: blur(15px);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  animation: rotate 6s linear infinite;
+  border-radius: 50%;
+}
+
+.step-card:hover .icon-glow-ring {
+  opacity: 0.6;
+}
+
+@keyframes rotate {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.step-icon {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(26, 26, 46, 0.8);
+  border: 2px solid rgba(74, 144, 226, 0.3);
+  border-radius: 50%;
+  font-size: 2.5rem;
+  color: #00D9FF;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.step-card:hover .step-icon {
+  transform: scale(1.1) rotate(5deg);
+  border-color: rgba(0, 217, 255, 0.6);
+  color: white;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Step Content */
+.step-content {
+  position: relative;
+  z-index: 2;
+}
+
+.step-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.8rem;
+  font-family: 'Orbitron', sans-serif;
+  transition: color 0.3s ease;
+}
+
+.step-card:hover .step-title {
+  color: #00D9FF;
+}
+
+.step-description {
+  font-size: 0.9rem;
+  color: #b8b8d1;
+  line-height: 1.6;
+  margin: 0 0 1rem 0;
+}
+
+/* Step Features */
+.step-features {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.5s ease 0.2s;
+}
+
+.step-card:hover .step-features {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.step-feature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #b8b8d1;
+  transition: all 0.3s ease;
+}
+
+.step-feature i {
+  font-size: 0.7rem;
+  color: #00D9FF;
+}
+
+.step-card:hover .step-feature {
+  color: #ffffff;
+}
+
+/* Step Hover Glow */
+.step-hover-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle,
+    rgba(0, 217, 255, 0.15) 0%,
+    transparent 70%
+  );
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 20px;
+  transition: transform 0.6s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.step-card:hover .step-hover-glow {
+  transform: translate(-50%, -50%) scale(1.5);
+}
+
+/* Step Particles */
+.step-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.step-card:hover .step-particles {
+  opacity: 1;
+}
+
+.step-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #00D9FF;
+  border-radius: 50%;
+  animation: stepParticleFloat 3s ease-in-out infinite;
+}
+
+.step-particle:nth-child(1) {
+  top: 25%;
+  left: 15%;
+  animation-delay: 0s;
+}
+
+.step-particle:nth-child(2) {
+  top: 50%;
+  right: 20%;
+  animation-delay: 1s;
+}
+
+.step-particle:nth-child(3) {
+  bottom: 25%;
+  left: 25%;
+  animation-delay: 2s;
+}
+
+@keyframes stepParticleFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-15px) scale(1.3);
+    opacity: 1;
+  }
+}
+
+/* Start Creating Button */
+.btn-start-creating {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.2rem 3rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 2px solid transparent;
+  border-radius: 50px;
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInUp 0.8s ease-out 1.6s both, buttonPulse 3s ease-in-out 2s infinite;
+  box-shadow: 0 10px 40px rgba(0, 217, 255, 0.3);
+}
+
+.btn-start-creating:hover {
+  transform: translateY(-8px) scale(1.08);
+  box-shadow: 0 20px 60px rgba(0, 217, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes buttonPulse {
+  0%, 100% {
+    box-shadow: 0 10px 40px rgba(0, 217, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 10px 40px rgba(0, 217, 255, 0.5);
+  }
+}
+
+.btn-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+}
+
+.btn-glow-effect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3), transparent 70%);
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 50%;
+  transition: transform 0.5s ease;
+}
+
+.btn-start-creating:hover .btn-glow-effect {
+  transform: translate(-50%, -50%) scale(2);
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+/* ========================================
+   RESPONSIVE - HOW IT WORKS
+   ======================================== */
+
+@media (max-width: 991px) {
+  .how-it-works {
+    padding: 6rem 0;
+  }
+
+  .connecting-lines,
+  .progress-indicator {
+    display: none;
+  }
+
+  .step-card {
+    padding: 2rem 1.2rem;
+  }
+
+  .step-icon-wrapper {
+    width: 80px;
+    height: 80px;
+  }
+
+  .step-icon {
+    font-size: 2rem;
+  }
+
+  .step-title {
+    font-size: 1.2rem;
+  }
+
+  .step-description {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .how-it-works {
+    padding: 4rem 0;
+    box-shadow: 0 -1px 15px rgba(139, 92, 246, 0.1);
+  }
+
+  .steps-container {
+    margin-top: 2rem;
+  }
+
+  .step-card {
+    padding: 1.8rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .step-number {
+    width: 45px;
+    height: 45px;
+  }
+
+  .number-inner {
+    font-size: 1rem;
+  }
+
+  .step-icon-wrapper {
+    width: 70px;
+    height: 70px;
+    margin: 1.5rem auto 1rem;
+  }
+
+  .step-icon {
+    font-size: 1.8rem;
+  }
+
+  /* Simplify animations on mobile */
+  .step-particles,
+  .icon-glow-ring {
+    display: none;
+  }
+
+  .works-orb {
+    width: 300px;
+    height: 300px;
+  }
+
+  .btn-start-creating {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+  }
+}

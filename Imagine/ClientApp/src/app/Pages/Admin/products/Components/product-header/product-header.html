@@ -1,0 +1,72 @@
+<!-- Product Header -->
+<div class="product-header">
+  <div class="header-content">
+    <div class="header-left">
+      <h1 class="page-title">Products</h1>
+      <p class="page-subtitle">Manage your product catalog and inventory</p>
+    </div>
+    <div class="header-right">
+      <button class="btn-action">
+        <i class="fas fa-download"></i>
+        <span>Export</span>
+      </button>
+      <button class="btn-action">
+        <i class="fas fa-upload"></i>
+        <span>Import</span>
+      </button>
+      <button class="btn-action primary" (click)="onAddProduct()">
+        <i class="fas fa-plus"></i>
+        <span>Add Product</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="header-filters">
+    <div class="search-box">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" placeholder="Search products..." class="search-input">
+    </div>
+
+    <div class="filter-buttons">
+      <button class="filter-btn active" (click)="onFilterChange('all')">
+        <span>All Products</span>
+        <span class="filter-count">248</span>
+      </button>
+      <button class="filter-btn" (click)="onFilterChange('active')">
+        <span>Active</span>
+        <span class="filter-count">195</span>
+      </button>
+      <button class="filter-btn" (click)="onFilterChange('draft')">
+        <span>Draft</span>
+        <span class="filter-count">32</span>
+      </button>
+      <button class="filter-btn" (click)="onFilterChange('archived')">
+        <span>Archived</span>
+        <span class="filter-count">21</span>
+      </button>
+    </div>
+
+    <div class="view-controls">
+      <div class="sort-dropdown">
+        <select class="sort-select" (change)="onSortChange($event)">
+          <option value="name">Sort by Name</option>
+          <option value="price">Sort by Price</option>
+          <option value="stock">Sort by Stock</option>
+          <option value="created">Sort by Date</option>
+          <option value="sales">Sort by Sales</option>
+        </select>
+        <i class="fas fa-chevron-down sort-icon"></i>
+      </div>
+
+      <div class="view-toggle">
+        <button class="view-btn active" (click)="onViewChange('grid')">
+          <i class="fas fa-th"></i>
+        </button>
+        <button class="view-btn" (click)="onViewChange('list')">
+          <i class="fas fa-list"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

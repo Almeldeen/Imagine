@@ -1,0 +1,69 @@
+<!-- User-facing Product Card -->
+<div class="product-card">
+  <!-- Product Image Container -->
+  <div class="product-image-wrapper">
+    <div class="product-glow-ring"></div>
+
+    <img [src]="product.image" [alt]="product.name" class="product-image active">
+
+    <div class="product-overlay"></div>
+
+    <!-- Quick View Icon -->
+    <div class="quick-view">
+      <i class="fas fa-eye"></i>
+    </div>
+  </div>
+
+  <!-- Product Info -->
+  <div class="product-info">
+    <div class="product-category">{{ product.category }}</div>
+    <h3 class="product-name">{{ product.name }}</h3>
+
+    <p class="product-description" *ngIf="product.isAiPowered">
+      AI-powered design with customizable colors.
+    </p>
+
+    <!-- Color Selector -->
+    <div class="color-selector" *ngIf="product.colors?.length">
+      <span class="color-label">Colors:</span>
+      <div class="color-options">
+        <button
+          class="color-swatch"
+          *ngFor="let color of product.colors"
+          [class.active]="activeColor?.value === color.value"
+          [ngStyle]="{ 'background': 'linear-gradient(135deg,' + color.value + ' 0%, ' + color.value + ' 100%)' }"
+          (click)="selectColor(color, $event)"
+          [title]="color.name">
+          <span class="swatch-check"><i class="fas fa-check"></i></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Price and CTA -->
+    <div class="product-footer">
+      <div class="product-price">
+        <span class="price-label">From</span>
+        <span class="price-value">${{ displayPrice }}</span>
+        <span class="price-extra" *ngIf="activeColor?.extraPrice">
+          +{{ activeColor?.extraPrice | number:'1.0-0' }} for color
+        </span>
+      </div>
+      <div class="product-actions">
+        <button class="btn-add">
+          <i class="fas fa-shopping-cart"></i>
+          <span>Add to Cart</span>
+        </button>
+        <button class="btn-outline">
+          <span>View Details</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card Particles -->
+  <div class="card-particles-effect">
+    <span class="card-particle"></span>
+    <span class="card-particle"></span>
+    <span class="card-particle"></span>
+  </div>
+</div>

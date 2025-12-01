@@ -1,0 +1,118 @@
+/* ========================================
+   SALES CHART COMPONENT
+   ======================================== */
+
+.dashboard-card {
+  background: rgba(26, 26, 46, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(74, 144, 226, 0.2);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(74, 144, 226, 0.2);
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.card-subtitle {
+  font-size: 0.85rem;
+  color: #8888aa;
+  margin: 0.3rem 0 0;
+}
+
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-filter {
+  padding: 0.5rem 1rem;
+  background: rgba(74, 144, 226, 0.05);
+  border: 1px solid rgba(74, 144, 226, 0.15);
+  border-radius: 8px;
+  color: #b8b8d1;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-filter:hover {
+  background: rgba(74, 144, 226, 0.15);
+  color: #00D9FF;
+}
+
+.btn-filter.active {
+  background: linear-gradient(135deg, #00D9FF, #8B5CF6);
+  border-color: transparent;
+  color: #ffffff;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.chart-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  background: rgba(74, 144, 226, 0.05);
+  border: 2px dashed rgba(74, 144, 226, 0.2);
+  border-radius: 12px;
+  color: #8888aa;
+}
+
+.chart-placeholder i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #00D9FF;
+}
+
+.chart-placeholder p {
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 767px) {
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .card-actions {
+    width: 100%;
+  }
+
+  .btn-filter {
+    flex: 1;
+  }
+
+  .chart-placeholder {
+    height: 250px;
+  }
+}
+
+@media (max-width: 575px) {
+  .card-body {
+    padding: 1rem;
+  }
+}

@@ -1,0 +1,16 @@
+<!-- Products Page -->
+<div class="products-page">
+  <!-- Product Header -->
+  <app-product-header 
+    (filterChange)="onFilterChange($event)"
+    (viewChange)="onViewChange($event)"
+    (sortChange)="onSortChange($event)">
+  </app-product-header>
+
+  <!-- Product List Component (when products exist) -->
+  <app-product-list *ngIf="hasProducts"></app-product-list>
+
+  <!-- Empty State Component (when no products) -->
+  <app-product-empty-state *ngIf="!hasProducts">
+  </app-product-empty-state>
+</div>

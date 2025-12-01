@@ -1,0 +1,41 @@
+<div [ngClass]="viewMode === 'grid' ? 'category-grid' : 'category-list'">
+  @for (cat of categories; track cat.id) {
+  <div class="category-card">
+    <div class="card-image">
+      <img [src]="baseUrl+cat.imageUrl" alt="{{cat.name}}" 
+           (error)="cat.imageUrl='/assets/images/category-placeholder.jpg'">
+      
+      <span class="status-badge" [ngClass]="cat.isActive ? 'active' : 'inactive'">
+        {{ cat.isActive ? 'Active' : 'Inactive' }}
+      </span>
+    </div>
+
+    <div class="card-content">
+      <h3 class="category-name">{{ cat.name }}</h3>
+      <p class="category-description">{{ cat.description }}</p>
+
+      <div class="category-stats">
+        <div class="stat-item">
+          <i class="fas fa-box"></i>
+          <span>{{ cat.productCount }} Products</span>
+        </div>
+        <div class="stat-item">
+          <i class="fas fa-shopping-cart"></i>
+          <span>{{ cat.salesCount }} Sales</span>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <span class="created-date">
+          <i class="fas fa-calendar"></i>
+          Created: {{ cat.createdAt | date:'mediumDate' }}
+        </span>
+        <div class="card-actions">
+          <button class="action-btn edit" (click)="editCategory(cat)"><i class="fas fa-edit"></i></button>
+          <button class="action-btn delete" (click)="deleteCategory(cat)"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+</div>

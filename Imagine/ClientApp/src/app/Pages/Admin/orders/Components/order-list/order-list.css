@@ -1,0 +1,41 @@
+/* ========================================
+   ORDER LIST COMPONENT
+   ======================================== */
+
+.order-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+/* Responsive Grid */
+@media (max-width: 1200px) {
+  .order-grid {
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.2rem;
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 991px) {
+  .order-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .order-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 575px) {
+  .order-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}

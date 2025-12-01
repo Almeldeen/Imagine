@@ -1,0 +1,297 @@
+<!-- How It Works Section -->
+<section class="how-it-works" id="how-it-works">
+  <!-- Section Background -->
+  <div class="works-background">
+    <div class="works-orb orb-top"></div>
+    <div class="works-orb orb-bottom"></div>
+    <div class="animated-grid"></div>
+  </div>
+
+  <div class="container position-relative">
+    <!-- Section Header -->
+    <div class="section-header text-center mb-5">
+      <div class="section-badge">
+        <span class="badge-dot"></span>
+        <span>Simple Process</span>
+      </div>
+      <h2 class="section-title">
+        How <span class="gradient-text">It Works</span>
+      </h2>
+      <p class="section-subtitle">
+        Create your perfect custom apparel in 4 easy steps with AI-powered design assistance
+      </p>
+    </div>
+
+    <!-- Steps Container -->
+    <div class="steps-container">
+      <!-- Enhanced Connecting Lines -->
+      <svg class="connecting-lines" viewBox="0 0 1200 400" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#4A90E2;stop-opacity:0.3" />
+            <stop offset="50%" style="stop-color:#00D9FF;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#8B5CF6;stop-opacity:0.3" />
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        
+        <!-- Background Line -->
+        <path class="flow-line-bg" d="M 150,200 L 450,200 L 750,200 L 1050,200" 
+              stroke="rgba(74, 144, 226, 0.1)" stroke-width="3" fill="none" />
+        
+        <!-- Animated Main Line -->
+        <path class="flow-line" d="M 150,200 L 450,200 L 750,200 L 1050,200" 
+              stroke="url(#lineGradient)" stroke-width="2" fill="none" filter="url(#glow)" />
+        
+        <!-- Animated Dots with Glow -->
+        <circle class="flow-dot dot-1" r="8" fill="#00D9FF" filter="url(#glow)">
+          <animateMotion dur="5s" repeatCount="indefinite">
+            <mpath href="#flowPath" />
+          </animateMotion>
+        </circle>
+        <circle class="flow-dot dot-2" r="8" fill="#8B5CF6" filter="url(#glow)">
+          <animateMotion dur="5s" begin="1.5s" repeatCount="indefinite">
+            <mpath href="#flowPath" />
+          </animateMotion>
+        </circle>
+        <circle class="flow-dot dot-3" r="6" fill="#FF6EC7" filter="url(#glow)">
+          <animateMotion dur="5s" begin="3s" repeatCount="indefinite">
+            <mpath href="#flowPath" />
+          </animateMotion>
+        </circle>
+        <path id="flowPath" d="M 150,200 L 450,200 L 750,200 L 1050,200" fill="none" />
+      </svg>
+      
+      <!-- Progress Indicator -->
+      <div class="progress-indicator">
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- Steps Grid -->
+      <div class="row g-4 steps-grid">
+        
+        <!-- Step 1: Choose Product -->
+        <div class="col-lg-3 col-md-6">
+          <div class="step-card" data-step="1">
+            <!-- Step Number -->
+            <div class="step-number">
+              <span class="number-inner">01</span>
+              <div class="number-glow"></div>
+            </div>
+
+            <!-- Step Icon -->
+            <div class="step-icon-wrapper">
+              <div class="icon-glow-ring"></div>
+              <div class="step-icon">
+                <i class="fas fa-tshirt"></i>
+              </div>
+            </div>
+
+            <!-- Step Content -->
+            <div class="step-content">
+              <h3 class="step-title">Choose Product</h3>
+              <p class="step-description">
+                Select from hoodies, t-shirts, and more premium apparel options
+              </p>
+              
+              <!-- Step Features -->
+              <div class="step-features">
+                <span class="step-feature">
+                  <i class="fas fa-check-circle"></i>
+                  Multiple styles
+                </span>
+                <span class="step-feature">
+                  <i class="fas fa-check-circle"></i>
+                  Premium quality
+                </span>
+              </div>
+            </div>
+
+            <!-- Decorative Elements -->
+            <div class="step-particles">
+              <span class="step-particle"></span>
+              <span class="step-particle"></span>
+              <span class="step-particle"></span>
+            </div>
+            
+            <!-- Hover Glow Effect -->
+            <div class="step-hover-glow"></div>
+          </div>
+        </div>
+
+        <!-- Step 2: Customize Design -->
+        <div class="col-lg-3 col-md-6">
+          <div class="step-card" data-step="2">
+            <!-- Step Number -->
+            <div class="step-number">
+              <span class="number-inner">02</span>
+              <div class="number-glow"></div>
+            </div>
+
+            <!-- Step Icon -->
+            <div class="step-icon-wrapper">
+              <div class="icon-glow-ring"></div>
+              <div class="step-icon">
+                <i class="fas fa-palette"></i>
+              </div>
+            </div>
+
+            <!-- Step Content -->
+            <div class="step-content">
+              <h3 class="step-title">Customize Design</h3>
+              <p class="step-description">
+                Pick colors, patterns, or upload your own artwork with ease
+              </p>
+              
+              <!-- Step Features -->
+              <div class="step-features">
+                <span class="step-feature">
+                  <i class="fas fa-check-circle"></i>
+                  Color picker
+                </span>
+                <span class="step-feature">
+                  <i class="fas fa-check-circle"></i>
+                  Upload art
+                </span>
+              </div>
+            </div>
+
+            <!-- Decorative Elements -->
+            <div class="step-particles">
+              <span class="step-particle"></span>
+              <span class="step-particle"></span>
+              <span class="step-particle"></span>
+            </div>
+            
+            <!-- Hover Glow Effect -->
+            <div class="step-hover-glow"></div>
+          </div>
+        </div>
+
+        <!-- Step 3: AI Preview -->
+        <div class="col-lg-3 col-md-6">
+          <div class="step-card featured-step" data-step="3">
+            <!-- AI Badge -->
+            <div class="ai-badge">
+              <i class="fas fa-sparkles"></i>
+              <span>AI Magic</span>
+            </div>
+
+            <!-- Step Number -->
+            <div class="step-number">
+              <span class="number-inner">03</span>
+              <div class="number-glow"></div>
+            </div>
+
+            <!-- Step Icon -->
+            <div class="step-icon-wrapper">
+              <div class="icon-glow-ring"></div>
+              <div class="step-icon">
+                <i class="fas fa-wand-magic-sparkles"></i>
+              </div>
+            </div>
+
+            <!-- Step Content -->
+            <div class="step-content">
+              <h3 class="step-title">AI Preview</h3>
+              <p class="step-description">
+                See your design on a model with AI-generated realistic preview
+              </p>
+              
+              <!-- Step Features -->
+              <div class="step-features">
+                <span class="step-feature">
+                  <i class="fas fa-check-circle"></i>
+                  Instant preview
+                </span>
+                <span class="step-feature">
+                  <i class="fas fa-check-circle"></i>
+                  AI-powered
+                </span>
+              </div>
+            </div>
+
+            <!-- Decorative Elements -->
+            <div class="step-particles">
+              <span class="step-particle"></span>
+              <span class="step-particle"></span>
+              <span class="step-particle"></span>
+            </div>
+            
+            <!-- Hover Glow Effect -->
+            <div class="step-hover-glow"></div>
+          </div>
+        </div>
+
+        <!-- Step 4: Order & Enjoy -->
+        <div class="col-lg-3 col-md-6">
+          <div class="step-card" data-step="4">
+            <!-- Step Number -->
+            <div class="step-number">
+              <span class="number-inner">04</span>
+              <div class="number-glow"></div>
+            </div>
+
+            <!-- Step Icon -->
+            <div class="step-icon-wrapper">
+              <div class="icon-glow-ring"></div>
+              <div class="step-icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+            </div>
+
+            <!-- Step Content -->
+            <div class="step-content">
+              <h3 class="step-title">Order & Enjoy</h3>
+              <p class="step-description">
+                Confirm your design and receive your custom product delivered
+              </p>
+              
+              <!-- Step Features -->
+              <div class="step-features">
+                <span class="step-feature">
+                  <i class="fas fa-check-circle"></i>
+                  Fast shipping
+                </span>
+                <span class="step-feature">
+                  <i class="fas fa-check-circle"></i>
+                  Satisfaction guaranteed
+                </span>
+              </div>
+            </div>
+
+            <!-- Decorative Elements -->
+            <div class="step-particles">
+              <span class="step-particle"></span>
+              <span class="step-particle"></span>
+              <span class="step-particle"></span>
+            </div>
+            
+            <!-- Hover Glow Effect -->
+            <div class="step-hover-glow"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CTA Button -->
+    <div class="text-center mt-5">
+      <button class="btn-start-creating">
+        <span class="btn-content">
+          <i class="fas fa-rocket me-2"></i>
+          <span>Start Creating Now</span>
+        </span>
+        <span class="btn-glow-effect"></span>
+      </button>
+    </div>
+  </div>
+</section>

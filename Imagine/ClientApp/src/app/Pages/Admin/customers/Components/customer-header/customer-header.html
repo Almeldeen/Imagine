@@ -1,0 +1,86 @@
+<!-- Customer Header -->
+<div class="customer-header">
+  <div class="header-content">
+    <!-- Page Title and Actions -->
+    <div class="header-top">
+      <div class="header-left">
+        <h1 class="page-title">
+          <i class="fas fa-users"></i>
+          Customers
+        </h1>
+        <p class="page-subtitle">Manage your customer base and user accounts</p>
+      </div>
+      
+      <div class="header-actions">
+        <button class="btn-export">
+          <i class="fas fa-download"></i>
+          Export
+        </button>
+        <button class="btn-import">
+          <i class="fas fa-upload"></i>
+          Import
+        </button>
+      </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="header-controls">
+      <!-- Search Box -->
+      <div class="search-container">
+        <div class="search-box">
+          <i class="fas fa-search search-icon"></i>
+          <input 
+            type="text" 
+            class="search-input" 
+            placeholder="Search customers by name, email, or phone..."
+            (input)="onSearchChange($event)">
+        </div>
+      </div>
+
+      <!-- Filter Buttons -->
+      <div class="filter-buttons">
+        <button class="filter-btn active" (click)="onFilterChange('all')">
+          <span class="filter-text">All</span>
+          <span class="filter-count">1,247</span>
+        </button>
+        <button class="filter-btn" (click)="onFilterChange('active')">
+          <span class="filter-text">Active</span>
+          <span class="filter-count">1,156</span>
+        </button>
+        <button class="filter-btn" (click)="onFilterChange('inactive')">
+          <span class="filter-text">Inactive</span>
+          <span class="filter-count">91</span>
+        </button>
+        <button class="filter-btn" (click)="onFilterChange('premium')">
+          <span class="filter-text">Premium</span>
+          <span class="filter-count">234</span>
+        </button>
+      </div>
+
+      <!-- Sort and View Controls -->
+      <div class="control-group">
+        <!-- Sort Dropdown -->
+        <div class="sort-container">
+          <select class="sort-select" (change)="onSortChange($event)">
+            <option value="name">Sort by Name</option>
+            <option value="email">Sort by Email</option>
+            <option value="joined">Sort by Join Date</option>
+            <option value="orders">Sort by Orders</option>
+            <option value="spent">Sort by Total Spent</option>
+          </select>
+          <i class="fas fa-chevron-down sort-icon"></i>
+        </div>
+
+        <!-- View Toggle -->
+        <div class="view-toggle">
+          <button class="view-btn active" (click)="onViewChange('grid')" title="Grid View">
+            <i class="fas fa-th"></i>
+          </button>
+          <button class="view-btn" (click)="onViewChange('list')" title="List View">
+            <i class="fas fa-list"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
