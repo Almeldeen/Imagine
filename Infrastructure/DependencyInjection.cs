@@ -64,7 +64,7 @@ namespace Infrastructure
             services.AddScoped<IQueryService, QueryService>();
 
             // Register Database Seeder
-            services.AddScoped<DatabaseSeeder>();
+            //services.AddScoped<DatabaseSeeder>();
 
             return services;
         }

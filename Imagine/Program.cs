@@ -2,6 +2,9 @@ using Application;
 using Infrastructure;
 using Infrastructure.Persistence.Seeds;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace Imagine
 {
@@ -10,6 +13,9 @@ namespace Imagine
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            var angularDistPath = Path.Combine(builder.Environment.ContentRootPath,
+                "ClientApp", "dist", "imagine.client", "browser");
 
             builder.Services.AddApplicationServices();
             builder.Services.AddInfrastructureServices(builder.Configuration);
@@ -56,7 +62,7 @@ namespace Imagine
                 app.UseSwaggerUI(options =>
                 {
                     options.SwaggerEndpoint("/swagger/v1/swagger.json", "Imagine API v1");
-                    options.RoutePrefix = string.Empty;
+                    options.RoutePrefix = "swagger";
                 });
             }
 
@@ -69,8 +75,36 @@ namespace Imagine
 
             app.MapControllers();
 
+            if (Directory.Exists(angularDistPath))
+            {
+                var angularFileProvider = new PhysicalFileProvider(angularDistPath);
+
+                app.UseDefaultFiles(new DefaultFilesOptions
+                {
+                    FileProvider = angularFileProvider
+                });
+
+                app.UseStaticFiles(new StaticFileOptions
+                {
+                    FileProvider = angularFileProvider
+                });
+
+                app.MapFallback(async context =>
+                {
+                    var indexFile = Path.Combine(angularDistPath, "index.html");
+                    if (!File.Exists(indexFile))
+                    {
+                        context.Response.StatusCode = StatusCodes.Status404NotFound;
+                        return;
+                    }
+
+                    context.Response.ContentType = "text/html";
+                    await context.Response.SendFileAsync(indexFile);
+                });
+            }
+
             // Seed database
-            await app.SeedDatabaseAsync();
+            //await app.SeedDatabaseAsync();
 
             app.Run();
         }

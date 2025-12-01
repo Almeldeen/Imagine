@@ -21,10 +21,7 @@ namespace Imagine.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(BaseResponse<int>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(BaseResponse<int>), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<BaseResponse<int>>> CreateCategory(
-            [FromBody] CreateCategoryCommand command,
+        public async Task<ActionResult<BaseResponse<int>>> CreateCategory([FromBody] CreateCategoryCommand command,
             CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(command, cancellationToken);
@@ -37,10 +34,9 @@ namespace Imagine.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
-        [ProducesResponseType(typeof(BaseResponse<List<CategoryDto>>), StatusCodes.Status200OK)]
+        [HttpPost("GetCategories")]
         public async Task<ActionResult<BaseResponse<List<CategoryDto>>>> GetCategories(
-            [FromQuery] GetCategoriesListQuery query,
+             GetCategoriesListQuery query,
             CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(query, cancellationToken);

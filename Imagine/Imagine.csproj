@@ -21,4 +21,17 @@
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <SpaRoot>ClientApp\</SpaRoot>
+  </PropertyGroup>
+
+  <Target Name="EnsureNodeModules" BeforeTargets="Build"
+          Condition="!Exists('$(SpaRoot)node_modules')">
+    <Exec Command="npm install" WorkingDirectory="$(SpaRoot)" />
+  </Target>
+
+  <Target Name="BuildClientApp" AfterTargets="Build">
+    <Exec Command="npm run build" WorkingDirectory="$(SpaRoot)" />
+  </Target>
+
 </Project>

@@ -9,5 +9,6 @@ namespace Infrastructure.Repositories
         public CartItemRepository(ApplicationDbContext context) : base(context)
         {
         }
+
     }
 }
