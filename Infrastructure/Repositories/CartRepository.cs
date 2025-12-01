@@ -1,4 +1,4 @@
-using Application.Features.Carts.DTOs;
+﻿using Application.Features.Carts.DTOs;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
@@ -26,15 +26,50 @@ namespace Infrastructure.Repositories
         {
             return await _context.Carts
                 .Include(c => c.Items)
-                .FirstOrDefaultAsync(c => c.UserId == userIdOrSessionId || c.SessionId == userIdOrSessionId);
-
-
+                    .ThenInclude(ci => ci.ProductColor)
+                        .ThenInclude(pc => pc.Images)
+                .Include(c => c.Items)
+                    .ThenInclude(ci => ci.ProductColor)
+                        .ThenInclude(pc => pc.Product) // آمن ومفيش Colors
+                .Include(c => c.Items)
+                    .ThenInclude(ci => ci.CustomProduct)
+                        .ThenInclude(cp => cp.CustomColors)
+                .Include(c => c.Items)
+                    .ThenInclude(ci => ci.CustomProduct)
+                        .ThenInclude(cp => cp.Product)
+                .FirstOrDefaultAsync(c =>
+                    c.UserId == userIdOrSessionId ||
+                    c.SessionId == userIdOrSessionId);
         }
+
+
         public async Task<List<CartItem>> GetAllItemsAsync()
         {
-            return await _context.CartItems.ToListAsync(); 
-                
+            return await _context.CartItems
+                .Include(ci => ci.ProductColor)
+                    .ThenInclude(pc => pc.Images)
+                .Include(ci => ci.ProductColor)
+                    .ThenInclude(pc => pc.Product)
+                .Include(ci => ci.CustomProduct)
+                    .ThenInclude(cp => cp.CustomColors)
+                .Include(ci => ci.CustomProduct)
+                    .ThenInclude(cp => cp.Product)
+                .ToListAsync();
         }
+
+        public async Task<List<CartItem>> GetAllItemsWithDetailsAsync(CancellationToken cancellationToken)
+        {
+            return await _context.CartItems
+                .Include(ci => ci.ProductColor)
+                    .ThenInclude(pc => pc.Product)
+                        
+                .Include(ci => ci.CustomProduct)
+                    .ThenInclude(cp => cp.CustomColors)
+                .Include(ci => ci.CustomProduct)
+                    .ThenInclude(cp => cp.Product)
+                .ToListAsync(cancellationToken);
+        }
+
 
         public async Task ClearCartAsync(int cartId)
         {

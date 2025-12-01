@@ -4,24 +4,30 @@ using MediatR;
 
 namespace Application.Features.Carts.Commands.RemoveFromCart
 {
-    public class RemoveFromCartCommandHandler : IRequestHandler<RemoveFromCartCommand, BaseResponse<bool>>
+    public class RemoveCartItemHandler
+    : IRequestHandler<RemoveCartItemCommand, BaseResponse<bool>>
     {
         private readonly ICartItemRepository _cartItemRepo;
 
-        public RemoveFromCartCommandHandler(ICartItemRepository cartItemRepo)
+        public RemoveCartItemHandler(ICartItemRepository cartItemRepo)
         {
             _cartItemRepo = cartItemRepo;
         }
 
-        public async Task<BaseResponse<bool>> Handle(RemoveFromCartCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<bool>> Handle(RemoveCartItemCommand request, CancellationToken cancellationToken)
         {
-            var item = await _cartItemRepo.GetByIdAsync(request.CartItemId, cancellationToken);
-            if (item == null)
-                return BaseResponse<bool>.FailureResponse("Cart item not found");
+            var item = await _cartItemRepo.GetCartItemByIdAsync(request.ItemId);
 
-            await _cartItemRepo.DeleteAsync(item, cancellationToken);
-            return BaseResponse<bool>.SuccessResponse(true, "Cart item removed successfully");
+            if (item == null)
+                return BaseResponse<bool>.FailureResponse("Item not found");
+
+            await _cartItemRepo.DeleteAsync(item);
+          
+
+            return BaseResponse<bool>.SuccessResponse(true, "Item removed");
         }
     }
+
+
 }
 

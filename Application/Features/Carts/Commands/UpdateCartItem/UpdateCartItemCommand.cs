@@ -9,9 +9,6 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Carts.Commands.UpdateCartItem
 {
-    public class UpdateCartItemCommand: IRequest<BaseResponse<CartDto>>
-    {
-        public int CartItemId { get; set; }
-        public int? NewQuantity { get; set; }
-    }
+    public record UpdateCartItemQuantityCommand(int ItemId, int Quantity)
+    : IRequest<BaseResponse<bool>>;
 }

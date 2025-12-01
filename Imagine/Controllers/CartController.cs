@@ -37,30 +37,31 @@ namespace Imagine.Controllers
             return Ok(response);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<BaseResponse<int>>> CreateCart([FromBody] AddCartDto addCartDto)
+        [HttpPost("add")]
+        public async Task<IActionResult> AddToCart(AddToCartCommand command)
         {
-            var command = new AddToCartCommand { Cart = addCartDto };
             var result = await _mediator.Send(command);
             return Ok(result);
         }
 
 
-        [HttpDelete("clear")]
-        public async Task<ActionResult<BaseResponse<bool>>> ClearCart([FromQuery] string sessionId)
+        // 🔴 Remove Item
+        [HttpDelete("remove/{itemId}")]
+        public async Task<IActionResult> RemoveItem(int itemId)
         {
-            var result = await _mediator.Send(new ClearCartCommand { SessionId = sessionId });
+            var result = await _mediator.Send(new RemoveCartItemCommand(itemId));
             return Ok(result);
         }
 
-        [HttpDelete("remove")]
-        public async Task<ActionResult<BaseResponse<bool>>> RemoveFromCart([FromQuery] int cartItemId)
+        // 🧹 Clear Cart
+        [HttpDelete("clear/{userOrSessionId}")]
+        public async Task<IActionResult> ClearCart(string userOrSessionId)
         {
-            var result = await _mediator.Send(new RemoveFromCartCommand { CartItemId = cartItemId });
+            var result = await _mediator.Send(new ClearCartCommand(userOrSessionId));
             return Ok(result);
         }
-        [HttpPut("item")]
-        public async Task<ActionResult<BaseResponse<CartDto>>> UpdateCartItem([FromBody] UpdateCartItemCommand command)
+        [HttpPut("update-quantity")]
+        public async Task<IActionResult> UpdateQuantity(UpdateCartItemQuantityCommand command)
         {
             var result = await _mediator.Send(command);
             return Ok(result);

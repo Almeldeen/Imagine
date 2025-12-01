@@ -4,9 +4,9 @@ using MediatR;
 
 namespace Application.Features.Carts.Commands.AddToCart
 {
-    public class AddToCartCommand : IRequest<BaseResponse<CartDto>>
-    {
-        public AddCartDto Cart { get; set; } = new();
-
-    }
+    public record AddToCartCommand(
+      string UserOrSessionId,
+      int ProductColorId,
+      int Quantity
+  ) : IRequest<BaseResponse<bool>>;
 }

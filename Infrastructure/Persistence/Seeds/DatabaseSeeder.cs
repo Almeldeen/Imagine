@@ -108,7 +108,7 @@ namespace Infrastructure.Persistence.Seeds
 
             var categories = new List<Category>
             {
-                new() { Name = "Hoodies", Description = "Comfortable and stylish hoodies", ImageUrl = "/images/categories/hoodies.jpg", IsActive = true, DisplayOrder = 1, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new() { Name = "Hoodies", Description = "Comfortable and stylish hoodies", ImageUrl ="assets/images/Black Hoodie.png", IsActive = true, DisplayOrder = 1, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
                 new() { Name = "T-Shirts", Description = "Premium quality t-shirts", ImageUrl = "/images/categories/tshirts.jpg", IsActive = true, DisplayOrder = 2, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
                 new() { Name = "Sweatshirts", Description = "Cozy sweatshirts", ImageUrl = "/images/categories/sweatshirts.jpg", IsActive = true, DisplayOrder = 3, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
                 new() { Name = "Jackets", Description = "Stylish jackets", ImageUrl = "/images/categories/jackets.jpg", IsActive = true, DisplayOrder = 4, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
@@ -152,7 +152,7 @@ namespace Infrastructure.Persistence.Seeds
                 products.AddRange(new[]
                 {
                     new Product { Name = "White Cotton T-Shirt", Description = "100% organic cotton", BasePrice = 24.99m, CategoryId = tshirtsCategory.Id, IsActive = true, IsFeatured = true, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                    new Product { Name = "Black Graphic T-Shirt", Description = "Modern graphic design", BasePrice = 29.99m, CategoryId = tshirtsCategory.Id, IsActive = true, IsFeatured = false, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                    new Product { Name = "Black Graphic T-Shirt", Description = "Modern graphic design", BasePrice = 29.99m, CategoryId = tshirtsCategory.Id, IsActive = true,IsFeatured = false, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
                     new Product { Name = "Vintage Style T-Shirt", Description = "Retro-inspired design", BasePrice = 27.99m, CategoryId = tshirtsCategory.Id, IsActive = true, IsFeatured = true, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
                     new Product { Name = "Striped Long Sleeve T-Shirt", Description = "Classic striped pattern", BasePrice = 32.99m, CategoryId = tshirtsCategory.Id, IsActive = true, IsFeatured = false, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
                 });

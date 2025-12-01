@@ -8,6 +8,7 @@ namespace Application.Features.Carts.DTOs
 {
     public class AddCartItemDto
     {
+        public int CartId { get; set; }
         public int? ProductColorId { get; set; }
         public int? CustomProductId { get; set; }
         public int Quantity { get; set; }
