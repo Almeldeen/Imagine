@@ -10,5 +10,6 @@ namespace Application.Features.Categories.DTOs
         public int DisplayOrder { get; set; }
         public int ProductCount { get; set; }
         public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 }

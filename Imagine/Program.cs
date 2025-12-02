@@ -68,6 +68,8 @@ namespace Imagine
             }
 
             app.UseHttpsRedirection();
+            // Serve static files from wwwroot (e.g. /uploads/...)
+            app.UseStaticFiles();
 
             app.UseCors();
 

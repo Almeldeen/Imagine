@@ -7,6 +7,7 @@ using Application.Features.Products.Queries.GetProductById;
 using Application.Features.Products.Queries.GetProductsList;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace Imagine.Controllers
 {
@@ -20,14 +21,18 @@ namespace Imagine.Controllers
         public ProductsController(IMediator mediator) => _mediator = mediator;
 
         // نماذج استقبال بيانات الفورم في واجهات POST/PUT (تُحوّل لاحقًا إلى Commands)
-        public class CreateProductForm
+        // Full create form: carries a JSON payload (CreateProductRequestDto) + all image files in one request
+        public class CreateFullProductForm
         {
-            public string Name { get; set; } = string.Empty;
-            public string? Description { get; set; }
-            public decimal Price { get; set; }
-            public bool IsActive { get; set; } = true;
-            public int CategoryId { get; set; }
-            public IFormFile? ImageFile { get; set; }
+            /// <summary>
+            /// JSON string representing CreateProductRequestDto (product + colors + images metadata).
+            /// </summary>
+            public string Payload { get; set; } = string.Empty;
+
+            /// <summary>
+            /// Optional main product image.
+            /// </summary>
+            public IFormFile? MainImageFile { get; set; }
         }
 
         public class UpdateProductForm
@@ -40,22 +45,59 @@ namespace Imagine.Controllers
             public IFormFile? ImageFile { get; set; }
         }
 
-        // إنشاء منتج جديد مع رفع صورة اختيارية
+        // إنشاء منتج جديد في طلب واحد (المعلومات الأساسية + الألوان + الصور)
         [HttpPost]
         [ProducesResponseType(typeof(BaseResponse<int>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(BaseResponse<int>), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<BaseResponse<int>>> Create([FromForm] CreateProductForm form, CancellationToken ct)
+        public async Task<ActionResult<BaseResponse<int>>> Create([FromForm] CreateFullProductForm form, CancellationToken ct)
         {
+            if (string.IsNullOrWhiteSpace(form.Payload))
+            {
+                return BadRequest(BaseResponse<int>.FailureResponse("Product payload is required"));
+            }
+
+            CreateProductRequestDto? dto;
+            try
+            {
+                dto = JsonSerializer.Deserialize<CreateProductRequestDto>(form.Payload, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+            }
+            catch (JsonException ex)
+            {
+                return BadRequest(BaseResponse<int>.FailureResponse($"Invalid product payload format: {ex.Message}"));
+            }
+
+            if (dto == null)
+            {
+                return BadRequest(BaseResponse<int>.FailureResponse("Product payload is invalid"));
+            }
+
             var cmd = new CreateProductCommand
             {
-                Name = form.Name,
-                Description = form.Description,
-                Price = form.Price,
-                IsActive = form.IsActive,
-                CategoryId = form.CategoryId,
-                ImageStream = form.ImageFile?.OpenReadStream(),
-                ImageFileName = form.ImageFile?.FileName
+                Name = dto.Name,
+                Description = dto.Description,
+                Price = dto.Price,
+                IsActive = dto.IsActive,
+                IsFeatured = dto.IsFeatured,
+                CategoryId = dto.CategoryId,
+                ImageStream = form.MainImageFile?.OpenReadStream(),
+                ImageFileName = form.MainImageFile?.FileName,
+                Colors = dto.Colors
             };
+
+            // Map all additional image files using their field name as FileKey
+            foreach (var file in Request.Form.Files)
+            {
+                if (string.Equals(file.Name, nameof(CreateFullProductForm.MainImageFile), StringComparison.OrdinalIgnoreCase))
+                {
+                    continue; // main image already mapped
+                }
+
+                cmd.ImageStreams[file.Name] = file.OpenReadStream();
+                cmd.ImageFileNames[file.Name] = file.FileName;
+            }
 
             var result = await _mediator.Send(cmd, ct);
             if (!result.Success) return BadRequest(result);
@@ -107,8 +149,8 @@ namespace Imagine.Controllers
 
         // إرجاع قائمة منتجات مع دعم البحث والفرز والتقسيم إلى صفحات
         [HttpGet]
-        [ProducesResponseType(typeof(BaseResponse<List<ProductDto>>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<BaseResponse<List<ProductDto>>>> GetList([FromQuery] GetProductsListQuery query, CancellationToken ct)
+        [ProducesResponseType(typeof(BaseResponse<List<ProductListDto>>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<BaseResponse<List<ProductListDto>>>> GetList([FromQuery] GetProductsListQuery query, CancellationToken ct)
         {
             var result = await _mediator.Send(query, ct);
             return Ok(result);

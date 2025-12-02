@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -22,12 +22,15 @@
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
   <PropertyGroup>
     <SpaRoot>ClientApp\</SpaRoot>
   </PropertyGroup>
 
-  <Target Name="EnsureNodeModules" BeforeTargets="Build"
-          Condition="!Exists('$(SpaRoot)node_modules')">
+  <Target Name="EnsureNodeModules" BeforeTargets="Build" Condition="!Exists('$(SpaRoot)node_modules')">
     <Exec Command="npm install" WorkingDirectory="$(SpaRoot)" />
   </Target>
 

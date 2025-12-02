@@ -64,6 +64,7 @@ namespace Infrastructure
 
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IQueryService, QueryService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             // Register Database Seeder
             //services.AddScoped<DatabaseSeeder>();

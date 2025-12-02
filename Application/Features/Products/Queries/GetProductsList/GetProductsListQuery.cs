@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Features.Products.Queries.GetProductsList
 {
-    public class GetProductsListQuery : IRequest<BaseResponse<List<ProductDto>>>
+    public class GetProductsListQuery : IRequest<BaseResponse<List<ProductListDto>>>
     {
         // Free text search over Name and Description
         public string? SearchTerm { get; set; }

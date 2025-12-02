@@ -1,5 +1,7 @@
 using Application.Common.Models;
+using Application.Features.Products.DTOs;
 using MediatR;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Application.Features.Products.Commands.CreateProduct
@@ -18,11 +20,21 @@ namespace Application.Features.Products.Commands.CreateProduct
         // Activation flag
         public bool IsActive { get; set; } = true;
 
+        // Featured flag for highlighting products in UI
+        public bool IsFeatured { get; set; } = false;
+
         // Required relationship: Product requires CategoryId in domain
         public int CategoryId { get; set; }
 
         // Image upload carried as a stream to keep Application independent of ASP.NET IFormFile
         public Stream? ImageStream { get; set; }
         public string? ImageFileName { get; set; }
+
+        // Nested color structure (including images metadata) for single-request create
+        public List<CreateProductColorDto> Colors { get; set; } = new();
+
+        // All additional image file streams keyed by FileKey coming from DTO
+        public Dictionary<string, Stream> ImageStreams { get; set; } = new();
+        public Dictionary<string, string> ImageFileNames { get; set; } = new();
     }
 }

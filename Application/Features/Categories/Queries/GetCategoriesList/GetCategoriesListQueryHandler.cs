@@ -53,7 +53,8 @@ namespace Application.Features.Categories.Queries.GetCategoriesList
                     IsActive = c.IsActive,
                     DisplayOrder = c.DisplayOrder,
                     ProductCount = c.Products.Count(p => p.IsActive),
-                    CreatedAt = c.CreatedAt
+                    CreatedAt = c.CreatedAt,
+                    UpdatedAt = c.UpdatedAt
                 })
                 .ToListAsync(cancellationToken);
 

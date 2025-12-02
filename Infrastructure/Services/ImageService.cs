@@ -1,6 +1,7 @@
 using Application.Common.Interfaces;
 using Application.Common.Models;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
@@ -11,15 +12,20 @@ namespace Infrastructure.Services
     {
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger<ImageService> _logger;
+        private readonly IConfiguration _configuration;
         private readonly string _uploadsFolder;
         private const int MaxImageWidth = 1920;
         private const int MaxImageHeight = 1080;
         private readonly string[] _allowedExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
 
-        public ImageService(IWebHostEnvironment environment, ILogger<ImageService> logger)
+        public ImageService(
+            IWebHostEnvironment environment,
+            ILogger<ImageService> logger,
+            IConfiguration configuration)
         {
             _environment = environment;
             _logger = logger;
+            _configuration = configuration;
             // Ensure WebRootPath is available even if wwwroot folder doesn't exist yet
             var webRoot = string.IsNullOrWhiteSpace(_environment.WebRootPath)
                 ? Path.Combine(AppContext.BaseDirectory, "wwwroot")
@@ -73,7 +79,13 @@ namespace Infrastructure.Services
                     await image.SaveAsync(filePath, cancellationToken);
                 }
 
-                var imageUrl = $"/uploads/{folder}/{uniqueFileName}";
+                // Build relative URL under /uploads and then prefix with configured base URL (domain) if available
+                var relativeUrl = $"/uploads/{folder}/{uniqueFileName}";
+                var baseUrl = _configuration["App:BaseUrl"] ?? _configuration["ImageBaseUrl"];
+
+                string imageUrl = string.IsNullOrWhiteSpace(baseUrl)
+                    ? relativeUrl
+                    : $"{baseUrl.TrimEnd('/')}{relativeUrl}";
 
                 _logger.LogInformation("Image uploaded successfully: {ImageUrl}", imageUrl);
 
@@ -148,7 +160,14 @@ namespace Infrastructure.Services
                 return string.Empty;
             }
 
-            var relativePath = imageUrl.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
+            // Support both absolute URLs (with domain) and relative paths
+            string pathPart = imageUrl;
+            if (Uri.TryCreate(imageUrl, UriKind.Absolute, out var uri))
+            {
+                pathPart = uri.AbsolutePath;
+            }
+
+            var relativePath = pathPart.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
             var webRoot = string.IsNullOrWhiteSpace(_environment.WebRootPath)
                 ? Path.Combine(AppContext.BaseDirectory, "wwwroot")
                 : _environment.WebRootPath;

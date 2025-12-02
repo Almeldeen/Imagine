@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Products.Queries.GetProductsList
 {
-    public class GetProductsListQueryHandler : IRequestHandler<GetProductsListQuery, BaseResponse<List<ProductDto>>>
+    public class GetProductsListQueryHandler : IRequestHandler<GetProductsListQuery, BaseResponse<List<ProductListDto>>>
     {
         private readonly IProductRepository _productRepository;
         private readonly IQueryService _queryService;
@@ -19,7 +19,7 @@ namespace Application.Features.Products.Queries.GetProductsList
             _queryService = queryService;
         }
 
-        public async Task<BaseResponse<List<ProductDto>>> Handle(GetProductsListQuery request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<List<ProductListDto>>> Handle(GetProductsListQuery request, CancellationToken cancellationToken)
         {
             var query = _productRepository.GetAllQueryable().AsNoTracking();
 
@@ -49,7 +49,7 @@ namespace Application.Features.Products.Queries.GetProductsList
 
             // Project to DTO
             var items = await query
-                .Select(p => new ProductDto
+                .Select(p => new ProductListDto
                 {
                     Id = p.Id,
                     Name = p.Name,
@@ -62,7 +62,7 @@ namespace Application.Features.Products.Queries.GetProductsList
                 })
                 .ToListAsync(cancellationToken);
 
-            return BaseResponse<List<ProductDto>>.SuccessResponse(items, request.PageNumber, request.PageSize, totalItems, "Products retrieved successfully");
+            return BaseResponse<List<ProductListDto>>.SuccessResponse(items, request.PageNumber, request.PageSize, totalItems, "Products retrieved successfully");
         }
     }
 }
