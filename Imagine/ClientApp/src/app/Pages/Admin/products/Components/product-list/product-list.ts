@@ -1,12 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ProductItem } from '../product-item/product-item';
+import { IProduct } from '../../Core/Interface/IProduct';
 
 @Component({
   selector: 'app-product-list',
-  imports: [ProductItem],
+  imports: [CommonModule, ProductItem],
   templateUrl: './product-list.html',
   styleUrl: './product-list.css',
 })
 export class ProductList {
-
+  @Input() products: IProduct[] = [];
+  @Input() viewMode: 'grid' | 'list' = 'grid';
 }

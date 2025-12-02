@@ -3,8 +3,10 @@ import { CommonModule } from '@angular/common';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, NgModel } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { CategoryService } from '../Category-service/CategoryService.service';
+import Swal from 'sweetalert2';
+import { CategoryService } from '../../Core/Service/category.service';
 import { CategoryList } from '../category-list/category-list';
+
 @Component({
   selector: 'app-category-form',
   imports: [CommonModule, FormsModule],
@@ -59,7 +61,11 @@ categoryobj:any ={
         reader.readAsDataURL(file);
       } else {
         this.clearImage();
-        alert('Please select a valid image file (PNG, JPG, JPEG)');
+        Swal.fire({
+          icon: 'warning',
+          title: 'Invalid image',
+          text: 'Please select a valid image file (PNG, JPG, JPEG)',
+        });
       }
     }
   }
@@ -89,97 +95,57 @@ categoryobj:any ={
   }
 
   onSave(event: Event) {
-    const formData = new FormData();
-
-    formData.append("name", this.categoryobj.name);
-    formData.append("description", this.categoryobj.description);
-    formData.append("isActive", this.categoryobj.isActive);
-    formData.append("displayOrder", this.categoryobj.displayOrder);
-    formData.append("ProductCount", this.categoryobj.productCount);
-
-    console.log('Sending Category Data (FormData):', {
-      name: this.categoryobj.name,
-      ProductCount: this.categoryobj.productCount,
-      displayOrder: this.categoryobj.displayOrder,
-      imagePath: this.categoryobj.imagePath,
-      isActive: this.categoryobj.isActive,
-      description: this.categoryobj.description
-    });
+    event.preventDefault();
+    const form = new FormData();
+    form.append('Name', this.categoryobj.name);
+    form.append('Description', this.categoryobj.description || '');
+    form.append('IsActive', String(this.categoryobj.isActive));
+    form.append('DisplayOrder', String(this.categoryobj.displayOrder));
 
     if (this.selectedFile) {
-      formData.append("ImageFile", this.selectedFile, this.selectedFile.name);
+      form.append('ImageFile', this.selectedFile);
     }
 
     if (this.category && this.category.id) {
-      if (this.selectedFile) {
-        // Image update: send FormData
-        this.CategoryService.update(this.category.id, formData).subscribe({
-          next: (res) => {
-            alert("Category updated successfully");
-            this.activeModal.close(res); 
-          },
-          error: (err) => {
-            alert("Error: " + JSON.stringify(err));
-          }
-        });
-      } else {
-        // Text-only update: send JSON
-        const updateData = {
-          id: this.category.id,
-          name: this.categoryobj.name,
-          description: this.categoryobj.description,
-          isActive: this.categoryobj.isActive,
-          displayOrder: this.categoryobj.displayOrder,
-          productCount: this.categoryobj.productCount, 
-          imagePath: this.category.imagePath 
-        };
-
-        this.CategoryService.update(this.category.id, updateData).subscribe({
-          next: (res) => {
-            alert("Category updated successfully");
-            this.activeModal.close(res); 
-          },
-          error: (err) => {
-            alert("Error: " + JSON.stringify(err));
-          }
-        });
-      }
-    } else {
-        if (this.selectedFile) {
-          this.CategoryService.create(formData).subscribe({
-            next: (res) => {
-              alert("Category created successfully");
-              this.activeModal.close(res); 
-            },
-            error: (err) => {
-              alert("Error: " + JSON.stringify(err));
-            }
+      this.CategoryService.update(this.category.id, form).subscribe({
+        next: (res) => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Category updated',
+            text: res.message || 'Category updated successfully',
+          }).then(() => {
+            this.activeModal.close(res.success);
           });
-        } else {
-          const createData = {
-            name: this.categoryobj.name,
-            description: this.categoryobj.description,
-            isActive: this.categoryobj.isActive,
-            ProductCount: this.categoryobj.productCount, // PascalCase for Create
-            displayOrder: this.categoryobj.displayOrder
-          };
-          
-          console.log('Sending Category Data (JSON):', createData);
-
-          this.CategoryService.create(createData).subscribe({
-            next: (res) => {
-              alert("Category created successfully");
-              this.activeModal.close(res); 
-            },
-            error: (err) => {
-              alert("Error: " + JSON.stringify(err));
-            }
+        },
+        error: (err) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Update failed',
+            text: 'Error: ' + (err?.error?.message || JSON.stringify(err)),
           });
         }
+      });
+    } else {
+      this.CategoryService.create(form).subscribe({
+        next: (res) => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Category created',
+            text: res.message || 'Category created successfully',
+          }).then(() => {
+            this.activeModal.close(res.success);
+          });
+        },
+        error: (err) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Create failed',
+            text: 'Error: ' + (err?.error?.message || JSON.stringify(err)),
+          });
+        }
+      });
     }
   }
-
-
 
 }
 

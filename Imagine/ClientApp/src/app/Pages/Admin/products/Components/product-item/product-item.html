@@ -2,7 +2,7 @@
 <div class="product-card">
   <!-- Product Image -->
   <div class="product-image">
-    <img src="/assets/images/product-placeholder.jpg" alt="Product Image">
+    <img [src]="imageSrc" [alt]="product.name">
     <div class="image-overlay">
       <button class="overlay-btn" title="Quick View">
         <i class="fas fa-eye"></i>
@@ -12,8 +12,12 @@
       </button>
     </div>
     <div class="product-badges">
-      <span class="badge badge-status active">Active</span>
-      <span class="badge badge-featured">Featured</span>
+      <span class="badge badge-status" [ngClass]="product.isActive ? 'active' : ''">
+        {{ product.isActive ? 'Active' : 'Inactive' }}
+      </span>
+      <span class="badge badge-featured" *ngIf="product.isFeatured">
+        Featured
+      </span>
     </div>
   </div>
 
@@ -21,28 +25,28 @@
   <div class="product-content">
     <!-- Product Header -->
     <div class="product-header">
-      <h3 class="product-name">Premium Wireless Headphones</h3>
-      <div class="product-sku">SKU: WH-001</div>
+      <h3 class="product-name">{{ product.name }}</h3>
+      <div class="product-sku">ID: {{ product.id }}</div>
     </div>
 
     <!-- Product Description -->
     <p class="product-description">
-      High-quality wireless headphones with noise cancellation and premium sound quality.
+      {{ product.description }}
     </p>
 
     <!-- Product Stats -->
     <div class="product-stats">
       <div class="stat-item">
         <span class="stat-label">Price</span>
-        <span class="stat-value price">$299.99</span>
+        <span class="stat-value price">{{ product.price | currency }}</span>
       </div>
       <div class="stat-item">
         <span class="stat-label">Stock</span>
-        <span class="stat-value stock">45 units</span>
+        <span class="stat-value stock">--</span>
       </div>
       <div class="stat-item">
         <span class="stat-label">Sales</span>
-        <span class="stat-value sales">127 sold</span>
+        <span class="stat-value sales">--</span>
       </div>
     </div>
 
@@ -50,12 +54,9 @@
     <div class="product-meta">
       <div class="meta-item">
         <i class="fas fa-calendar"></i>
-        <span>Created: Nov 15, 2024</span>
+        <span>Created: {{ product.createdAt | date:'mediumDate' }}</span>
       </div>
-      <div class="meta-item">
-        <i class="fas fa-tag"></i>
-        <span>Electronics</span>
-      </div>
+      <!-- Category or extra meta can be added here when available -->
     </div>
   </div>
 

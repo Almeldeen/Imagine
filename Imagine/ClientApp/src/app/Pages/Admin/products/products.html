@@ -8,7 +8,11 @@
   </app-product-header>
 
   <!-- Product List Component (when products exist) -->
-  <app-product-list *ngIf="hasProducts"></app-product-list>
+  <app-product-list
+    *ngIf="hasProducts"
+    [products]="products"
+    [viewMode]="currentView">
+  </app-product-list>
 
   <!-- Empty State Component (when no products) -->
   <app-product-empty-state *ngIf="!hasProducts">

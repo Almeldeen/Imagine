@@ -6,5 +6,6 @@ export interface ICategory {
   isActive: boolean;
   displayOrder: number;
   productCount: number;
-  createdAt: string; 
+  createdAt: string;
+  salesCount?: number;
 }

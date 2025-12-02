@@ -1,12 +1,6 @@
 <!-- Product List Grid -->
-<div class="product-grid">
-  <!-- Repeat for each product -->
-  <app-product-item></app-product-item>
-  <app-product-item></app-product-item>
-  <app-product-item></app-product-item>
-  <app-product-item></app-product-item>
-  <app-product-item></app-product-item>
-  <app-product-item></app-product-item>
-  <app-product-item></app-product-item>
-  <app-product-item></app-product-item>
+<div class="product-grid" *ngIf="products && products.length > 0">
+  @for (product of products; track product.id) {
+    <app-product-item [product]="product"></app-product-item>
+  }
 </div>

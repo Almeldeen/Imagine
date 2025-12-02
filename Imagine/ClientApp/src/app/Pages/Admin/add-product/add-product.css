@@ -208,6 +208,12 @@
   transition: all 0.3s ease;
 }
 
+/* Ensure dropdown options are readable on dark theme */
+.form-select option {
+  background-color: #1a1a2e;
+  color: #ffffff;
+}
+
 .form-input:focus,
 .form-textarea:focus,
 .form-select:focus {

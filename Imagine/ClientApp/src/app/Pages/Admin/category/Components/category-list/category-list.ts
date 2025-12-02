@@ -1,11 +1,12 @@
-import { CategoryService } from './../Category-service/CategoryService.service';
+import { CategoryService } from '../../Core/Service/category.service';
+import { ICategory } from '../../Core/Interface/ICategory';
 import { Component, inject, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CategoryItem } from "../category-item/category-item";
 import { CategoryForm } from '../category-form/category-form';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from '../../../../../../environments/environment';
-import { ConfirmationModal } from '../../../../../Shared/Components/confirmation-modal/confirmation-modal';
+import { ConfirmationModal } from '../../../../../shared/Components/confirmation-modal/confirmation-modal';
 
 @Component({
   selector: 'app-category-list',
@@ -17,7 +18,7 @@ import { ConfirmationModal } from '../../../../../Shared/Components/confirmation
 export class CategoryList implements OnInit {
 
 
-  @Input() categories: any[] = [];
+  @Input() categories: ICategory[] = [];
   @Input() viewMode: string = 'grid';
   @Output() refresh = new EventEmitter<void>();
   baseUrl=environment.apiUrl;
@@ -37,7 +38,7 @@ export class CategoryList implements OnInit {
   });
 }
 
-deleteCategory(category: any) {
+deleteCategory(category: ICategory) {
   const modalRef = this.modalService.open(ConfirmationModal);
   modalRef.componentInstance.title = 'Delete Category';
   modalRef.componentInstance.message = `Are you sure you want to delete the category "${category.name}"?`;
@@ -50,14 +51,14 @@ deleteCategory(category: any) {
         next: () => {
           this.refresh.emit();
         },
-        error: (err) => console.error('Failed to delete category', err)
+        error: (err: any) => console.error('Failed to delete category', err)
       });
     }
   }, () => {
     // Dismissed
   });
 }
-editCategory(category: any) {
+editCategory(category: ICategory) {
   const ref = this.modalService.open(CategoryForm);
   ref.componentInstance.category = category;
 

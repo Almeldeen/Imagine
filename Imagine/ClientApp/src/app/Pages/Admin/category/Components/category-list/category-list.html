@@ -2,7 +2,7 @@
   @for (cat of categories; track cat.id) {
   <div class="category-card">
     <div class="card-image">
-      <img [src]="baseUrl+cat.imageUrl" alt="{{cat.name}}" 
+      <img [src]="cat.imageUrl?.startsWith('http') ? cat.imageUrl : baseUrl + cat.imageUrl" alt="{{cat.name}}" 
            (error)="cat.imageUrl='/assets/images/category-placeholder.jpg'">
       
       <span class="status-badge" [ngClass]="cat.isActive ? 'active' : 'inactive'">

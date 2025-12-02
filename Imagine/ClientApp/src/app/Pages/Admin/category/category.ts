@@ -5,7 +5,9 @@ import { CategoryHeader } from './Components/category-header/category-header';
 import { CategoryList } from './Components/category-list/category-list';
 import { CategoryEmptyState } from './Components/category-empty-state/category-empty-state';
 import { CategoryForm } from './Components/category-form/category-form';
-import { CategoryService } from './Components/Category-service/CategoryService.service';
+import { CategoryService } from './Core/Service/category.service';
+import { ApiResponse } from '../../../core/IApiResponse';
+import { ICategory } from './Core/Interface/ICategory';
 
 @Component({
   selector: 'app-category',
@@ -15,10 +17,10 @@ import { CategoryService } from './Components/Category-service/CategoryService.s
 })
 export class Category implements OnInit {
   private modalService = inject(NgbModal);
-  CategoryService = inject(CategoryService);
+  private categoryService = inject(CategoryService) as CategoryService;
 
-  allCategories: any[] = [];
-  categories: any[] = [];
+  allCategories: ICategory[] = [];
+  categories: ICategory[] = [];
   hasCategories = false;
   searchTerm: string = '';
   currentFilter: string = 'All';
@@ -42,12 +44,12 @@ export class Category implements OnInit {
   }
 
   loadCategories() {
-    this.CategoryService.getAll().subscribe({
-      next: (res) => {
+    this.categoryService.getAll().subscribe({
+      next: (res: ApiResponse<ICategory[]>) => {
         this.allCategories = res.data;
         this.filterCategories();
       },
-      error: (err) => console.error('Failed to load categories', err)
+      error: (err: any) => console.error('Failed to load categories', err)
     });
   }
 

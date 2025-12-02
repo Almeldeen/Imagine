@@ -1,8 +1,13 @@
-import { Component, inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, inject, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
+import { ProductService } from '../products/Core/Service/product.service';
+import Swal from 'sweetalert2';
+import { CreateProductRequestModel } from '../products/Core/Interface/IProduct';
+import { CategoryService } from '../category/Core/Service/category.service';
+import { ICategory } from '../category/Core/Interface/ICategory';
 
 interface ProductColor {
   id?: number;
@@ -21,6 +26,7 @@ interface ProductImage {
   isMain: boolean;
   displayOrder: number;
   file?: File;
+  fileKey?: string;
 }
 
 interface Product {
@@ -41,9 +47,11 @@ interface Product {
   templateUrl: './add-product.html',
   styleUrl: './add-product.css',
 })
-export class AddProduct {
+export class AddProduct implements OnInit {
   private modalService = inject(NgbModal);
   private router = inject(Router);
+  private productService = inject(ProductService);
+  private categoryService = inject(CategoryService);
 
   @ViewChild('mainImageInput') mainImageInput!: ElementRef<HTMLInputElement>;
   @ViewChild('colorImageInput') colorImageInput!: ElementRef<HTMLInputElement>;
@@ -60,13 +68,8 @@ export class AddProduct {
     colors: []
   };
 
-  // Available categories (would come from API)
-  categories = [
-    { id: 1, name: 'Electronics' },
-    { id: 2, name: 'Clothing' },
-    { id: 3, name: 'Accessories' },
-    { id: 4, name: 'Home & Garden' }
-  ];
+  // Available categories (loaded from API)
+  categories: ICategory[] = [];
 
   // Main image preview
   mainImagePreview: string | null = null;
@@ -76,6 +79,25 @@ export class AddProduct {
   showColorPicker: boolean = false;
 
   constructor() {}
+
+  ngOnInit(): void {
+    this.loadCategories();
+  }
+
+  private loadCategories(): void {
+    this.categoryService.getAll().subscribe({
+      next: (res) => {
+        if (res?.success && Array.isArray(res.data)) {
+          this.categories = res.data;
+        } else {
+          this.categories = [];
+        }
+      },
+      error: () => {
+        this.categories = [];
+      },
+    });
+  }
 
   // File input click handlers
   triggerMainImageInput() {
@@ -144,12 +166,15 @@ export class AddProduct {
         if (file.type.startsWith('image/')) {
           const reader = new FileReader();
           reader.onload = (e) => {
+            const existingCount = this.product.colors[colorIndex].images.length;
+            const fileKey = `color_${colorIndex}_image_${existingCount + index}`;
             const newImage: ProductImage = {
               imageUrl: e.target?.result as string,
               altText: `${this.product.colors[colorIndex].colorName} - Image ${this.product.colors[colorIndex].images.length + 1}`,
               isMain: this.product.colors[colorIndex].images.length === 0,
               displayOrder: this.product.colors[colorIndex].images.length,
-              file: file
+              file: file,
+              fileKey: fileKey
             };
             this.product.colors[colorIndex].images.push(newImage);
           };
@@ -203,12 +228,67 @@ export class AddProduct {
 
   // Form submission
   onSave() {
-    if (this.isFormValid()) {
-      console.log('Saving product:', this.product);
-      // Here you would call your API service
-      // this.productService.createProduct(this.product)
-      this.router.navigate(['/admin/products']);
+    if (!this.isFormValid()) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Invalid form',
+        text: 'Please fill all required fields before saving.',
+      });
+      return;
     }
+
+    // Build create request model matching backend CreateProductRequestDto
+    const createModel: CreateProductRequestModel = {
+      categoryId: this.product.categoryId,
+      name: this.product.name,
+      description: this.product.description,
+      price: this.product.basePrice,
+      isActive: this.product.isActive,
+      isFeatured: this.product.isFeatured,
+      colors: this.product.colors.map((color, colorIndex) => ({
+        colorName: color.colorName,
+        colorHex: color.colorHex,
+        stock: color.stock,
+        additionalPrice: color.additionalPrice,
+        isAvailable: color.isAvailable,
+        images: color.images.map((img, imgIndex) => {
+          // Ensure each image has a stable fileKey
+          if (!img.fileKey) {
+            img.fileKey = `color_${colorIndex}_image_${imgIndex}`;
+          }
+          return {
+            fileKey: img.fileKey,
+            altText: img.altText,
+            isMain: img.isMain,
+            displayOrder: img.displayOrder,
+            file: img.file,
+          };
+        }),
+      })),
+    };
+
+    this.productService.createFullProduct(createModel, this.product.mainImageFile).subscribe({
+      next: (res) => {
+        Swal.fire({
+          icon: res.success ? 'success' : 'error',
+          title: res.success ? 'Product created' : 'Create failed',
+          text:
+            res.message ||
+            (res.success ? 'Product created successfully' : 'Failed to create product'),
+        }).then(() => {
+          if (res.success) {
+            this.router.navigate(['/admin/products']);
+          }
+        });
+      },
+      error: (err) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Create failed',
+          text: 'Error: ' + (err?.error?.message || JSON.stringify(err)),
+        });
+      },
+    });
   }
 
   onCancel() {
