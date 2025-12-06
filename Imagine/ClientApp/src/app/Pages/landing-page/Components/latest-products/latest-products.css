@@ -1,0 +1,6 @@
+@import '../featured-products/featured-products.css';
+
+.home-products--latest {
+  border-top: none;
+  border-bottom: 1px solid rgba(0, 217, 255, 0.2);
+}

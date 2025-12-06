@@ -1,12 +1,14 @@
 using Application.Common.Models;
 using Application.Common.Exceptions;
 using Application.Features.Products.DTOs;
+using Core.Entities;
 using Core.Interfaces;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Products.Queries.GetProductById
 {
-    public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, BaseResponse<ProductDto>>
+    public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, BaseResponse<ProductDetailsDto>>
     {
         private readonly IProductRepository _productRepository;
 
@@ -15,25 +17,61 @@ namespace Application.Features.Products.Queries.GetProductById
             _productRepository = productRepository;
         }
 
-        public async Task<BaseResponse<ProductDto>> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<ProductDetailsDto>> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
         {
-            var product = await _productRepository.GetByIdAsync(request.Id, cancellationToken);
-            if (product == null)
-                throw new NotFoundException("Product", request.Id);
+            var query = _productRepository
+                .GetAllQueryable()
+                .AsNoTracking()
+                .Where(p => p.Id == request.Id);
 
-            var dto = new ProductDto
+            var dto = await query
+                .Select(p => new ProductDetailsDto
+                {
+                    Id = p.Id,
+                    CategoryId = p.CategoryId,
+                    Name = p.Name,
+                    Description = p.Description,
+                    Price = p.BasePrice,
+                    IsActive = p.IsActive,
+                    IsFeatured = p.IsFeatured,
+                    ViewCount = p.ViewCount,
+                    ImageUrl = p.MainImageUrl,
+                    CreatedAt = p.CreatedAt,
+                    UpdatedAt = p.UpdatedAt,
+                    Colors = p.Colors
+                        .Where(c => c.IsAvailable)
+                        .Select(c => new ProductColorDto
+                        {
+                            Id = c.Id,
+                            ProductId = c.ProductId,
+                            ColorName = c.ColorName,
+                            ColorHex = c.ColorHex,
+                            Stock = c.Stock,
+                            AdditionalPrice = c.AdditionalPrice,
+                            IsAvailable = c.IsAvailable,
+                            Images = c.Images
+                                .OrderBy(i => i.DisplayOrder)
+                                .Select(i => new ProductImageDto
+                                {
+                                    Id = i.Id,
+                                    ProductColorId = i.ProductColorId,
+                                    ImageUrl = i.ImageUrl,
+                                    AltText = i.AltText,
+                                    IsMain = i.IsMain,
+                                    DisplayOrder = i.DisplayOrder
+                                })
+                                .ToList()
+                        })
+                        .ToList()
+                })
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (dto == null)
             {
-                Id = product.Id,
-                Name = product.Name,
-                Description = product.Description,
-                Price = product.BasePrice,
-                IsActive = product.IsActive,
-                ImageUrl = product.MainImageUrl,
-                CreatedAt = product.CreatedAt,
-                UpdatedAt = product.UpdatedAt
-            };
+                throw new NotFoundException("Product", request.Id);
+            }
 
-            return BaseResponse<ProductDto>.SuccessResponse(dto, "Product retrieved successfully");
+            return BaseResponse<ProductDetailsDto>.SuccessResponse(dto, "Product retrieved successfully");
         }
     }
 }

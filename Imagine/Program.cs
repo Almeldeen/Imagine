@@ -107,7 +107,7 @@ namespace Imagine
             }
 
             // Seed database
-            //await app.SeedDatabaseAsync();
+            await app.SeedDatabaseAsync();
 
             app.Run();
         }

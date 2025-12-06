@@ -67,6 +67,8 @@ namespace Application.Features.Products.Commands.CreateProduct
                         MainImageUrl = mainImageUrl,
                         IsActive = request.IsActive,
                         IsFeatured = request.IsFeatured,
+                        IsPopular = request.IsPopular,
+                        IsLatest = request.IsLatest,
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     };

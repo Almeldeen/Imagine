@@ -1,133 +1,172 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ProductsFilter } from './Components/products-filter/products-filter';
-import { ProductsCard } from './Components/products-card/products-card';
 import { ProductsPagination } from './Components/products-pagination/products-pagination';
-
-interface ProductColor {
-  name: string;
-  value: string;
-  extraPrice?: number;
-}
-
-interface Product {
-  id: number;
-  name: string;
-  category: string;
-  basePrice: number;
-  image: string;
-  colors: ProductColor[];
-  isAiPowered?: boolean;
-  isFeatured?: boolean;
-}
+import { ProductCard } from '../../shared/Components/product-card/product-card';
+import { ProductService, ProductsListQuery } from '../Admin/products/Core/Service/product.service';
+import { IProduct } from '../Admin/products/Core/Interface/IProduct';
+import { CategoryService } from '../Admin/category/Core/Service/category.service';
+import { ICategory } from '../Admin/category/Core/Interface/ICategory';
+import { ApiResponse } from '../../core/IApiResponse';
 
 @Component({
   selector: 'app-all-products',
   standalone: true,
-  imports: [CommonModule, ProductsFilter, ProductsCard, ProductsPagination],
+  imports: [CommonModule, FormsModule, ProductsFilter, ProductsPagination, ProductCard],
   templateUrl: './all-products.html',
   styleUrl: './all-products.css',
 })
-export class AllProducts {
-  products: Product[] = [
-    {
-      id: 1,
-      name: 'Classic AI Hoodie',
-      category: 'Hoodies',
-      basePrice: 49.99,
-      image: '/assets/images/Hoodie.png',
-      isAiPowered: true,
-      isFeatured: true,
-      colors: [
-        { name: 'Black', value: 'black' },
-        { name: 'White', value: 'white', extraPrice: 3 },
-        { name: 'Blue', value: 'blue', extraPrice: 5 },
-      ],
-    },
-    {
-      id: 2,
-      name: 'Premium AI T-Shirt',
-      category: 'T-Shirts',
-      basePrice: 34.99,
-      image: '/assets/images/T-Shirt.png',
-      isAiPowered: true,
-      colors: [
-        { name: 'Black', value: 'black' },
-        { name: 'White', value: 'white' },
-        { name: 'Purple', value: 'purple', extraPrice: 4 },
-      ],
-    },
-    {
-      id: 3,
-      name: 'Designer AI Hoodie',
-      category: 'Hoodies',
-      basePrice: 54.99,
-      image: '/assets/images/Hoodie.png',
-      isAiPowered: true,
-      colors: [
-        { name: 'Navy', value: 'navy' },
-        { name: 'Gray', value: 'gray' },
-        { name: 'Pink', value: 'pink', extraPrice: 6 },
-      ],
-    },
-    {
-      id: 4,
-      name: 'Minimalist Tote Bag',
-      category: 'Accessories',
-      basePrice: 24.99,
-      image: '/assets/images/Tote.png',
-      colors: [
-        { name: 'Sand', value: 'sand' },
-        { name: 'Graphite', value: 'graphite' },
-      ],
-    },
-  ];
+export class AllProducts implements OnInit {
+  private productService = inject(ProductService);
+  private categoryService = inject(CategoryService);
 
-  filteredProducts: Product[] = this.products;
+  products: IProduct[] = [];
+  categories: ICategory[] = [];
 
+  // Filters
+  searchTerm = '';
+  selectedCategoryId: number | null = null;
+  selectedColorHex: string | null = null;
+  minPrice?: number;
+  maxPrice?: number;
+
+  // Sorting
+  sortKey: 'relevance' | 'latest' | 'popular' | 'priceAsc' | 'priceDesc' = 'relevance';
+
+  // Pagination
   currentPage = 1;
   pageSize = 9;
+  totalItems = 0;
 
-  get pagedProducts(): Product[] {
-    const start = (this.currentPage - 1) * this.pageSize;
-    return this.filteredProducts.slice(start, start + this.pageSize);
+  // UI state
+  isLoading = false;
+  hasError = false;
+  errorMessage = '';
+
+  // Simple color palette for filtering
+  readonly colorOptions: { name: string; hex: string }[] = [
+    { name: 'Black', hex: '#000000' },
+    { name: 'White', hex: '#ffffff' },
+    { name: 'Blue', hex: '#3b82f6' },
+    { name: 'Purple', hex: '#8b5cf6' },
+    { name: 'Pink', hex: '#ec4899' },
+  ];
+
+  ngOnInit(): void {
+    this.loadCategories();
+    this.loadProducts();
   }
 
-  onSearchChange(term: string) {
-    this.applyFilters({ search: term });
-  }
-
-  onFilterChange(filter: { category?: string; aiOnly?: boolean }) {
-    this.applyFilters(filter);
-  }
-
-  onSortChange(sortKey: string) {
-    const products = [...this.filteredProducts];
-    if (sortKey === 'price') {
-      products.sort((a, b) => a.basePrice - b.basePrice);
-    } else if (sortKey === 'name') {
-      products.sort((a, b) => a.name.localeCompare(b.name));
-    }
-    this.filteredProducts = products;
+  onSearchChange(term: string): void {
+    this.searchTerm = term;
     this.currentPage = 1;
+    this.loadProducts();
   }
 
-  onPageChange(page: number) {
+  onSortChange(sortKey: string): void {
+    this.sortKey = (sortKey as any) || 'relevance';
+    this.currentPage = 1;
+    this.loadProducts();
+  }
+
+  onCategoryChange(categoryId: number | null): void {
+    this.selectedCategoryId = categoryId;
+    this.currentPage = 1;
+    this.loadProducts();
+  }
+
+  onColorSelect(hex: string | null): void {
+    this.selectedColorHex = hex;
+    this.currentPage = 1;
+    this.loadProducts();
+  }
+
+  onPriceRangeApply(): void {
+    this.currentPage = 1;
+    this.loadProducts();
+  }
+
+  onResetFilters(): void {
+    this.selectedCategoryId = null;
+    this.selectedColorHex = null;
+    this.minPrice = undefined;
+    this.maxPrice = undefined;
+    this.currentPage = 1;
+    this.loadProducts();
+  }
+
+  onPageChange(page: number): void {
     this.currentPage = page;
+    this.loadProducts();
   }
 
-  private applyFilters(options: { search?: string; category?: string; aiOnly?: boolean }) {
-    const search = options.search?.toLowerCase() ?? '';
-    const category = options.category ?? 'all';
-    const aiOnly = options.aiOnly ?? false;
+  get hasProducts(): boolean {
+    return !this.isLoading && !this.hasError && this.products.length > 0;
+  }
 
-    this.filteredProducts = this.products.filter((p) => {
-      const matchesSearch = !search || p.name.toLowerCase().includes(search);
-      const matchesCategory = category === 'all' || p.category === category;
-      const matchesAi = !aiOnly || !!p.isAiPowered;
-      return matchesSearch && matchesCategory && matchesAi;
+  private loadCategories(): void {
+    this.categoryService.getAll().subscribe({
+      next: (res: ApiResponse<ICategory[]>) => {
+        this.categories = res.data ?? [];
+      },
+      error: (err: any) => {
+        console.error('Failed to load categories', err);
+        this.categories = [];
+      },
     });
+  }
 
-    this.currentPage = 1;
+  private loadProducts(): void {
+    this.isLoading = true;
+    this.hasError = false;
+
+    const { sortBy, sortDirection } = this.mapSortKey(this.sortKey);
+
+    const query: ProductsListQuery = {
+      searchTerm: this.searchTerm || undefined,
+      pageNumber: this.currentPage,
+      pageSize: this.pageSize,
+      sortBy,
+      sortDirection,
+      categoryId: this.selectedCategoryId ?? undefined,
+      colorHex: this.selectedColorHex ?? undefined,
+      minPrice: this.minPrice != null ? this.minPrice : undefined,
+      maxPrice: this.maxPrice != null ? this.maxPrice : undefined,
+    };
+
+    this.productService.getAll(query).subscribe({
+      next: (res: ApiResponse<IProduct[]>) => {
+        this.products = res.data ?? [];
+        this.currentPage = res.currentPage ?? this.currentPage;
+        this.pageSize = res.pageSize ?? this.pageSize;
+        this.totalItems = res.totalItems ?? this.products.length;
+        this.isLoading = false;
+      },
+      error: (err: any) => {
+        console.error('Failed to load products', err);
+        this.products = [];
+        this.totalItems = 0;
+        this.isLoading = false;
+        this.hasError = true;
+        this.errorMessage = 'Failed to load products. Please try again.';
+      },
+    });
+  }
+
+  private mapSortKey(sortKey: string): { sortBy?: string; sortDirection?: 'Asc' | 'Desc' } {
+    switch (sortKey) {
+      case 'latest':
+        return { sortBy: 'CreatedAt', sortDirection: 'Desc' };
+      case 'popular':
+        return { sortBy: 'ViewCount', sortDirection: 'Desc' };
+      case 'priceAsc':
+        return { sortBy: 'Price', sortDirection: 'Asc' };
+      case 'priceDesc':
+        return { sortBy: 'Price', sortDirection: 'Desc' };
+      default:
+        // relevance: let backend default (Name asc)
+        return {};
+    }
   }
 }

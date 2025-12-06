@@ -1,0 +1,46 @@
+ .home-loading,
+ .home-error {
+   min-height: 40vh;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   text-align: center;
+   background: radial-gradient(circle at top, rgba(0, 217, 255, 0.1), transparent),
+               linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #16213e 100%);
+   color: #e5e7eb;
+   padding: 4rem 1.5rem;
+ }
+
+ .home-loading-spinner {
+   width: 48px;
+   height: 48px;
+   border-radius: 999px;
+   border: 3px solid rgba(0, 217, 255, 0.2);
+   border-top-color: #00D9FF;
+   animation: home-spin 1s linear infinite;
+   margin-bottom: 1.5rem;
+ }
+
+ .home-loading p {
+   font-size: 0.95rem;
+   letter-spacing: 0.04em;
+   text-transform: uppercase;
+   color: #9ca3af;
+ }
+
+ .home-error {
+   border-top: 1px solid rgba(248, 113, 113, 0.3);
+   box-shadow: 0 -1px 20px rgba(248, 113, 113, 0.15);
+   color: #fecaca;
+ }
+
+ .home-error p {
+   max-width: 480px;
+ }
+
+ @keyframes home-spin {
+   to {
+     transform: rotate(360deg);
+   }
+ }

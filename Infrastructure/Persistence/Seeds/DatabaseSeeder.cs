@@ -49,7 +49,7 @@ namespace Infrastructure.Persistence.Seeds
 
         private async Task SeedRolesAsync()
         {
-            var roles = new[] { "Admin", "User", "Manager" };
+            var roles = new[] { "Admin", "Client" };
 
             foreach (var roleName in roles)
             {

@@ -6,11 +6,14 @@ using Infrastructure.Persistence;
 using Infrastructure.Persistence.Seeds;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
+using System.Text;
 
 namespace Infrastructure
 {
@@ -46,6 +49,26 @@ namespace Infrastructure
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
+            var jwtKey = configuration["Jwt:Key"] ?? "CHANGE_ME_SUPER_SECRET_KEY";
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = signingKey,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = false
+                };
+            });
+
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IProductColorRepository, ProductColorRepository>();
@@ -65,9 +88,10 @@ namespace Infrastructure
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IQueryService, QueryService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IJwtService, JwtService>();
 
             // Register Database Seeder
-            //services.AddScoped<DatabaseSeeder>();
+            services.AddScoped<DatabaseSeeder>();
 
 
             // AutoMapper

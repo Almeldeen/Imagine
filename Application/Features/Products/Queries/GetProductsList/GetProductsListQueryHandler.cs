@@ -21,10 +21,41 @@ namespace Application.Features.Products.Queries.GetProductsList
 
         public async Task<BaseResponse<List<ProductListDto>>> Handle(GetProductsListQuery request, CancellationToken cancellationToken)
         {
-            var query = _productRepository.GetAllQueryable().AsNoTracking();
+            // Start with a plain IQueryable<Product>. We will rely on the projection
+            // below to generate the necessary joins for colors and images.
+            var query = _productRepository
+                .GetAllQueryable()
+                .AsNoTracking();
 
             // Search by name or description if provided
             query = _queryService.ApplySearch<Product>(query, request.SearchTerm, nameof(Product.Name), nameof(Product.Description));
+
+            // Filters
+            if (request.CategoryId.HasValue)
+            {
+                query = query.Where(p => p.CategoryId == request.CategoryId.Value);
+            }
+
+            if (request.IsActive.HasValue)
+            {
+                query = query.Where(p => p.IsActive == request.IsActive.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.ColorHex))
+            {
+                var colorHex = request.ColorHex.Trim();
+                query = query.Where(p => p.Colors.Any(c => c.IsAvailable && c.ColorHex == colorHex));
+            }
+
+            if (request.MinPrice.HasValue)
+            {
+                query = query.Where(p => p.BasePrice >= request.MinPrice.Value);
+            }
+
+            if (request.MaxPrice.HasValue)
+            {
+                query = query.Where(p => p.BasePrice <= request.MaxPrice.Value);
+            }
 
             // Count before pagination
             var totalItems = await query.CountAsync(cancellationToken);
@@ -47,7 +78,7 @@ namespace Application.Features.Products.Queries.GetProductsList
             // Apply pagination
             query = _queryService.ApplyPagination(query, request.PageNumber, request.PageSize);
 
-            // Project to DTO
+            // Project to DTO (colors and images are projected directly via navigation properties)
             var items = await query
                 .Select(p => new ProductListDto
                 {
@@ -56,9 +87,36 @@ namespace Application.Features.Products.Queries.GetProductsList
                     Description = p.Description,
                     Price = p.BasePrice,
                     IsActive = p.IsActive,
+                    IsFeatured = p.IsFeatured,
+                    ViewCount = p.ViewCount,
                     ImageUrl = p.MainImageUrl,
                     CreatedAt = p.CreatedAt,
-                    UpdatedAt = p.UpdatedAt
+                    UpdatedAt = p.UpdatedAt,
+                    Colors = p.Colors
+                        .Where(c => c.IsAvailable)
+                        .Select(c => new ProductColorDto
+                        {
+                            Id = c.Id,
+                            ProductId = c.ProductId,
+                            ColorName = c.ColorName,
+                            ColorHex = c.ColorHex,
+                            Stock = c.Stock,
+                            AdditionalPrice = c.AdditionalPrice,
+                            IsAvailable = c.IsAvailable,
+                            Images = c.Images
+                                .OrderBy(i => i.DisplayOrder)
+                                .Select(i => new ProductImageDto
+                                {
+                                    Id = i.Id,
+                                    ProductColorId = i.ProductColorId,
+                                    ImageUrl = i.ImageUrl,
+                                    AltText = i.AltText,
+                                    IsMain = i.IsMain,
+                                    DisplayOrder = i.DisplayOrder
+                                })
+                                .ToList()
+                        })
+                        .ToList()
                 })
                 .ToListAsync(cancellationToken);
 

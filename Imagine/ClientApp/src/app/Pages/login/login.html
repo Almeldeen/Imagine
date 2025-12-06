@@ -15,27 +15,26 @@
             Your personalized AI workspace is ready.
           </p>
 
-          <ngb-alert
-            *ngIf="errorMessage"
-            type="danger"
-            class="mt-2 mb-3"
-            [dismissible]="false"
-          >
-            {{ errorMessage }}
-          </ngb-alert>
-
           <form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" novalidate>
             <div class="mb-3">
-              <label class="form-label text-light">Email</label>
+              <label class="form-label text-light">Email or phone</label>
               <input
-                type="email"
-                name="email"
+                type="text"
+                name="identifier"
                 class="form-control auth-input"
-                [(ngModel)]="model.email"
+                [(ngModel)]="model.identifier"
+                #identifierRef="ngModel"
                 required
-                email
-                placeholder="you@example.com"
+                placeholder="you@example.com or +1 555 123 4567"
               />
+              <div
+                class="field-error"
+                *ngIf="identifierRef.invalid && (identifierRef.dirty || identifierRef.touched)"
+              >
+                <span *ngIf="identifierRef.errors?.['required']">
+                  Please enter your email or phone number.
+                </span>
+              </div>
             </div>
 
             <div class="mb-2 position-relative">
@@ -45,7 +44,9 @@
                 name="password"
                 class="form-control auth-input pe-5"
                 [(ngModel)]="model.password"
+                #passwordRef="ngModel"
                 required
+                minlength="8"
                 placeholder="Enter your password"
               />
               <button
@@ -56,6 +57,17 @@
               >
                 <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
               </button>
+              <div
+                class="field-error"
+                *ngIf="passwordRef.invalid && (passwordRef.dirty || passwordRef.touched)"
+              >
+                <span *ngIf="passwordRef.errors?.['required']">
+                  Password is required.
+                </span>
+                <span *ngIf="passwordRef.errors?.['minlength']">
+                  Password should be at least 8 characters long.
+                </span>
+              </div>
             </div>
 
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -66,9 +78,13 @@
               type="submit"
               class="btn btn-primary-custom w-100 mb-2"
               [disabled]="loginForm.invalid || submitting"
+              [ngClass]="{ 'button-loading': submitting }"
             >
-              <span *ngIf="!submitting">Log in</span>
-              <span *ngIf="submitting">Signing you in...</span>
+              <ng-container *ngIf="!submitting">Log in</ng-container>
+              <ng-container *ngIf="submitting">
+                <span class="button-spinner"></span>
+                Signing you in...
+              </ng-container>
             </button>
           </form>
 

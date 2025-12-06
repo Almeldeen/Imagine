@@ -1,0 +1,23 @@
+<!-- Latest Products Section -->
+<section class="home-products home-products--latest" *ngIf="recentProducts.length">
+  <div class="container position-relative">
+    <div class="home-products__header text-center mb-5">
+      <div class="home-products__badge">
+        <span class="badge-dot"></span>
+        <span>Fresh Drops</span>
+      </div>
+      <h2 class="home-products__title">
+        Latest <span class="gradient-text">Arrivals</span>
+      </h2>
+      <p class="home-products__subtitle">
+        New AI-ready pieces recently added to the collection.
+      </p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+      <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6" *ngFor="let product of recentProducts">
+        <app-product-card [product]="product"></app-product-card>
+      </div>
+    </div>
+  </div>
+</section>

@@ -28,6 +28,7 @@ namespace Application.Features.Carts.Commands.UpdateCartItem
                 return BaseResponse<bool>.FailureResponse("Item not found");
 
             item.Quantity = request.Quantity;
+            item.TotalPrice = item.UnitPrice * item.Quantity;
 
             await _cartItemRepo.UpdateCartItemAsync(item, cancellationToken);
 

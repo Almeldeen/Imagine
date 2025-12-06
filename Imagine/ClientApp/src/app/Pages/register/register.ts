@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
+import { AuthService } from '../../core/auth.service';
+import { ToastService } from '../../core/toast.service';
 
 interface RegisterModel {
   fullName: string;
@@ -16,7 +18,7 @@ interface RegisterModel {
   standalone: true,
   imports: [CommonModule, FormsModule, NgbAlertModule],
   templateUrl: './register.html',
-  styleUrl: './register.css',
+  styleUrls: ['./register.css'],
 })
 export class Register {
   model: RegisterModel = {
@@ -28,9 +30,19 @@ export class Register {
   };
 
   submitting = false;
-  errorMessage = '';
-  successMessage = '';
   showPassword = false;
+  readonly phonePattern = '^\\+?[0-9\\s-]{7,20}$';
+
+  constructor(
+    private readonly authService: AuthService,
+    private readonly toast: ToastService,
+  ) {}
+
+  get passwordsMismatch(): boolean {
+    return !!this.model.password &&
+      !!this.model.confirmPassword &&
+      this.model.password !== this.model.confirmPassword;
+  }
 
   onSubmit(form: NgForm) {
     if (this.submitting) {
@@ -38,25 +50,43 @@ export class Register {
     }
 
     if (form.invalid) {
-      this.errorMessage = 'Please fill in all required fields.';
-      this.successMessage = '';
+      Object.values(form.controls).forEach(control => control.markAsTouched());
+      this.toast.error('Please fix the highlighted fields before continuing.');
       return;
     }
 
-    if (this.model.password !== this.model.confirmPassword) {
-      this.errorMessage = 'Passwords do not match.';
-      this.successMessage = '';
+    if (this.passwordsMismatch) {
+      this.toast.error('Passwords do not match.');
       return;
     }
 
-    this.errorMessage = '';
     this.submitting = true;
 
-    setTimeout(() => {
-      this.submitting = false;
-      this.successMessage = 'Account created successfully. You can now log in.';
-      // Placeholder: handle real registration here
-    }, 900);
+    this.authService
+      .register({
+        fullName: this.model.fullName,
+        email: this.model.email,
+        password: this.model.password,
+        confirmPassword: this.model.confirmPassword,
+        phoneNumber: this.model.phone,
+      })
+      .subscribe({
+        next: (res) => {
+          this.submitting = false;
+          if (!res.success) {
+            this.toast.error(res.message || 'Unable to create account. Please try again.');
+            return;
+          }
+          this.toast.success(res.message || 'Account created successfully. You can now log in.');
+          this.model.password = '';
+          this.model.confirmPassword = '';
+        },
+        error: (err) => {
+          this.submitting = false;
+          const message = err?.error?.message || 'Unable to create account. Please try again.';
+          this.toast.error(message);
+        },
+      });
   }
 
   togglePasswordVisibility() {

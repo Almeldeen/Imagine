@@ -15,35 +15,130 @@
       </p>
     </div>
 
-    <!-- Filters / Sort -->
+    <!-- Top toolbar: search + sorting -->
     <app-products-filter
       (searchChange)="onSearchChange($event)"
-      (filterChange)="onFilterChange($event)"
       (sortChange)="onSortChange($event)">
     </app-products-filter>
 
-    <!-- Products Grid -->
-    <div class="row g-4 products-grid">
-      <div class="col-xl-4 col-md-6" *ngFor="let product of pagedProducts">
-        <app-products-card [product]="product"></app-products-card>
+    <div class="row content-layout">
+      <!-- Sidebar Filters -->
+      <div class="col-lg-3 col-md-4 mb-4 mb-md-0">
+        <aside class="filters-sidebar">
+          <h5 class="filters-title">Filters</h5>
+
+          <!-- Category Filter -->
+          <div class="filter-group">
+            <div class="filter-label">Category</div>
+            <button
+              class="filter-pill"
+              [class.active]="!selectedCategoryId"
+              (click)="onCategoryChange(null)">
+              All Categories
+            </button>
+            <button
+              class="filter-pill"
+              *ngFor="let category of categories"
+              [class.active]="selectedCategoryId === category.id"
+              (click)="onCategoryChange(category.id)">
+              {{ category.name }}
+            </button>
+          </div>
+
+          <!-- Color Filter -->
+          <div class="filter-group">
+            <div class="filter-label">Color</div>
+            <div class="color-filter-options">
+              <button
+                class="color-filter-swatch"
+                *ngFor="let color of colorOptions"
+                [ngStyle]="{ 'background-color': color.hex }"
+                [class.active]="selectedColorHex === color.hex"
+                (click)="onColorSelect(color.hex)"
+                [title]="color.name">
+              </button>
+              <button
+                class="filter-pill small"
+                [class.active]="!selectedColorHex"
+                (click)="onColorSelect(null)">
+                Any color
+              </button>
+            </div>
+          </div>
+
+          <!-- Price Filter -->
+          <div class="filter-group">
+            <div class="filter-label">Price range</div>
+            <div class="price-inputs">
+              <input
+                type="number"
+                class="price-input"
+                placeholder="Min"
+                [(ngModel)]="minPrice" />
+              <span class="price-separator">–</span>
+              <input
+                type="number"
+                class="price-input"
+                placeholder="Max"
+                [(ngModel)]="maxPrice" />
+            </div>
+            <div class="filter-actions">
+              <button class="btn-apply-filters" (click)="onPriceRangeApply()">
+                Apply
+              </button>
+              <button class="btn-reset-filters" (click)="onResetFilters()">
+                Reset
+              </button>
+            </div>
+          </div>
+        </aside>
       </div>
 
-      <div class="col-12" *ngIf="filteredProducts.length === 0">
-        <div class="empty-state text-center">
-          <h4>No products found</h4>
-          <p>Try adjusting your filters or search term.</p>
+      <!-- Main Grid -->
+      <div class="col-lg-9 col-md-8">
+        <div class="row g-4 products-grid">
+          <!-- Loader State -->
+          <div class="col-12" *ngIf="isLoading">
+            <div class="loader-wrapper">
+              <div class="loader-spinner"></div>
+              <p class="loader-text">Loading products...</p>
+            </div>
+          </div>
+
+          <!-- Error State -->
+          <div class="col-12" *ngIf="hasError">
+            <div class="empty-state text-center">
+              <h4>Unable to load products</h4>
+              <p>{{ errorMessage }}</p>
+            </div>
+          </div>
+
+          <!-- Product Grid -->
+          <ng-container *ngIf="hasProducts">
+            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6" *ngFor="let product of products">
+              <app-product-card [product]="product"></app-product-card>
+            </div>
+          </ng-container>
+
+          <!-- Empty State -->
+          <div class="col-12" *ngIf="!isLoading && !hasError && products.length === 0">
+            <div class="empty-state text-center">
+              <h4>No products found</h4>
+              <p>Try adjusting your filters or search term.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-wrapper" *ngIf="!isLoading && totalItems > pageSize">
+          <app-products-pagination
+            [page]="currentPage"
+            [pageSize]="pageSize"
+            [total]="totalItems"
+            (pageChange)="onPageChange($event)">
+          </app-products-pagination>
         </div>
       </div>
-    </div>
-
-    <!-- Pagination -->
-    <div class="pagination-wrapper" *ngIf="filteredProducts.length > pageSize">
-      <app-products-pagination
-        [page]="currentPage"
-        [pageSize]="pageSize"
-        [total]="filteredProducts.length"
-        (pageChange)="onPageChange($event)">
-      </app-products-pagination>
     </div>
   </div>
 </section>

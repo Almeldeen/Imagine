@@ -1,0 +1,87 @@
+<!-- Shared Product Card -->
+<div class="product-card">
+  <!-- Product Image Container -->
+  <div class="product-image-wrapper">
+    <div class="product-glow-ring"></div>
+
+    <img
+      [src]="activeImage?.imageUrl || product.imageUrl || '/assets/images/Hoodie.png'"
+      [alt]="activeImage?.altText || product.name"
+      class="product-image" />
+
+    <div class="product-overlay"></div>
+
+    <!-- Quick View / View Details Icon -->
+    <a
+      class="quick-view"
+      [routerLink]="['/Product', product.id]"
+      [title]="'View details for ' + product.name"
+      (click)="$event.stopPropagation()"
+    >
+      <i class="fas fa-eye"></i>
+    </a>
+  </div>
+
+  <!-- Product Info -->
+  <div class="product-info">
+    <div class="product-category">AI Collection</div>
+    <h3 class="product-name">{{ product.name }}</h3>
+
+    <p class="product-description" *ngIf="product.description">
+      {{ product.description }}
+    </p>
+
+    <!-- Color Selector -->
+    <div class="color-selector" *ngIf="colors.length">
+      <span class="color-label">Colors:</span>
+      <div class="color-options">
+        <button
+          class="color-swatch"
+          *ngFor="let color of colors"
+          [class.active]="activeColor?.id === color.id"
+          [ngStyle]="{
+            background:
+              'linear-gradient(135deg,' + (color.colorHex || '#4A90E2') + ' 0%, ' +
+              (color.colorHex || '#00D9FF') + ' 100%)'
+          }"
+          (click)="selectColor(color, $event)"
+          [title]="color.colorName">
+          <span class="swatch-check"><i class="fas fa-check"></i></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Price and CTA -->
+    <div class="product-footer">
+      <div class="product-price">
+        <span class="price-label">From</span>
+        <span class="price-value">${{ displayPrice }}</span>
+      </div>
+      <div class="product-actions">
+        <button
+          type="button"
+          class="btn-add"
+          [disabled]="isAdding || !activeColor"
+          (click)="addToCart($event)">
+          <i class="fas fa-shopping-cart"></i>
+          <span>{{ isAdding ? 'Adding...' : 'Add to Cart' }}</span>
+        </button>
+      </div>
+      <div class="add-toast add-toast-success" *ngIf="addSuccess">
+        <i class="fas fa-check-circle"></i>
+        <span>Added to cart</span>
+      </div>
+      <div class="add-toast add-toast-error" *ngIf="addError">
+        <i class="fas fa-exclamation-circle"></i>
+        <span>Could not add to cart</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card Particles -->
+  <div class="card-particles-effect">
+    <span class="card-particle"></span>
+    <span class="card-particle"></span>
+    <span class="card-particle"></span>
+  </div>
+</div>

@@ -1,141 +1,197 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderHeader } from './Components/order-header/order-header';
 import { OrderList } from './Components/order-list/order-list';
 import { OrderEmptyState } from './Components/order-empty-state/order-empty-state';
-
-// Order Status Enum
-export enum OrderStatus {
-  Pending = 0,
-  Processing = 1,
-  Shipped = 2,
-  Delivered = 3,
-  Cancelled = 4,
-  Refunded = 5
-}
-
-// Custom Product Status Enum
-export enum CustomProductStatus {
-  Draft = 0,
-  Submitted = 1,
-  InReview = 2,
-  Approved = 3,
-  InProduction = 4,
-  Completed = 5,
-  Rejected = 6
-}
-
-// Order Interfaces based on C# entities
-export interface Order {
-  id: number;
-  userId?: string;
-  orderNumber: string;
-  orderDate: Date;
-  subTotal: number;
-  shippingCost: number;
-  tax: number;
-  totalAmount: number;
-  status: OrderStatus;
-  
-  // Shipping Information
-  shippingAddress: string;
-  shippingCity: string;
-  shippingPostalCode: string;
-  shippingCountry: string;
-  shippingPhone?: string;
-  
-  // Payment Information
-  paymentMethod?: string;
-  paymentTransactionId?: string;
-  paidAt?: Date;
-  
-  // Tracking
-  trackingNumber?: string;
-  shippedAt?: Date;
-  deliveredAt?: Date;
-  
-  // Relations
-  user?: any; // ApplicationUser
-  orderItems: OrderItem[];
-}
-
-export interface OrderItem {
-  id: number;
-  orderId: number;
-  productColorId?: number;
-  customProductId?: number;
-  productName: string;
-  colorName?: string;
-  productImageUrl?: string;
-  quantity: number;
-  unitPrice: number;
-  totalPrice: number;
-  
-  // Relations
-  order: Order;
-  productColor?: any;
-  customProduct?: CustomProduct;
-}
-
-export interface CustomProduct {
-  id: number;
-  userId?: string;
-  productId?: number;
-  customDesignImageUrl?: string;
-  aiRenderedPreviewUrl?: string;
-  notes?: string;
-  estimatedPrice: number;
-  status: CustomProductStatus;
-  adminNotes?: string;
-  
-  // Relations
-  user?: any;
-  product?: any;
-  customColors: CustomProductColor[];
-}
-
-export interface CustomProductColor {
-  id: number;
-  customProductId: number;
-  colorName: string;
-  colorHex?: string;
-  imageUrl?: string;
-  
-  // Relations
-  customProduct: CustomProduct;
-}
+import { AdminOrder, AdminOrdersQuery, OrderService } from '../../../core/order.service';
+import { ProductsPagination } from '../../all-products/Components/products-pagination/products-pagination';
+import { ApiResponse } from '../../../core/IApiResponse';
+import { ToastService } from '../../../core/toast.service';
 
 @Component({
   selector: 'app-orders',
-  imports: [CommonModule, OrderHeader, OrderList, OrderEmptyState],
+  imports: [CommonModule, OrderHeader, OrderList, OrderEmptyState, ProductsPagination],
   templateUrl: './orders.html',
   styleUrl: './orders.css',
 })
-export class Orders {
-  hasOrders = true; // Toggle this to show empty state
+export class Orders implements OnInit {
+  private readonly orderService = inject(OrderService);
+  private readonly toast = inject(ToastService);
+
+  orders: AdminOrder[] = [];
+  filteredOrders: AdminOrder[] = [];
+  loading = false;
+  error = '';
+
+  currentFilter = 'all';
+  currentView: 'cards' | 'table' | 'timeline' = 'cards';
+  currentSort = 'date-desc';
+  currentSearch = '';
+  dateRange: { from?: string; to?: string } = {};
+
+  // Pagination
+  currentPage = 1;
+  pageSize = 20;
+  totalItems = 0;
+
+  // Counts for header badges and stats
+  allCount = 0;
+  pendingCount = 0;
+  processingCount = 0;
+  shippedCount = 0;
+  deliveredCount = 0;
+  cancelledCount = 0;
+  refundedCount = 0;
+
+  ngOnInit(): void {
+    this.loadCounts();
+    this.loadOrders();
+  }
+
+  get hasOrders(): boolean {
+    return this.filteredOrders.length > 0;
+  }
+
+  private loadOrders(): void {
+    this.loading = true;
+    this.error = '';
+
+    const query: AdminOrdersQuery = {
+      pageNumber: this.currentPage,
+      pageSize: this.pageSize,
+      sortKey: this.currentSort,
+      status: this.currentFilter,
+      searchTerm: this.currentSearch || undefined,
+    };
+
+    this.orderService.getAllOrdersForAdmin(query).subscribe({
+      next: (res: ApiResponse<AdminOrder[]>) => {
+        this.loading = false;
+        if (!res.success || !res.data) {
+          this.orders = [];
+          this.filteredOrders = [];
+          this.error = res.message || 'Failed to load orders.';
+          return;
+        }
+
+        this.orders = res.data;
+        this.filteredOrders = this.orders;
+
+        // Update pagination metadata if provided
+        this.currentPage = res.currentPage ?? this.currentPage;
+        this.pageSize = res.pageSize ?? this.pageSize;
+        this.totalItems = res.totalItems ?? this.orders.length;
+      },
+      error: () => {
+        this.loading = false;
+        this.orders = [];
+        this.filteredOrders = [];
+        this.error = 'Failed to load orders.';
+        this.toast.error('Unable to load orders. Please try again.');
+      },
+    });
+  }
+
+  private loadCounts(): void {
+    const base: AdminOrdersQuery = {
+      pageNumber: 1,
+      pageSize: 1,
+      searchTerm: this.currentSearch || undefined,
+    };
+
+    // All
+    this.orderService.getAllOrdersForAdmin({ ...base, status: 'all' }).subscribe({
+      next: (res: ApiResponse<AdminOrder[]>) => {
+        this.allCount = res.totalItems ?? (res.data?.length ?? 0);
+      },
+      error: () => (this.allCount = 0),
+    });
+
+    // Pending
+    this.orderService.getAllOrdersForAdmin({ ...base, status: 'pending' }).subscribe({
+      next: (res: ApiResponse<AdminOrder[]>) => {
+        this.pendingCount = res.totalItems ?? (res.data?.length ?? 0);
+      },
+      error: () => (this.pendingCount = 0),
+    });
+
+    // Processing
+    this.orderService.getAllOrdersForAdmin({ ...base, status: 'processing' }).subscribe({
+      next: (res: ApiResponse<AdminOrder[]>) => {
+        this.processingCount = res.totalItems ?? (res.data?.length ?? 0);
+      },
+      error: () => (this.processingCount = 0),
+    });
+
+    // Shipped
+    this.orderService.getAllOrdersForAdmin({ ...base, status: 'shipped' }).subscribe({
+      next: (res: ApiResponse<AdminOrder[]>) => {
+        this.shippedCount = res.totalItems ?? (res.data?.length ?? 0);
+      },
+      error: () => (this.shippedCount = 0),
+    });
+
+    // Delivered
+    this.orderService.getAllOrdersForAdmin({ ...base, status: 'delivered' }).subscribe({
+      next: (res: ApiResponse<AdminOrder[]>) => {
+        this.deliveredCount = res.totalItems ?? (res.data?.length ?? 0);
+      },
+      error: () => (this.deliveredCount = 0),
+    });
+
+    // Cancelled
+    this.orderService.getAllOrdersForAdmin({ ...base, status: 'cancelled' }).subscribe({
+      next: (res: ApiResponse<AdminOrder[]>) => {
+        this.cancelledCount = res.totalItems ?? (res.data?.length ?? 0);
+      },
+      error: () => (this.cancelledCount = 0),
+    });
+
+    // Refunded
+    this.orderService.getAllOrdersForAdmin({ ...base, status: 'refunded' }).subscribe({
+      next: (res: ApiResponse<AdminOrder[]>) => {
+        this.refundedCount = res.totalItems ?? (res.data?.length ?? 0);
+      },
+      error: () => (this.refundedCount = 0),
+    });
+  }
+
+  private applyFilters(): void {
+    // Backend now handles filtering & sorting; keep filteredOrders in sync
+    this.filteredOrders = this.orders;
+  }
 
   onFilterChange(filter: string) {
-    console.log('Filter changed:', filter);
-    // Handle filter change
+    this.currentFilter = filter;
+    this.currentPage = 1;
+    this.loadOrders();
   }
 
   onViewChange(view: string) {
-    console.log('View changed:', view);
-    // Handle view change
+    if (view === 'cards' || view === 'table' || view === 'timeline') {
+      this.currentView = view;
+    }
   }
 
   onSortChange(sort: string) {
-    console.log('Sort changed:', sort);
-    // Handle sort change
+    this.currentSort = sort;
+    this.currentPage = 1;
+    this.loadOrders();
   }
 
   onSearchChange(search: string) {
-    console.log('Search changed:', search);
-    // Handle search change
+    this.currentSearch = search;
+    this.currentPage = 1;
+    this.loadCounts();
+    this.loadOrders();
   }
 
   onDateRangeChange(dateRange: any) {
-    console.log('Date range changed:', dateRange);
-    // Handle date range change
+    this.dateRange = dateRange;
+  }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.loadOrders();
   }
 }

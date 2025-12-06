@@ -34,12 +34,22 @@
         <!-- Cart Icon -->
         <a class="cart-icon position-relative" routerLink="/Cart" routerLinkActive="active">
           <i class="fas fa-shopping-cart"></i>
-          <span class="cart-badge">3</span>
+          <ng-container *ngIf="totalItems$ | async as total">
+            <span class="cart-badge" *ngIf="total > 0">
+              {{ total }}
+            </span>
+          </ng-container>
         </a>
 
         <!-- Auth Buttons -->
-        <button class="btn btn-outline-custom btn-sm" routerLink="/Login">Login</button>
-        <button class="btn btn-primary-custom btn-sm" routerLink="/Register">Sign Up</button>
+        <ng-container *ngIf="!isAuthenticated; else loggedInActions">
+          <button class="btn btn-outline-custom btn-sm" routerLink="/Login">Login</button>
+          <button class="btn btn-primary-custom btn-sm" routerLink="/Register">Sign Up</button>
+        </ng-container>
+        <ng-template #loggedInActions>
+          <button class="btn btn-outline-custom btn-sm" [routerLink]="dashboardLink">Dashboard</button>
+          <button class="btn btn-primary-custom btn-sm" (click)="logout()">Logout</button>
+        </ng-template>
       </div>
     </div>
   </div>

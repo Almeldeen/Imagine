@@ -1,0 +1,55 @@
+<section class="client-order-confirmation">
+  <div class="coc-background">
+    <div class="coc-orb orb-left"></div>
+    <div class="coc-orb orb-right"></div>
+    <div class="coc-grid"></div>
+  </div>
+
+  <div class="container position-relative">
+    <div class="coc-inner">
+      <header class="coc-header text-center">
+        <p class="coc-eyebrow">Order submitted</p>
+        <h1 class="coc-title">Your order is on its way</h1>
+        <p class="coc-subtitle">
+          We&apos;ve received your order and will start preparing your items shortly.
+          You can review all the details in your client orders area.
+        </p>
+      </header>
+
+      <div class="coc-card glass">
+        <div class="coc-card-body text-center">
+          <div class="coc-icon-ring">
+            <div class="coc-icon-core">
+              <i class="fas fa-check"></i>
+            </div>
+          </div>
+
+          <p class="coc-order-label" *ngIf="orderNumber; else fallbackId">
+            Order number
+          </p>
+          <p class="coc-order-value" *ngIf="orderNumber; else fallbackId">
+            {{ orderNumber }}
+          </p>
+
+          <ng-template #fallbackId>
+            <p class="coc-order-label" *ngIf="orderId">
+              Order ID
+            </p>
+            <p class="coc-order-value" *ngIf="orderId">
+              #{{ orderId }}
+            </p>
+          </ng-template>
+
+          <p class="coc-helper-text">
+            We&apos;ve also saved this in your account. You can track its status from
+            <span class="emphasis">Your orders</span> at any time.
+          </p>
+
+          <button class="btn btn-primary-custom mt-3" type="button" (click)="goToOrders()">
+            View my orders
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

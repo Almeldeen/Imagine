@@ -1,0 +1,234 @@
+<section class="client-customization">
+  <div class="cz-background">
+    <div class="cz-orb orb-left"></div>
+    <div class="cz-orb orb-right"></div>
+    <div class="cz-grid"></div>
+  </div>
+
+  <div class="container position-relative">
+    <div class="cz-inner">
+      <div class="cz-neural-overlay" aria-hidden="true">
+        <svg class="cz-neural-svg" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="czLineGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:#4A90E2;stop-opacity:0" />
+              <stop offset="35%" style="stop-color:#00D9FF;stop-opacity:0.9" />
+              <stop offset="70%" style="stop-color:#8B5CF6;stop-opacity:0.8" />
+              <stop offset="100%" style="stop-color:#FF6EC7;stop-opacity:0" />
+            </linearGradient>
+          </defs>
+
+          <path
+            class="cz-neural-line l1"
+            d="M 0 80 Q 220 40 440 80 T 880 80 T 1200 80"
+            stroke="url(#czLineGradient1)"
+          />
+          <path
+            class="cz-neural-line l2"
+            d="M 0 200 Q 260 260 520 200 T 1040 200 T 1200 200"
+            stroke="url(#czLineGradient1)"
+          />
+          <path
+            class="cz-neural-line l3"
+            d="M 0 320 Q 260 280 520 320 T 1040 320 T 1200 320"
+            stroke="url(#czLineGradient1)"
+          />
+
+          <circle class="cz-neural-node n1" cx="140" cy="80" r="3" />
+          <circle class="cz-neural-node n2" cx="360" cy="70" r="4" />
+          <circle class="cz-neural-node n3" cx="640" cy="90" r="3" />
+          <circle class="cz-neural-node n4" cx="900" cy="70" r="4" />
+          <circle class="cz-neural-node n5" cx="220" cy="200" r="3" />
+          <circle class="cz-neural-node n6" cx="520" cy="210" r="4" />
+          <circle class="cz-neural-node n7" cx="820" cy="190" r="3" />
+          <circle class="cz-neural-node n8" cx="320" cy="320" r="4" />
+          <circle class="cz-neural-node n9" cx="720" cy="330" r="3" />
+        </svg>
+      </div>
+      <header class="cz-header">
+        <div class="cz-header-text">
+          <p class="cz-eyebrow">AI customization studio</p>
+          <h1 class="cz-title">Create your custom AI-generated print</h1>
+          <p class="cz-subtitle">
+            Describe your dream artwork and preview it on premium hoodies and T-shirts.
+          </p>
+        </div>
+      </header>
+
+      <div class="row g-4 cz-layout">
+        <!-- Left column: prompt + selector -->
+        <div class="col-lg-7">
+          <div class="cz-card cz-prompt-card">
+            <div class="cz-prompt-particles">
+              <span class="cz-particle-dot d1"></span>
+              <span class="cz-particle-dot d2"></span>
+              <span class="cz-particle-dot d3"></span>
+              <span class="cz-particle-dot d4"></span>
+              <span class="cz-particle-dot d5"></span>
+              <span class="cz-particle-dot d6"></span>
+            </div>
+            <div class="cz-card-header">
+              <h2>Step 1 &middot; Describe your vision</h2>
+              <p>Write a short prompt for the AI to imagine your perfect print.</p>
+            </div>
+
+            <div class="cz-prompt-body">
+              <label class="cz-label" for="promptTextarea">AI prompt</label>
+              <textarea
+                id="promptTextarea"
+                [(ngModel)]="prompt"
+                rows="6"
+                class="cz-prompt-textarea"
+                placeholder="e.g. Neon cyberpunk city at night, soft purple and blue glow, minimal line art, centered composition"
+              ></textarea>
+              <p class="cz-helper-text">
+                The more specific you are, the more unique your design will feel. Mention style,
+                colors, mood, and layout.
+              </p>
+
+              <div class="cz-actions">
+                <button
+                  type="button"
+                  class="btn btn-primary-custom cz-generate-btn"
+                  [disabled]="!prompt || isGenerating"
+                  (click)="onGenerate()"
+                >
+                  <ng-container *ngIf="!isGenerating">
+                    <i class="fas fa-wand-magic-sparkles"></i>
+                    <span>Generate preview</span>
+                  </ng-container>
+                  <ng-container *ngIf="isGenerating">
+                    <span class="cz-button-spinner"></span>
+                    <span>Imagining your design...</span>
+                  </ng-container>
+                </button>
+
+                <button
+                  type="button"
+                  class="btn cz-clear-btn"
+                  [disabled]="isGenerating && !hasPreview && !prompt"
+                  (click)="onClear()"
+                >
+                  <i class="fas fa-rotate"></i>
+                  <span>Clear</span>
+                </button>
+              </div>
+
+              <div class="cz-loading-hint" *ngIf="isGenerating">
+                <div class="cz-loading-bar">
+                  <div class="cz-loading-fill"></div>
+                </div>
+                <p>Our models are sketching your concept in real time.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="cz-card cz-selector-card mt-3">
+            <div class="cz-card-header">
+              <h2>Step 2 &middot; Choose your base</h2>
+              <p>Select whether you want this print on a hoodie or a T-shirt.</p>
+            </div>
+
+            <div class="cz-type-toggle">
+              <button
+                type="button"
+                class="cz-type-pill"
+                [class.selected]="selectedType === 'hoodie'"
+                (click)="onSelectType('hoodie')"
+              >
+                <div class="pill-icon"><i class="fas fa-user-astronaut"></i></div>
+                <div class="pill-text">
+                  <div class="pill-title">Hoodie</div>
+                  <div class="pill-subtitle">Cozy, heavyweight, perfect for bold AI art.</div>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                class="cz-type-pill"
+                [class.selected]="selectedType === 'tshirt'"
+                (click)="onSelectType('tshirt')"
+              >
+                <div class="pill-icon"><i class="fas fa-tshirt"></i></div>
+                <div class="pill-text">
+                  <div class="pill-title">T-shirt</div>
+                  <div class="pill-subtitle">Lightweight and everyday-ready, with crisp prints.</div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column: preview + future step -->
+        <div class="col-lg-5">
+          <div class="cz-card cz-preview-card" [class.has-preview]="hasPreview">
+            <div class="cz-card-header cz-preview-header">
+              <div>
+                <h2>Live preview</h2>
+                <p>See how your AI artwork will sit on your {{ selectedLabel.toLowerCase() }}.</p>
+              </div>
+              <span class="cz-tag">Frontend only &middot; Mock</span>
+            </div>
+
+            <div class="cz-preview-body">
+              <div class="cz-mannequin" [class.has-preview]="hasPreview">
+                <div class="cz-garment-outline"></div>
+                <div class="cz-print-area" [class.has-preview]="hasPreview">
+                  <div class="cz-print-skeleton" *ngIf="!hasPreview && !isGenerating">
+                    <span>Preview will appear here after generation</span>
+                  </div>
+
+                  <div class="cz-print-loading" *ngIf="isGenerating">
+                    <div class="cz-shimmer"></div>
+                  </div>
+
+                  <div class="cz-print-mock" *ngIf="hasPreview && !isGenerating">
+                    <p class="cz-print-label">AI design placeholder</p>
+                    <p class="cz-print-prompt" *ngIf="prompt">
+                      {{ prompt }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="cz-preview-orbits" aria-hidden="true">
+                <div class="cz-orbit-icon oi-1 glass-effect">
+                  <i class="fas fa-sparkles"></i>
+                </div>
+                <div class="cz-orbit-icon oi-2 glass-effect">
+                  <i class="fas fa-microchip"></i>
+                </div>
+              </div>
+
+              <p class="cz-preview-note">
+                This is a visual mock only. In a future update, we&apos;ll plug in real AI generation
+                and high-fidelity garment renders.
+              </p>
+            </div>
+          </div>
+
+          <div class="cz-card cz-future-card mt-3">
+            <div class="cz-card-header">
+              <h2>Step 3 (coming soon) &middot; See yourself wearing it</h2>
+              <p>Upload a selfie and let AI place your new design on you in real-time.</p>
+            </div>
+            <div class="cz-future-body">
+              <div class="cz-future-avatar">
+                <div class="cz-avatar-ring"></div>
+                <div class="cz-avatar-inner">
+                  <i class="fas fa-user-circle"></i>
+                </div>
+              </div>
+              <div class="cz-future-text">
+                <p>
+                  Soon, you&apos;ll be able to drag in a photo and preview how this hoodie or
+                  T-shirt looks on you, with realistic lighting and fabric effects.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

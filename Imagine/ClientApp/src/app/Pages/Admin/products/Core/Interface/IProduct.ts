@@ -27,6 +27,8 @@ export interface IProduct {
   price: number;
   isActive: boolean;
   isFeatured?: boolean;
+  isPopular?: boolean;
+  isLatest?: boolean;
   viewCount?: number;
   imageUrl?: string;
   createdAt: string;
@@ -59,5 +61,7 @@ export interface CreateProductRequestModel {
   price: number;
   isActive: boolean;
   isFeatured: boolean;
+  isPopular: boolean;
+  isLatest: boolean;
   colors: CreateProductColorModel[];
 }

@@ -1,7 +1,20 @@
-<app-hero-section></app-hero-section>
-<app-categories></app-categories>
-<app-trending></app-trending>
-<app-why-choose-us></app-why-choose-us>
-<app-how-it-works></app-how-it-works>
-<app-testimonials></app-testimonials>
-<app-call-to-action></app-call-to-action>
+<div class="home-loading" *ngIf="isLoading">
+  <div class="home-loading-spinner"></div>
+  <p>Preparing your personalized experience...</p>
+</div>
+
+<div class="home-error" *ngIf="!isLoading && errorMessage">
+  <p>{{ errorMessage }}</p>
+</div>
+
+<ng-container *ngIf="!isLoading && homeData">
+  <app-hero-section [hero]="homeData!.hero"></app-hero-section>
+  <app-categories [categories]="homeData!.featuredCategories"></app-categories>
+  <app-trending [popularProducts]="homeData!.popularProducts"></app-trending>
+  <app-featured-products [products]="homeData!.featuredProducts"></app-featured-products>
+  <app-latest-products [products]="homeData!.latestProducts"></app-latest-products>
+  <app-why-choose-us></app-why-choose-us>
+  <app-how-it-works></app-how-it-works>
+  <app-testimonials></app-testimonials>
+  <app-call-to-action></app-call-to-action>
+</ng-container>

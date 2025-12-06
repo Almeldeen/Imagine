@@ -1,1 +1,13 @@
-<p>user-layout works!</p>
+<div class="client-layout">
+  <app-navbar></app-navbar>
+
+  <main class="client-layout-content">
+    <div class="container position-relative">
+      <div class="client-layout-inner">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </main>
+
+  <app-footer></app-footer>
+</div>

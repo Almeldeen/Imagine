@@ -1,0 +1,121 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { ApiResponse } from './IApiResponse';
+
+export interface LoginRequest {
+  // Identifier can be email or phone number
+  identifier: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  token: string;
+  userId: string;
+  fullName: string;
+  email: string;
+  phoneNumber?: string;
+  roles: string[];
+}
+
+export interface RegisterRequest {
+  fullName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  phoneNumber?: string;
+}
+
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  private readonly baseUrl = environment.apiUrl + '/api/Auth';
+  private readonly tokenKey = 'authToken';
+  private readonly fullNameKey = 'userFullName';
+  private readonly userIdKey = 'userId';
+  private readonly emailKey = 'userEmail';
+  private readonly rolesKey = 'userRoles';
+
+  constructor(private http: HttpClient) {}
+
+  login(payload: LoginRequest): Observable<ApiResponse<LoginResponse>> {
+    return this.http
+      .post<ApiResponse<LoginResponse>>(`${this.baseUrl}/login`, payload)
+      .pipe(
+        tap((res) => {
+          if (res.success && res.data) {
+            this.setSession(res.data);
+          }
+        }),
+      );
+  }
+
+  register(payload: RegisterRequest): Observable<ApiResponse<string>> {
+    return this.http.post<ApiResponse<string>>(`${this.baseUrl}/register`, payload);
+  }
+
+  private setSession(user: LoginResponse): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    localStorage.setItem(this.tokenKey, user.token);
+    localStorage.setItem(this.fullNameKey, user.fullName);
+    localStorage.setItem(this.userIdKey, user.userId);
+    localStorage.setItem(this.emailKey, user.email);
+    localStorage.setItem(this.rolesKey, JSON.stringify(user.roles ?? []));
+  }
+
+  clearSession(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.fullNameKey);
+    localStorage.removeItem(this.userIdKey);
+    localStorage.removeItem(this.emailKey);
+    localStorage.removeItem(this.rolesKey);
+  }
+
+  getToken(): string | null {
+    if (typeof window === 'undefined') {
+      return null;
+    }
+    return localStorage.getItem(this.tokenKey);
+  }
+
+  isAuthenticated(): boolean {
+    return !!this.getToken();
+  }
+
+  getFullName(): string | null {
+    if (typeof window === 'undefined') {
+      return null;
+    }
+    return localStorage.getItem(this.fullNameKey);
+  }
+
+  getUserRoles(): string[] {
+    if (typeof window === 'undefined') {
+      return [];
+    }
+
+    const raw = localStorage.getItem(this.rolesKey);
+    if (!raw) {
+      return [];
+    }
+
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  hasRole(role: string): boolean {
+    const roles = this.getUserRoles();
+    return roles.some(r => r.toLowerCase() === role.toLowerCase());
+  }
+}

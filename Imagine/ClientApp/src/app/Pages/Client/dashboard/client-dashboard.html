@@ -1,0 +1,142 @@
+<section class="client-dashboard">
+  <div class="client-dashboard-header">
+    <div class="header-text">
+      <p class="eyebrow">Your AI wardrobe</p>
+      <h1 class="title">Welcome, {{ fullName }}</h1>
+      <p class="subtitle">Manage your orders, favorites, and profile from a single place.</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/Products" class="btn-ghost">
+        <i class="fas fa-store"></i>
+        <span>Browse products</span>
+      </a>
+      <a routerLink="/Cart" class="btn-primary">
+        <i class="fas fa-shopping-cart"></i>
+        <span>Go to cart</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="client-stats">
+    <div class="stat-card">
+      <div class="stat-label">Total orders</div>
+      <div class="stat-value">{{ stats.totalOrders }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pending</div>
+      <div class="stat-value">{{ stats.pendingOrders }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Items in cart</div>
+      <div class="stat-value">{{ stats.cartItems }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Wishlist</div>
+      <div class="stat-value">{{ stats.wishlistCount }}</div>
+    </div>
+  </div>
+
+  <div class="client-main-grid">
+    <div class="client-panel recent-orders">
+      <div class="panel-header">
+        <h2>Recent orders</h2>
+        <a routerLink="/client/orders" class="panel-link">View all</a>
+      </div>
+      <ul class="orders-list">
+        <li *ngFor="let order of recentOrders" class="order-item" (click)="onRecentOrderClick(order)">
+          <div class="order-thumb">
+            <img [src]="order.thumbnailUrl" [alt]="order.orderNumber" />
+          </div>
+          <div class="order-main">
+            <div class="order-top">
+              <span class="order-number">{{ order.orderNumber }}</span>
+              <span class="order-status" [ngClass]="'status-' + order.status.toLowerCase()">
+                {{ order.status }}
+              </span>
+            </div>
+            <div class="order-meta">
+              <span class="order-date">{{ order.createdAt | date: 'mediumDate' }}</span>
+              <span class="order-items">{{ order.itemsCount }} items</span>
+            </div>
+          </div>
+          <div class="order-total">
+            <span>${{ order.total | number: '1.2-2' }}</span>
+          </div>
+        </li>
+        <li *ngIf="!recentOrders.length" class="order-empty">
+          <span>You have no orders yet.</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="client-panel quick-actions">
+      <div class="panel-header">
+        <h2>Quick actions</h2>
+      </div>
+      <div class="quick-actions-grid">
+        <button type="button" class="quick-action" routerLink="/client/orders">
+          <i class="fas fa-receipt"></i>
+          <div>
+            <div class="quick-title">View orders</div>
+            <div class="quick-subtitle">Track and manage your purchases</div>
+          </div>
+        </button>
+        <button type="button" class="quick-action" routerLink="/client/profile">
+          <i class="fas fa-user"></i>
+          <div>
+            <div class="quick-title">Edit profile</div>
+            <div class="quick-subtitle">Update your personal information</div>
+          </div>
+        </button>
+        <button type="button" class="quick-action" routerLink="/client/addresses">
+          <i class="fas fa-map-marker-alt"></i>
+          <div>
+            <div class="quick-title">Manage addresses</div>
+            <div class="quick-subtitle">Control your shipping locations</div>
+          </div>
+        </button>
+        <button type="button" class="quick-action" routerLink="/client/wishlist">
+          <i class="fas fa-heart"></i>
+          <div>
+            <div class="quick-title">Wishlist</div>
+            <div class="quick-subtitle">View products you have saved</div>
+          </div>
+        </button>
+        <button type="button" class="quick-action" routerLink="/client/customize">
+          <i class="fas fa-wand-magic-sparkles"></i>
+          <div>
+            <div class="quick-title">AI customization studio</div>
+            <div class="quick-subtitle">Design a custom AI print for your next hoodie</div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <section class="client-recommendations">
+    <div class="recommendations-header">
+      <h2>Recommended for you</h2>
+      <p>Based on what other customers love.</p>
+    </div>
+
+    <div *ngIf="loadingRecommendations" class="loader-wrapper">
+      <div class="loader-spinner"></div>
+      <p class="loader-text">Loading recommendations...</p>
+    </div>
+
+    <div *ngIf="!loadingRecommendations && recommendationsError" class="recommendations-error">
+      {{ recommendationsError }}
+    </div>
+
+    <div *ngIf="!loadingRecommendations && !recommendationsError">
+      <div class="row g-4">
+        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6" *ngFor="let product of recommendedProducts">
+          <app-product-card [product]="product"></app-product-card>
+        </div>
+      </div>
+      <p *ngIf="!recommendedProducts.length" class="recommendations-empty">
+        No recommendations available yet. Check back soon.
+      </p>
+    </div>
+  </section>
+</section>

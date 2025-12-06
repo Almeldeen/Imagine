@@ -23,6 +23,12 @@ namespace Application.Features.Products.Commands.CreateProduct
         // Featured flag for highlighting products in UI
         public bool IsFeatured { get; set; } = false;
 
+        // Popular flag for trending/popular sections
+        public bool IsPopular { get; set; } = false;
+
+        // Latest flag for latest drops sections
+        public bool IsLatest { get; set; } = false;
+
         // Required relationship: Product requires CategoryId in domain
         public int CategoryId { get; set; }
 

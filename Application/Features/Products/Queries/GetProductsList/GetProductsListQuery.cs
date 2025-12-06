@@ -14,8 +14,15 @@ namespace Application.Features.Products.Queries.GetProductsList
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
 
-        // Sorting: Name | Price | CreatedAt | UpdatedAt | ImageUrl
+        // Sorting: Name | Price | CreatedAt | UpdatedAt | ImageUrl | ViewCount
         public string? SortBy { get; set; }
         public SortDirection SortDirection { get; set; } = SortDirection.Asc;
+
+        // Filters
+        public int? CategoryId { get; set; }
+        public string? ColorHex { get; set; }
+        public decimal? MinPrice { get; set; }
+        public decimal? MaxPrice { get; set; }
+        public bool? IsActive { get; set; }
     }
 }

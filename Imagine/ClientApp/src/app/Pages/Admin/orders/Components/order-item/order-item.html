@@ -3,17 +3,17 @@
   <!-- Order Header -->
   <div class="order-header">
     <div class="order-info">
-      <div class="order-number">#ORD-2024-001847</div>
+      <div class="order-number">{{ order.orderNumber }}</div>
       <div class="order-date">
         <i class="fas fa-calendar"></i>
-        <span>Nov 17, 2024 - 2:30 PM</span>
+        <span>{{ order.orderDate | date: 'medium' }}</span>
       </div>
     </div>
     
     <div class="order-status">
-      <span class="status-badge processing">
-        <i class="fas fa-cog fa-spin"></i>
-        Processing
+      <span class="status-badge" [ngClass]="order.status.toLowerCase()">
+        <i class="fas fa-circle"></i>
+        {{ order.status }}
       </span>
     </div>
   </div>
@@ -22,7 +22,7 @@
   <div class="order-card-summary">
     <div class="order-card-total">
       <span class="order-card-total-label">Total</span>
-      <span class="order-card-total-value">$172.76</span>
+      <span class="order-card-total-value">{{ order.totalAmount | currency }}</span>
     </div>
   </div>
 
@@ -50,15 +50,16 @@
     <div class="order-modal-wrapper">
       <div class="order-modal-header">
         <div class="order-modal-title-block">
-          <div class="order-number">#ORD-2024-001847</div>
+          <div class="order-number">{{ order.orderNumber }}</div>
           <div class="order-date">
             <i class="fas fa-calendar"></i>
-            <span>Nov 17, 2024 - 2:30 PM</span>
+            <span>{{ order.orderDate | date: 'medium' }}</span>
           </div>
         </div>
         <div class="order-modal-status-block">
-          <span class="status-badge processing">
-            <i class="fas fa-cog fa-spin"></i>
+          <span class="status-badge" [ngClass]="order.status.toLowerCase()">
+            <i class="fas fa-circle"></i>
+            {{ order.status }}
             Processing
           </span>
           <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
@@ -78,15 +79,15 @@
               <div class="customer-label-row">
                 <span class="customer-label">Customer</span>
               </div>
-              <h4 class="customer-name">Sarah Johnson</h4>
+              <h4 class="customer-name">{{ order.userName || 'Guest user' }}</h4>
               <div class="customer-contact-row">
                 <div class="customer-contact-item">
                   <i class="fas fa-envelope"></i>
-                  <span class="customer-email">sarah.johnson@email.com</span>
+                  <span class="customer-email">{{ order.userEmail || 'N/A' }}</span>
                 </div>
                 <div class="customer-contact-item">
                   <i class="fas fa-phone-alt"></i>
-                  <span class="customer-phone">+1 (555) 123-4567</span>
+                  <span class="customer-phone">{{ order.userPhoneNumber || 'N/A' }}</span>
                 </div>
               </div>
             </div>
@@ -139,7 +140,7 @@
           <!-- Items (reused) -->
           <div class="order-items">
             <div class="items-header">
-              <h5>Order Items (3)</h5>
+              <h5>Order Items ({{ order.items?.length || 0 }})</h5>
             </div>
             <div class="items-list">
               <!-- Standard product -->

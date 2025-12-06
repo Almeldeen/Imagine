@@ -2,6 +2,13 @@
 <div class="orders-page">
   <!-- Order Header -->
   <app-order-header 
+    [allCount]="allCount"
+    [pendingCount]="pendingCount"
+    [processingCount]="processingCount"
+    [shippedCount]="shippedCount"
+    [deliveredCount]="deliveredCount"
+    [cancelledCount]="cancelledCount"
+    [refundedCount]="refundedCount"
     (filterChange)="onFilterChange($event)"
     (viewChange)="onViewChange($event)"
     (sortChange)="onSortChange($event)"
@@ -9,10 +16,30 @@
     (dateRangeChange)="onDateRangeChange($event)">
   </app-order-header>
 
+  <!-- Simple loading state -->
+  <div class="orders-loading" *ngIf="loading && !error">
+    Loading orders...
+  </div>
+
+  <!-- Error state -->
+  <div class="orders-error" *ngIf="!loading && error">
+    {{ error }}
+  </div>
+
   <!-- Order List Component (when orders exist) -->
-  <app-order-list *ngIf="hasOrders"></app-order-list>
+  <app-order-list *ngIf="!loading && !error && hasOrders" [orders]="filteredOrders"></app-order-list>
+
+  <!-- Pagination (when more items than one page) -->
+  <div class="pagination-wrapper" *ngIf="!loading && !error && totalItems > pageSize">
+    <app-products-pagination
+      [page]="currentPage"
+      [pageSize]="pageSize"
+      [total]="totalItems"
+      (pageChange)="onPageChange($event)">
+    </app-products-pagination>
+  </div>
 
   <!-- Empty State Component (when no orders) -->
-  <app-order-empty-state *ngIf="!hasOrders">
+  <app-order-empty-state *ngIf="!loading && !error && !hasOrders">
   </app-order-empty-state>
 </div>

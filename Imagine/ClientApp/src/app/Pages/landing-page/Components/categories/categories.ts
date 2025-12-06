@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { ICategory } from '../../../Admin/category/Core/Interface/ICategory';
 
 @Component({
   selector: 'app-categories',
@@ -7,5 +8,5 @@ import { Component } from '@angular/core';
   styleUrl: './categories.css',
 })
 export class Categories {
-
+  @Input() categories: ICategory[] = [];
 }

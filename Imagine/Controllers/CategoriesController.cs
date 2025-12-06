@@ -5,6 +5,7 @@ using Application.Features.Categories.Commands.UpdateCategory;
 using Application.Features.Categories.DTOs;
 using Application.Features.Categories.Queries.GetCategoryById;
 using Application.Features.Categories.Queries.GetCategoriesList;
+using Application.Features.Categories.Queries.GetFeaturedCategories;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +27,14 @@ namespace Imagine.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(BaseResponse<List<CategoryDto>>), StatusCodes.Status200OK)]
         public async Task<ActionResult<BaseResponse<List<CategoryDto>>>> GetCategories([FromQuery] GetCategoriesListQuery query, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(query, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpGet("featured")]
+        [ProducesResponseType(typeof(BaseResponse<List<CategoryDto>>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<BaseResponse<List<CategoryDto>>>> GetFeaturedCategories([FromQuery] GetFeaturedCategoriesQuery query, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(query, cancellationToken);
             return Ok(result);

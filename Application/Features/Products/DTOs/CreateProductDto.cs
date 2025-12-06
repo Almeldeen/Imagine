@@ -12,5 +12,7 @@ namespace Application.Features.Products.DTOs
         public decimal Price { get; set; }
         public bool IsActive { get; set; } = true;
         public bool IsFeatured { get; set; } = false;
+        public bool IsPopular { get; set; } = false;
+        public bool IsLatest { get; set; } = false;
     }
 }

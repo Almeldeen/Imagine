@@ -68,20 +68,21 @@
         <div class="hero-badge mb-3">
           <span class="badge-pulse"></span>
           <i class="fas fa-brain me-2"></i>
-          <span>AI-Powered Customization</span>
+          <span>{{ hero?.badgeText || 'AI-Powered Customization' }}</span>
         </div>
         
         <!-- Main Headline -->
         <h1 class="hero-title mb-4">
-          Create Your
-          <span class="gradient-text d-block">Perfect Design</span>
+          {{ hero?.titleLine1 || 'Create Your' }}
+          <span class="gradient-text d-block">{{ hero?.titleLine2 || 'Perfect Design' }}</span>
         </h1>
         
         <!-- Tagline -->
         <p class="hero-subtitle mb-4">
-          Design custom hoodies and T-shirts with AI assistance. 
-          Choose colors, patterns, or upload your own artwork. 
-          Your imagination, our technology.
+          {{
+            hero?.subtitle
+              || 'Design custom hoodies and T-shirts with AI assistance. Choose colors, patterns, or upload your own artwork. Your imagination, our technology.'
+          }}
         </p>
 
         <!-- CTA Button with Enhanced Animation -->
@@ -89,7 +90,7 @@
           <button class="btn btn-primary-custom btn-lg cta-main">
             <span class="btn-content">
               <i class="fas fa-wand-magic-sparkles me-2"></i>
-              <span>Start Customizing</span>
+              <span>{{ hero?.primaryCtaText || 'Start Customizing' }}</span>
             </span>
             <span class="btn-glow"></span>
             <span class="btn-particles">
@@ -100,7 +101,7 @@
           </button>
           <button class="btn btn-outline-custom btn-lg ms-3">
             <i class="fas fa-play-circle me-2"></i>
-            Watch Demo
+            {{ hero?.secondaryCtaText || 'Watch Demo' }}
           </button>
         </div>
 
@@ -149,7 +150,10 @@
             </div>
             
             <!-- Product Image -->
-            <img src="/assets/images/hero-banner.png" alt="AI-Customized Apparel" class="product-image">
+            <img
+              [src]="hero?.bannerImageUrl || '/assets/images/hero-banner.png'"
+              alt="AI-Customized Apparel"
+              class="product-image">
             
             <!-- Holographic Overlay -->
             <div class="holographic-overlay"></div>

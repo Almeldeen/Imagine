@@ -1,0 +1,23 @@
+.client-generic-section {
+  padding: 2.5rem 0 3rem 0;
+  color: #e5e7eb;
+}
+
+.section-inner {
+  border-radius: 1.5rem;
+  background: rgba(15, 23, 42, 0.96);
+  border: 1px solid rgba(74, 144, 226, 0.4);
+  padding: 1.6rem 1.8rem;
+  box-shadow: 0 20px 55px rgba(15, 23, 42, 0.95);
+}
+
+.section-inner h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.4rem;
+  margin-bottom: 0.6rem;
+}
+
+.section-inner p {
+  font-size: 0.95rem;
+  color: #9ca3af;
+}

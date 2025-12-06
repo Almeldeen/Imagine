@@ -2,6 +2,11 @@
 <div class="products-page">
   <!-- Product Header -->
   <app-product-header 
+    [allCount]="allCount"
+    [activeCount]="activeCount"
+    [draftCount]="draftCount"
+    [archivedCount]="archivedCount"
+    (searchChange)="onSearchChange($event)"
     (filterChange)="onFilterChange($event)"
     (viewChange)="onViewChange($event)"
     (sortChange)="onSortChange($event)">
@@ -13,6 +18,16 @@
     [products]="products"
     [viewMode]="currentView">
   </app-product-list>
+
+  <!-- Pagination (when more items than current page size) -->
+  <div class="pagination-wrapper" *ngIf="totalItems > pageSize">
+    <app-products-pagination
+      [page]="currentPage"
+      [pageSize]="pageSize"
+      [total]="totalItems"
+      (pageChange)="onPageChange($event)">
+    </app-products-pagination>
+  </div>
 
   <!-- Empty State Component (when no products) -->
   <app-product-empty-state *ngIf="!hasProducts">

@@ -1,0 +1,31 @@
+.not-found-page .not-found-card {
+  text-align: center;
+}
+
+.not-found-visual {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 1.5rem auto;
+}
+
+.not-found-visual .planet {
+  width: 80px;
+  height: 80px;
+  border-radius: 999px;
+  margin: 0 auto;
+  background: radial-gradient(circle at top, rgba(56, 189, 248, 0.9), rgba(15, 23, 42, 0.9));
+  box-shadow: 0 0 40px rgba(56, 189, 248, 0.5);
+}
+
+.not-found-visual .ring {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 120px;
+  height: 40px;
+  border-radius: 999px;
+  border: 2px solid rgba(148, 163, 184, 0.6);
+  transform: rotate(-20deg);
+  box-shadow: 0 0 20px rgba(148, 163, 184, 0.5);
+}

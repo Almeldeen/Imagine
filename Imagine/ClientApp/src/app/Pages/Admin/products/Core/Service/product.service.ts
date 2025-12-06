@@ -11,6 +11,11 @@ export interface ProductsListQuery {
   pageSize?: number;
   sortBy?: string;
   sortDirection?: 'Asc' | 'Desc';
+  categoryId?: number;
+  colorHex?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  isActive?: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -28,6 +33,11 @@ export class ProductService {
       if (query.pageSize) params = params.set('pageSize', query.pageSize);
       if (query.sortBy) params = params.set('sortBy', query.sortBy);
       if (query.sortDirection) params = params.set('sortDirection', query.sortDirection);
+      if (query.categoryId != null) params = params.set('categoryId', query.categoryId);
+      if (query.colorHex) params = params.set('colorHex', query.colorHex);
+      if (query.minPrice != null) params = params.set('minPrice', query.minPrice);
+      if (query.maxPrice != null) params = params.set('maxPrice', query.maxPrice);
+      if (query.isActive != null) params = params.set('isActive', String(query.isActive));
     }
 
     return this.http.get<ApiResponse<IProduct[]>>(this.baseUrl, { params });
@@ -39,6 +49,21 @@ export class ProductService {
 
   create(form: FormData): Observable<ApiResponse<number>> {
     return this.http.post<ApiResponse<number>>(this.baseUrl, form);
+  }
+
+  getPopularProducts(take?: number): Observable<ApiResponse<IProduct[]>> {
+    const params = take ? new HttpParams().set('take', take) : undefined;
+    return this.http.get<ApiResponse<IProduct[]>>(`${this.baseUrl}/popular`, { params });
+  }
+
+  getFeaturedProducts(take?: number): Observable<ApiResponse<IProduct[]>> {
+    const params = take ? new HttpParams().set('take', take) : undefined;
+    return this.http.get<ApiResponse<IProduct[]>>(`${this.baseUrl}/featured`, { params });
+  }
+
+  getLatestProducts(take?: number): Observable<ApiResponse<IProduct[]>> {
+    const params = take ? new HttpParams().set('take', take) : undefined;
+    return this.http.get<ApiResponse<IProduct[]>>(`${this.baseUrl}/latest`, { params });
   }
 
   // Create full product (basic info + colors + images) in a single request
@@ -53,6 +78,8 @@ export class ProductService {
       price: Number(model.price),
       isActive: model.isActive,
       isFeatured: model.isFeatured,
+      isPopular: model.isPopular,
+      isLatest: model.isLatest,
       colors: (model.colors || []).map(color => ({
         colorName: color.colorName,
         colorHex: color.colorHex,

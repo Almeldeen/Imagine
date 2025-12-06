@@ -25,25 +25,29 @@
   <div class="header-filters">
     <div class="search-box">
       <i class="fas fa-search search-icon"></i>
-      <input type="text" placeholder="Search products..." class="search-input">
+      <input
+        type="text"
+        placeholder="Search products..."
+        class="search-input"
+        (input)="onSearchChange($any($event.target).value)">
     </div>
 
     <div class="filter-buttons">
-      <button class="filter-btn active" (click)="onFilterChange('all')">
+      <button class="filter-btn" [class.active]="currentFilter === 'all'" (click)="onFilterChange('all')">
         <span>All Products</span>
-        <span class="filter-count">248</span>
+        <span class="filter-count">{{ allCount }}</span>
       </button>
-      <button class="filter-btn" (click)="onFilterChange('active')">
+      <button class="filter-btn" [class.active]="currentFilter === 'active'" (click)="onFilterChange('active')">
         <span>Active</span>
-        <span class="filter-count">195</span>
+        <span class="filter-count">{{ activeCount }}</span>
       </button>
-      <button class="filter-btn" (click)="onFilterChange('draft')">
+      <button class="filter-btn" [class.active]="currentFilter === 'draft'" (click)="onFilterChange('draft')">
         <span>Draft</span>
-        <span class="filter-count">32</span>
+        <span class="filter-count">{{ draftCount }}</span>
       </button>
-      <button class="filter-btn" (click)="onFilterChange('archived')">
+      <button class="filter-btn" [class.active]="currentFilter === 'archived'" (click)="onFilterChange('archived')">
         <span>Archived</span>
-        <span class="filter-count">21</span>
+        <span class="filter-count">{{ archivedCount }}</span>
       </button>
     </div>
 
@@ -60,10 +64,10 @@
       </div>
 
       <div class="view-toggle">
-        <button class="view-btn active" (click)="onViewChange('grid')">
+        <button class="view-btn" [class.active]="currentView === 'grid'" (click)="onViewChange('grid')">
           <i class="fas fa-th"></i>
         </button>
-        <button class="view-btn" (click)="onViewChange('list')">
+        <button class="view-btn" [class.active]="currentView === 'list'" (click)="onViewChange('list')">
           <i class="fas fa-list"></i>
         </button>
       </div>

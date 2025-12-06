@@ -5,6 +5,7 @@ import { About } from './Pages/about/about';
 import { AllProducts } from './Pages/all-products/all-products';
 import { Contact } from './Pages/contact/contact';
 import { Cart } from './Pages/cart/cart';
+import { Checkout } from './Pages/checkout/checkout';
 import { ProductDetails } from './Pages/product-details/product-details';
 import { Login } from './Pages/login/login';
 import { Register } from './Pages/register/register';
@@ -15,6 +16,11 @@ import { Products } from './Pages/Admin/products/products';
 import { AddProduct } from './Pages/Admin/add-product/add-product';
 import { Customers } from './Pages/Admin/customers/customers';
 import { Orders } from './Pages/Admin/orders/orders';
+import { Unauthorized } from './Pages/unauthorized/unauthorized';
+import { NotFound } from './Pages/not-found/not-found';
+import { authGuard } from './core/auth.guard';
+import { adminGuard } from './core/admin.guard';
+import { clientGuard } from './core/client.guard';
 
 export const routes: Routes = [
     {
@@ -57,11 +63,22 @@ export const routes: Routes = [
             {
                 path:"Cart",
                 component:Cart
+            },
+            {
+                path:"Checkout",
+                component:Checkout,
+                canActivate:[authGuard]
             }
         ]
     },
-     {
+    {
+        path: 'client',
+        canActivate: [clientGuard],
+        loadChildren: () => import('./Pages/Client/client.routes').then(m => m.CLIENT_ROUTES)
+    },
+    {
         path:"admin",
+        canActivate: [adminGuard],
         component:AdminLayout,
         children:[
             {
@@ -95,5 +112,13 @@ export const routes: Routes = [
             }
          
         ]
+    },
+    {
+        path: 'unauthorized',
+        component: Unauthorized
+    },
+    {
+        path: '**',
+        component: NotFound
     }
 ];

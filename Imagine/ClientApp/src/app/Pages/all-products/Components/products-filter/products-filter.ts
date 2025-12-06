@@ -11,34 +11,17 @@ import { FormsModule } from '@angular/forms';
 })
 export class ProductsFilter {
   @Output() searchChange = new EventEmitter<string>();
-  @Output() filterChange = new EventEmitter<{ category?: string; aiOnly?: boolean }>();
   @Output() sortChange = new EventEmitter<string>();
 
   search = '';
-  selectedCategory = 'all';
-  aiOnly = false;
-  sortKey = 'name';
+  sortKey = 'relevance';
 
   onSearchChange() {
     this.searchChange.emit(this.search);
   }
 
-  setCategory(category: string) {
-    this.selectedCategory = category;
-    this.emitFilter();
-  }
-
-  toggleAiOnly() {
-    this.aiOnly = !this.aiOnly;
-    this.emitFilter();
-  }
-
   onSortChange(value: string) {
     this.sortKey = value;
     this.sortChange.emit(this.sortKey);
-  }
-
-  private emitFilter() {
-    this.filterChange.emit({ category: this.selectedCategory, aiOnly: this.aiOnly });
   }
 }

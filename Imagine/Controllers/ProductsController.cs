@@ -5,6 +5,9 @@ using Application.Features.Products.Commands.UpdateProduct;
 using Application.Features.Products.DTOs;
 using Application.Features.Products.Queries.GetProductById;
 using Application.Features.Products.Queries.GetProductsList;
+using Application.Features.Products.Queries.GetFeaturedProducts;
+using Application.Features.Products.Queries.GetLatestProducts;
+using Application.Features.Products.Queries.GetPopularProducts;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
@@ -81,6 +84,8 @@ namespace Imagine.Controllers
                 Price = dto.Price,
                 IsActive = dto.IsActive,
                 IsFeatured = dto.IsFeatured,
+                IsPopular = dto.IsPopular,
+                IsLatest = dto.IsLatest,
                 CategoryId = dto.CategoryId,
                 ImageStream = form.MainImageFile?.OpenReadStream(),
                 ImageFileName = form.MainImageFile?.FileName,
@@ -138,10 +143,10 @@ namespace Imagine.Controllers
             return Ok(result);
         }
 
-        // إرجاع منتج واحد حسب المعرّف
+        // إرجاع منتج واحد حسب المعرّف مع تفاصيل الألوان والصور
         [HttpGet("{id:int}")]
-        [ProducesResponseType(typeof(BaseResponse<ProductDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<BaseResponse<ProductDto>>> GetById([FromRoute] int id, CancellationToken ct)
+        [ProducesResponseType(typeof(BaseResponse<ProductDetailsDto>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<BaseResponse<ProductDetailsDto>>> GetById([FromRoute] int id, CancellationToken ct)
         {
             var result = await _mediator.Send(new GetProductByIdQuery { Id = id }, ct);
             return Ok(result);
@@ -151,6 +156,30 @@ namespace Imagine.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(BaseResponse<List<ProductListDto>>), StatusCodes.Status200OK)]
         public async Task<ActionResult<BaseResponse<List<ProductListDto>>>> GetList([FromQuery] GetProductsListQuery query, CancellationToken ct)
+        {
+            var result = await _mediator.Send(query, ct);
+            return Ok(result);
+        }
+
+        [HttpGet("featured")]
+        [ProducesResponseType(typeof(BaseResponse<List<ProductListDto>>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<BaseResponse<List<ProductListDto>>>> GetFeatured([FromQuery] GetFeaturedProductsQuery query, CancellationToken ct)
+        {
+            var result = await _mediator.Send(query, ct);
+            return Ok(result);
+        }
+
+        [HttpGet("latest")]
+        [ProducesResponseType(typeof(BaseResponse<List<ProductListDto>>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<BaseResponse<List<ProductListDto>>>> GetLatest([FromQuery] GetLatestProductsQuery query, CancellationToken ct)
+        {
+            var result = await _mediator.Send(query, ct);
+            return Ok(result);
+        }
+
+        [HttpGet("popular")]
+        [ProducesResponseType(typeof(BaseResponse<List<ProductListDto>>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<BaseResponse<List<ProductListDto>>>> GetPopular([FromQuery] GetPopularProductsQuery query, CancellationToken ct)
         {
             var result = await _mediator.Send(query, ct);
             return Ok(result);

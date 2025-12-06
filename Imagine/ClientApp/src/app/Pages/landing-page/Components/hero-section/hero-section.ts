@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { HeroSectionModel } from '../../Core/Interface/IHome';
 
 @Component({
   selector: 'app-hero-section',
@@ -7,5 +8,5 @@ import { Component } from '@angular/core';
   styleUrl: './hero-section.css',
 })
 export class HeroSection {
-
+  @Input() hero: HeroSectionModel | null = null;
 }

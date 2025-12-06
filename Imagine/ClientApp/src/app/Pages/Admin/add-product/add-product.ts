@@ -37,6 +37,8 @@ interface Product {
   mainImageUrl: string;
   isActive: boolean;
   isFeatured: boolean;
+  isPopular: boolean;
+  isLatest: boolean;
   colors: ProductColor[];
   mainImageFile?: File;
 }
@@ -65,6 +67,8 @@ export class AddProduct implements OnInit {
     mainImageUrl: '',
     isActive: true,
     isFeatured: false,
+    isPopular: false,
+    isLatest: false,
     colors: []
   };
 
@@ -245,6 +249,8 @@ export class AddProduct implements OnInit {
       price: this.product.basePrice,
       isActive: this.product.isActive,
       isFeatured: this.product.isFeatured,
+      isPopular: this.product.isPopular,
+      isLatest: this.product.isLatest,
       colors: this.product.colors.map((color, colorIndex) => ({
         colorName: color.colorName,
         colorHex: color.colorHex,

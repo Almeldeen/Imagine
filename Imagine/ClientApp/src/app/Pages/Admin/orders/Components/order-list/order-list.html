@@ -1,12 +1,4 @@
 <!-- Order List Grid -->
-<div class="order-grid">
-  <!-- Repeat for each order -->
-  <app-order-item></app-order-item>
-  <app-order-item></app-order-item>
-  <app-order-item></app-order-item>
-  <app-order-item></app-order-item>
-  <app-order-item></app-order-item>
-  <app-order-item></app-order-item>
-  <app-order-item></app-order-item>
-  <app-order-item></app-order-item>
+<div class="order-grid" *ngIf="orders && orders.length">
+  <app-order-item *ngFor="let order of orders" [order]="order"></app-order-item>
 </div>

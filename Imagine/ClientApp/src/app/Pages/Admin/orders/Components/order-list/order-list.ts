@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OrderItem } from '../order-item/order-item';
+import { AdminOrder } from '../../../../../core/order.service';
 
 @Component({
   selector: 'app-order-list',
@@ -9,5 +10,5 @@ import { OrderItem } from '../order-item/order-item';
   styleUrls: ['./order-list.css'],
 })
 export class OrderList {
-
+  @Input() orders: AdminOrder[] = [];
 }

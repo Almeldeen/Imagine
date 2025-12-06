@@ -1,6 +1,7 @@
-import { Component, TemplateRef, inject } from '@angular/core';
+import { Component, TemplateRef, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { AdminOrder } from '../../../../../core/order.service';
 
 @Component({
   selector: 'app-order-item',
@@ -9,6 +10,7 @@ import { NgbModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./order-item.css'],
 })
 export class OrderItem {
+  @Input() order!: AdminOrder;
   private modalService = inject(NgbModal);
 
   openOrderDetails(content: TemplateRef<any>) {

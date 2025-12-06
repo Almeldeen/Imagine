@@ -1,0 +1,23 @@
+<!-- Featured Products Section -->
+<section class="home-products home-products--featured" *ngIf="topProducts.length">
+  <div class="container position-relative">
+    <div class="home-products__header text-center mb-5">
+      <div class="home-products__badge">
+        <span class="badge-dot"></span>
+        <span>Editors Picks</span>
+      </div>
+      <h2 class="home-products__title">
+        Featured <span class="gradient-text">Products</span>
+      </h2>
+      <p class="home-products__subtitle">
+        Hand-picked designs powered by AI customization and premium fabrics.
+      </p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+      <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6" *ngFor="let product of topProducts">
+        <app-product-card [product]="product"></app-product-card>
+      </div>
+    </div>
+  </div>
+</section>

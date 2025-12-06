@@ -344,7 +344,34 @@ Category list uses a shared `ConfirmationModal` for delete confirmation and then
 
 ---
 
-## 4. SweetAlert2 Setup
+## 4. Auth & Identity (Login / Register)
+
+The API exposes simple JWT-based authentication endpoints under `api/Auth`:
+
+- `POST /api/Auth/register` – accepts a `RegisterRequestDto` (fullName?, email, phoneNumber, password, confirmPassword) and returns `BaseResponse<string>` where `data` is the new user id.
+- `POST /api/Auth/login` – accepts a `LoginRequestDto` (identifier, password) and returns `BaseResponse<LoginResultDto>` with:
+  - `token` – JWT access token
+  - `userId` – Identity user id
+  - `email`, `phoneNumber`, `fullName`
+  - `roles` – list of role names (e.g. `Admin`, `Client`)
+
+Implementation details:
+
+- Uses ASP.NET Core Identity (`ApplicationUser : IdentityUser`) with roles `Admin` and `Client` seeded via `DatabaseSeeder`.
+- Commands/queries live under `Application/Features/Users` (e.g. `RegisterUserCommand`, `LoginUserQuery`).
+- JWT generation is centralized in `IJwtService` / `JwtService` and wired in `Infrastructure/DependencyInjection`.
+- Tokens are currently configured **without an explicit expiration** and validation uses `ValidateLifetime = false`, which makes tokens effectively non-expiring.
+
+> ⚠ **Security note**: Non-expiring tokens are not recommended for production. For real deployments you should:
+> - Add token expiry (`exp` claim) and enable `ValidateLifetime`.
+> - Consider short-lived access tokens with refresh tokens and rotation.
+> - Revoke tokens on password change / logout where appropriate.
+
+The Angular client uses `AuthService` in `ClientApp/src/app/core/auth.service.ts` to call these endpoints and store the token + roles in `localStorage`, and a simple route guard protects the `/client` area.
+
+---
+
+## 5. SweetAlert2 Setup
 
 To use SweetAlert2 in the Angular ClientApp:
 

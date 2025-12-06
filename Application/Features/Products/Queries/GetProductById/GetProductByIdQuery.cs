@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.Features.Products.Queries.GetProductById
 {
-    public class GetProductByIdQuery : IRequest<BaseResponse<ProductDto>>
+    public class GetProductByIdQuery : IRequest<BaseResponse<ProductDetailsDto>>
     {
         // Target product Id
         public int Id { get; set; }

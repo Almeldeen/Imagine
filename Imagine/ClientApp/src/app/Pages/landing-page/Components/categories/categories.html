@@ -25,7 +25,7 @@
     <!-- Category Cards Grid -->
     <div class="row g-4 category-grid justify-content-center">
       
-      <!-- Hoodies Card -->
+      <!-- Hoodies Card (first featured category) -->
       <div class="col-lg-5 col-md-6">
         <div class="category-card">
           <!-- Card Glow Effect -->
@@ -37,7 +37,10 @@
           <!-- Card Content -->
           <div class="card-image-wrapper">
             <div class="image-glow-ring"></div>
-            <img src="/assets/images/Hoodie.png" alt="Hoodies" class="category-image">
+            <img
+              [src]="categories[0]?.imageUrl || '/assets/images/Hoodie.png'"
+              [alt]="categories[0]?.name || 'Hoodies'"
+              class="category-image">
             <div class="image-overlay"></div>
           </div>
           
@@ -45,8 +48,10 @@
             <div class="category-icon">
               <i class="fas fa-tshirt"></i>
             </div>
-            <h3 class="category-name">Hoodies</h3>
-            <p class="category-tagline">Premium comfort meets custom style</p>
+            <h3 class="category-name">{{ categories[0]?.name || 'Hoodies' }}</h3>
+            <p class="category-tagline">
+              {{ categories[0]?.description || 'Premium comfort meets custom style' }}
+            </p>
             
             <!-- Card Features -->
             <div class="card-features">
@@ -62,7 +67,7 @@
             
             <!-- Explore Button -->
             <button class="btn-explore">
-              <span>Explore Hoodies</span>
+              <span>Explore {{ categories[0]?.name || 'Hoodies' }}</span>
               <i class="fas fa-arrow-right"></i>
               <span class="btn-shine"></span>
             </button>
@@ -77,7 +82,7 @@
         </div>
       </div>
 
-      <!-- T-Shirts Card -->
+      <!-- T-Shirts Card (second featured category) -->
       <div class="col-lg-5 col-md-6">
         <div class="category-card featured">
           <!-- Featured Badge -->
@@ -95,7 +100,10 @@
           <!-- Card Content -->
           <div class="card-image-wrapper">
             <div class="image-glow-ring"></div>
-            <img src="/assets/images/T-Shirt.png" alt="T-Shirts" class="category-image">
+            <img
+              [src]="categories[1]?.imageUrl || '/assets/images/T-Shirt.png'"
+              [alt]="categories[1]?.name || 'T-Shirts'"
+              class="category-image">
             <div class="image-overlay"></div>
           </div>
           
@@ -103,8 +111,10 @@
             <div class="category-icon">
               <i class="fas fa-shirt"></i>
             </div>
-            <h3 class="category-name">T-Shirts</h3>
-            <p class="category-tagline">Express yourself with every design</p>
+            <h3 class="category-name">{{ categories[1]?.name || 'T-Shirts' }}</h3>
+            <p class="category-tagline">
+              {{ categories[1]?.description || 'Express yourself with every design' }}
+            </p>
             
             <!-- Card Features -->
             <div class="card-features">
@@ -120,7 +130,7 @@
             
             <!-- Explore Button -->
             <button class="btn-explore">
-              <span>Explore T-Shirts</span>
+              <span>Explore {{ categories[1]?.name || 'T-Shirts' }}</span>
               <i class="fas fa-arrow-right"></i>
               <span class="btn-shine"></span>
             </button>
