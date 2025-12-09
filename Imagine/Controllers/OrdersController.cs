@@ -1,8 +1,10 @@
 using Application.Common.Models;
 using Application.Features.Orders.Commands.CreateOrder;
+using Application.Features.Orders.Commands.UpdateOrderStatus;
 using Application.Features.Orders.DTOs;
 using Application.Features.Orders.Queries.GetUserOrders;
 using Application.Features.Orders.Queries.GetAllOrders;
+using Application.Features.Orders.Queries.GetOrderById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -86,6 +88,48 @@ namespace Imagine.Controllers
             [FromQuery] GetAllOrdersQuery query,
             CancellationToken cancellationToken)
         {
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
+        }
+
+        [HttpPut("{id:int}/status")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(typeof(BaseResponse<AdminOrderDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse<AdminOrderDto>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<BaseResponse<AdminOrderDto>>> UpdateStatus(
+            int id,
+            [FromBody] UpdateOrderStatusRequestDto dto,
+            CancellationToken cancellationToken)
+        {
+            var command = new UpdateOrderStatusCommand
+            {
+                OrderId = id,
+                Status = dto.Status,
+                TrackingNumber = dto.TrackingNumber
+            };
+
+            var result = await _mediator.Send(command, cancellationToken);
+
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
+        }
+
+        [HttpGet("{id:int}")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(typeof(BaseResponse<AdminOrderDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse<AdminOrderDto>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<BaseResponse<AdminOrderDto>>> GetById(int id, CancellationToken cancellationToken)
+        {
+            var query = new GetOrderByIdQuery
+            {
+                Id = id
+            };
+
             var result = await _mediator.Send(query, cancellationToken);
 
             return Ok(result);

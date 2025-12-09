@@ -20,7 +20,9 @@ namespace Imagine
 
             builder.Services.AddApplicationServices();
             builder.Services.AddInfrastructureServices(builder.Configuration);
-           
+
+            builder.Services.AddMemoryCache();
+
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {

@@ -84,11 +84,20 @@ namespace Infrastructure
             services.AddScoped<IReviewRepository, ReviewRepository>();
             services.AddScoped<IWishlistRepository, WishlistRepository>();
             services.AddScoped<IWishlistItemRepository, WishlistItemRepository>();
+            services.AddScoped<ICustomizationJobRepository, CustomizationJobRepository>();
 
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IQueryService, QueryService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IJwtService, JwtService>();
+
+            // Options for third-party services (DEAPI, TryOn)
+            services.Configure<Infrastructure.Configuration.ThirdPartyOptions>(
+                configuration.GetSection("ThirdParty"));
+
+            // External services
+            services.AddHttpClient<ITryOnService, TryOnService>();
+            services.AddScoped<ITryOnPipelineService, TryOnPipelineService>();
 
             // Register Database Seeder
             services.AddScoped<DatabaseSeeder>();

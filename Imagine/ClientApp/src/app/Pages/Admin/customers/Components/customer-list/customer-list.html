@@ -1,12 +1,10 @@
 <!-- Customer List Grid -->
-<div class="customer-grid">
-  <!-- Repeat for each customer -->
-  <app-customer-item></app-customer-item>
-  <app-customer-item></app-customer-item>
-  <app-customer-item></app-customer-item>
-  <app-customer-item></app-customer-item>
-  <app-customer-item></app-customer-item>
-  <app-customer-item></app-customer-item>
-  <app-customer-item></app-customer-item>
-  <app-customer-item></app-customer-item>
+<div class="customer-grid" [ngClass]="{ 'list-view': viewMode === 'list' }">
+  <app-customer-item
+    *ngFor="let customer of customers"
+    [customer]="customer"
+    (view)="onViewCustomer($event)"
+    (edit)="onEditCustomer($event)"
+    (resetPassword)="onResetPassword($event)">
+  </app-customer-item>
 </div>

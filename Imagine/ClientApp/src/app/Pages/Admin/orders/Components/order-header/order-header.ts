@@ -15,6 +15,8 @@ export class OrderHeader {
   @Input() deliveredCount: number = 0;
   @Input() cancelledCount: number = 0;
   @Input() refundedCount: number = 0;
+  @Input() selectedStatus: 'all' | 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded' = 'all';
+  @Input() viewMode: 'grid' | 'compact' | 'list' = 'grid';
   @Output() filterChange = new EventEmitter<string>();
   @Output() viewChange = new EventEmitter<string>();
   @Output() sortChange = new EventEmitter<string>();

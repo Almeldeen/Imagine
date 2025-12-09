@@ -38,6 +38,20 @@
             </div>
 
             <div class="mb-3">
+              <label class="form-label text-light">Profile image (optional)</label>
+              <input
+                type="file"
+                name="profileImage"
+                class="form-control auth-input"
+                accept="image/*"
+                (change)="onProfileImageSelected($event)"
+              />
+              <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">
+                PNG, JPG, or WebP. Square images look best.
+              </small>
+            </div>
+
+            <div class="mb-3">
               <label class="form-label text-light">Email</label>
               <input
                 type="email"

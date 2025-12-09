@@ -1,0 +1,56 @@
+<div class="customer-details-modal">
+  <div class="modal-header">
+    <h2 class="modal-title">Customer details</h2>
+    <button type="button" class="btn-close" aria-label="Close" (click)="close()"></button>
+  </div>
+
+  <div class="modal-body" *ngIf="customer">
+    <div class="details-header">
+      <div class="avatar-wrapper">
+        <img
+          [src]="customer.profileImageUrl || '/assets/images/hero-banner.png'"
+          alt="Customer avatar" />
+      </div>
+      <div class="text-block">
+        <h3>{{ customer.fullName }}</h3>
+        <p class="email">{{ customer.email }}</p>
+        <p class="phone" *ngIf="customer.phoneNumber">{{ customer.phoneNumber }}</p>
+
+        <div class="roles" *ngIf="customer.roles?.length">
+          <span class="role-badge" *ngFor="let role of customer.roles">{{ role }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="details-divider"></div>
+
+    <div class="details-grid">
+      <div class="detail-item">
+        <span class="label">Status</span>
+        <span class="value" [ngClass]="customer.isActive ? 'active' : 'inactive'">
+          {{ customer.isActive ? 'Active' : 'Inactive' }}
+        </span>
+      </div>
+      <div class="detail-item">
+        <span class="label">Orders</span>
+        <span class="value">{{ customer.ordersCount }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="label">Created</span>
+        <span class="value">{{ customer.createdAt | date: 'medium' }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="label">Last updated</span>
+        <span class="value">{{ customer.updatedAt | date: 'medium' }}</span>
+      </div>
+      <div class="detail-item" *ngIf="customer.address">
+        <span class="label">Address</span>
+        <span class="value">{{ customer.address }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-cancel" (click)="close()">Close</button>
+  </div>
+</div>

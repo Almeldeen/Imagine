@@ -59,31 +59,52 @@
     <!-- Status Filter Buttons -->
     <div class="filter-section">
       <div class="filter-buttons">
-        <button class="filter-btn active" (click)="onFilterChange('all')">
+        <button
+          class="filter-btn"
+          [ngClass]="{ 'active': selectedStatus === 'all' }"
+          (click)="onFilterChange('all')">
           <span class="filter-text">All Orders</span>
           <span class="filter-count">{{ allCount }}</span>
         </button>
-        <button class="filter-btn status-pending" (click)="onFilterChange('pending')">
+        <button
+          class="filter-btn status-pending"
+          [ngClass]="{ 'active': selectedStatus === 'pending' }"
+          (click)="onFilterChange('pending')">
           <span class="filter-text">Pending</span>
           <span class="filter-count">{{ pendingCount }}</span>
         </button>
-        <button class="filter-btn status-processing" (click)="onFilterChange('processing')">
+        <button
+          class="filter-btn status-processing"
+          [ngClass]="{ 'active': selectedStatus === 'processing' }"
+          (click)="onFilterChange('processing')">
           <span class="filter-text">Processing</span>
           <span class="filter-count">{{ processingCount }}</span>
         </button>
-        <button class="filter-btn status-shipped" (click)="onFilterChange('shipped')">
+        <button
+          class="filter-btn status-shipped"
+          [ngClass]="{ 'active': selectedStatus === 'shipped' }"
+          (click)="onFilterChange('shipped')">
           <span class="filter-text">Shipped</span>
           <span class="filter-count">{{ shippedCount }}</span>
         </button>
-        <button class="filter-btn status-delivered" (click)="onFilterChange('delivered')">
+        <button
+          class="filter-btn status-delivered"
+          [ngClass]="{ 'active': selectedStatus === 'delivered' }"
+          (click)="onFilterChange('delivered')">
           <span class="filter-text">Delivered</span>
           <span class="filter-count">{{ deliveredCount }}</span>
         </button>
-        <button class="filter-btn status-cancelled" (click)="onFilterChange('cancelled')">
+        <button
+          class="filter-btn status-cancelled"
+          [ngClass]="{ 'active': selectedStatus === 'cancelled' }"
+          (click)="onFilterChange('cancelled')">
           <span class="filter-text">Cancelled</span>
           <span class="filter-count">{{ cancelledCount }}</span>
         </button>
-        <button class="filter-btn status-refunded" (click)="onFilterChange('refunded')">
+        <button
+          class="filter-btn status-refunded"
+          [ngClass]="{ 'active': selectedStatus === 'refunded' }"
+          (click)="onFilterChange('refunded')">
           <span class="filter-text">Refunded</span>
           <span class="filter-count">{{ refundedCount }}</span>
         </button>
@@ -106,13 +127,25 @@
 
         <!-- View Toggle -->
         <div class="view-toggle">
-          <button class="view-btn active" (click)="onViewChange('cards')" title="Card View">
+          <button
+            class="view-btn"
+            [ngClass]="{ 'active': viewMode === 'grid' }"
+            (click)="onViewChange('grid')"
+            title="Grid View">
             <i class="fas fa-th-large"></i>
           </button>
-          <button class="view-btn" (click)="onViewChange('table')" title="Table View">
-            <i class="fas fa-table"></i>
+          <button
+            class="view-btn"
+            [ngClass]="{ 'active': viewMode === 'compact' }"
+            (click)="onViewChange('compact')"
+            title="Compact Grid">
+            <i class="fas fa-th"></i>
           </button>
-          <button class="view-btn" (click)="onViewChange('timeline')" title="Timeline View">
+          <button
+            class="view-btn"
+            [ngClass]="{ 'active': viewMode === 'list' }"
+            (click)="onViewChange('list')"
+            title="List View">
             <i class="fas fa-stream"></i>
           </button>
         </div>

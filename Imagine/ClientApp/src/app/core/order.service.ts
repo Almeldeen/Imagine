@@ -44,6 +44,9 @@ export interface AdminOrder {
   orderNumber: string;
   orderDate: string;
   totalAmount: number;
+  subTotal: number;
+  shippingCost: number;
+  tax: number;
   status: string;
   paymentStatus: string;
   paymentMethod?: string;
@@ -51,6 +54,15 @@ export interface AdminOrder {
   userName?: string;
   userEmail?: string;
   userPhoneNumber?: string;
+  shippingAddress: string;
+  shippingCity: string;
+  shippingPostalCode: string;
+  shippingCountry: string;
+  shippingPhone?: string;
+  trackingNumber?: string;
+  paidAt?: string;
+  shippedAt?: string;
+  deliveredAt?: string;
   items: AdminOrderItem[];
 }
 
@@ -88,5 +100,19 @@ export class OrderService {
     }
 
     return this.http.get<ApiResponse<AdminOrder[]>>(`${this.baseUrl}/admin`, { params });
+  }
+
+  updateOrderStatus(orderId: number, payload: { status: string; trackingNumber?: string }): Observable<ApiResponse<AdminOrder>> {
+    return this.http.put<ApiResponse<AdminOrder>>(
+      `${this.baseUrl}/${orderId}/status`,
+      {
+        status: payload.status,
+        trackingNumber: payload.trackingNumber,
+      }
+    );
+  }
+
+  getOrderById(orderId: number): Observable<ApiResponse<AdminOrder>> {
+    return this.http.get<ApiResponse<AdminOrder>>(`${this.baseUrl}/${orderId}`);
   }
 }

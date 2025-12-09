@@ -2,14 +2,35 @@
 <div class="customers-page">
   <!-- Customer Header -->
   <app-customer-header 
+    [currentFilter]="selectedStatus"
+    [currentView]="viewMode"
+    [currentSort]="currentSort"
+    [allCount]="allCount"
+    [activeCount]="activeCount"
+    [inactiveCount]="inactiveCount"
+    [premiumCount]="premiumCount"
     (filterChange)="onFilterChange($event)"
     (viewChange)="onViewChange($event)"
     (sortChange)="onSortChange($event)"
-    (searchChange)="onSearchChange($event)">
+    (searchChange)="onSearchChange($event)"
+    (exportClick)="onExport()"
+    (importClick)="onImportClick()">
   </app-customer-header>
 
+  <input
+    #importFile
+    type="file"
+    class="customers-import-input"
+    accept=".csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    (change)="onImportFileSelected($event)" />
+
   <!-- Customer List Component (when customers exist) -->
-  <app-customer-list *ngIf="hasCustomers"></app-customer-list>
+  <app-customer-list
+    *ngIf="hasCustomers"
+    [customers]="customers"
+    [viewMode]="viewMode"
+    (refresh)="onRefresh()">
+  </app-customer-list>
 
   <!-- Empty State Component (when no customers) -->
   <app-customer-empty-state *ngIf="!hasCustomers">

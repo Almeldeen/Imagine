@@ -23,9 +23,10 @@ export class Orders implements OnInit {
   loading = false;
   error = '';
 
-  currentFilter = 'all';
-  currentView: 'cards' | 'table' | 'timeline' = 'cards';
-  currentSort = 'date-desc';
+  // status filter and view mode
+  selectedStatus: 'all' | 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded' = 'all';
+  viewMode: 'grid' | 'compact' | 'list' = 'grid';
+  currentSort: 'date-desc' | 'date-asc' | 'amount-desc' | 'amount-asc' | 'status' | 'customer' = 'date-desc';
   currentSearch = '';
   dateRange: { from?: string; to?: string } = {};
 
@@ -60,7 +61,7 @@ export class Orders implements OnInit {
       pageNumber: this.currentPage,
       pageSize: this.pageSize,
       sortKey: this.currentSort,
-      status: this.currentFilter,
+      status: this.selectedStatus,
       searchTerm: this.currentSearch || undefined,
     };
 
@@ -157,24 +158,32 @@ export class Orders implements OnInit {
   }
 
   private applyFilters(): void {
-    // Backend now handles filtering & sorting; keep filteredOrders in sync
+    // Backend handles filtering & sorting; keep filteredOrders in sync
     this.filteredOrders = this.orders;
   }
 
   onFilterChange(filter: string) {
-    this.currentFilter = filter;
+    if (this.selectedStatus === filter) {
+      return;
+    }
+
+    this.selectedStatus = (filter as any) ?? 'all';
     this.currentPage = 1;
     this.loadOrders();
   }
 
   onViewChange(view: string) {
-    if (view === 'cards' || view === 'table' || view === 'timeline') {
-      this.currentView = view;
+    if (this.viewMode === view) {
+      return;
     }
+    this.viewMode = (view as any) ?? 'grid';
   }
 
   onSortChange(sort: string) {
-    this.currentSort = sort;
+    if (this.currentSort === sort) {
+      return;
+    }
+    this.currentSort = (sort as any) ?? 'date-desc';
     this.currentPage = 1;
     this.loadOrders();
   }

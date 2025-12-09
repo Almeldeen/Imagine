@@ -23,6 +23,9 @@ namespace Infrastructure.Persistence.Configurations
             builder.Property(u => u.Address)
                 .HasMaxLength(500);
 
+            builder.Property(u => u.ProfileImageUrl)
+                .HasMaxLength(500);
+
             builder.Property(u => u.IsActive)
                 .IsRequired()
                 .HasDefaultValue(true);

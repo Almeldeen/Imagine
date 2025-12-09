@@ -12,6 +12,12 @@
   flex-wrap: wrap;
 }
 
+.client-dashboard-header .header-text {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .client-dashboard-header .eyebrow {
   font-size: 0.75rem;
   text-transform: uppercase;
@@ -34,6 +40,42 @@
   margin: 0;
   font-size: 0.95rem;
   color: #9ca3af;
+}
+
+.header-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  padding: 2px;
+  background: radial-gradient(circle at top, rgba(0, 186, 255, 0.5), transparent 70%);
+  box-shadow:
+    0 0 0 1px rgba(0, 186, 255, 0.9),
+    0 0 10px rgba(0, 186, 255, 0.75),
+    0 0 26px rgba(15, 23, 42, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dashboard-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  object-fit: cover;
+  display: block;
+  animation: avatarFadeIn 0.2s ease-out;
+}
+
+@keyframes avatarFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .header-actions {

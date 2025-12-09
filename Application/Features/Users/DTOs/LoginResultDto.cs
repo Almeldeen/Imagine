@@ -10,5 +10,6 @@ namespace Application.Features.Users.DTOs
         public string? PhoneNumber { get; set; }
         public string FullName { get; set; } = string.Empty;
         public IList<string> Roles { get; set; } = new List<string>();
+        public string? ProfileImageUrl { get; set; }
     }
 }

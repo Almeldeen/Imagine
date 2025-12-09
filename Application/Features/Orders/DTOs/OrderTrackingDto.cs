@@ -1,0 +1,14 @@
+using System;
+
+namespace Application.Features.Orders.DTOs
+{
+    public class OrderTrackingDto
+    {
+        public int Id { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string? Comment { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public string? AdminUserName { get; set; }
+    }
+}

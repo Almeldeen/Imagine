@@ -1,0 +1,226 @@
+{
+	"info": {
+		"_postman_id": "f4254af6-ca1b-4652-9433-4209144cf3b6",
+		"name": "TryOn",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12116311",
+		"_collection_link": "https://imagine-6744.postman.co/workspace/Imagine-Workspace~8d38bd9e-8935-4a8c-84c7-3ad719f2593e/collection/38766266-f4254af6-ca1b-4652-9433-4209144cf3b6?action=share&source=collection_link&creator=12116311"
+	},
+	"item": [
+		{
+			"name": "TryOnPost",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer ta_99b4712e84f04d2ab3c79f727a9d53fe"
+					},
+					{
+						"key": "Content-Type",
+						"value": "multipart/form-data",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "person_images",
+							"type": "file",
+							"src": "/C:/Users/BS/Desktop/تقنيه داتا بيز/Ai2/5.jpg"
+						},
+						{
+							"key": "garment_images",
+							"type": "file",
+							"src": "/C:/Users/BS/Desktop/تقنيه داتا بيز/Ai2/13 after edit for hood and color.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://tryon-api.com/api/v1/tryon",
+					"protocol": "https",
+					"host": [
+						"tryon-api",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"tryon"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TryOnGet",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer ta_99b4712e84f04d2ab3c79f727a9d53fe",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://tryon-api.com/api/v1/tryon/status/f80b9fa9-d8ba-4030-9ad6-e7ae557643ab",
+					"protocol": "https",
+					"host": [
+						"tryon-api",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"tryon",
+						"status",
+						"f80b9fa9-d8ba-4030-9ad6-e7ae557643ab"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeApiPost",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer 691|xPcO5t352EXUCjZMHJTxHgFu9ALIMWL2Ey07bmtTb1e90da1"
+					},
+					{
+						"key": "Content-Type",
+						"value": "multipart/form-data",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "prompt",
+							"value": "Remove the hood from this hoodie and make the garment neckline round.and make it black",
+							"type": "text"
+						},
+						{
+							"key": "model",
+							"value": "QwenImageEdit_Plus_NF4",
+							"type": "text"
+						},
+						{
+							"key": "steps",
+							"value": "20",
+							"type": "text"
+						},
+						{
+							"key": "seed",
+							"value": "42",
+							"type": "text"
+						},
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/C:/Users/BS/Desktop/تقنيه داتا بيز/Ai2/13.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://api.deapi.ai/api/v1/client/img2img",
+					"protocol": "https",
+					"host": [
+						"api",
+						"deapi",
+						"ai"
+					],
+					"path": [
+						"api",
+						"v1",
+						"client",
+						"img2img"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeApiGet",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer 691|xPcO5t352EXUCjZMHJTxHgFu9ALIMWL2Ey07bmtTb1e90da1"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"data\": {\r\n        \"request_id\": \"f93fc815-70ff-4433-9e14-fd66fc043063\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.deapi.ai/api/v1/client/request-status/eed0742f-150c-47d4-998a-04262b27a749",
+					"protocol": "https",
+					"host": [
+						"api",
+						"deapi",
+						"ai"
+					],
+					"path": [
+						"api",
+						"v1",
+						"client",
+						"request-status",
+						"eed0742f-150c-47d4-998a-04262b27a749"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

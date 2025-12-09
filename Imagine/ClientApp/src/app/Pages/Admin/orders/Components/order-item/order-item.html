@@ -50,23 +50,25 @@
     <div class="order-modal-wrapper">
       <div class="order-modal-header">
         <div class="order-modal-title-block">
-          <div class="order-number">{{ order.orderNumber }}</div>
+          <div class="order-number">{{ displayedOrder.orderNumber }}</div>
           <div class="order-date">
             <i class="fas fa-calendar"></i>
-            <span>{{ order.orderDate | date: 'medium' }}</span>
+            <span>{{ displayedOrder.orderDate | date: 'medium' }}</span>
           </div>
         </div>
         <div class="order-modal-status-block">
-          <span class="status-badge" [ngClass]="order.status.toLowerCase()">
+          <span class="status-badge" [ngClass]="displayedOrder.status.toLowerCase()">
             <i class="fas fa-circle"></i>
-            {{ order.status }}
-            Processing
+            {{ displayedOrder.status }}
           </span>
           <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
         </div>
       </div>
 
       <div class="order-modal-body">
+        <div class="order-details-loading" *ngIf="detailsLoading">
+          Loading order details...
+        </div>
         <!-- Left: customer + timeline -->
         <div class="order-modal-main">
           <!-- Customer Info (reused) -->
@@ -79,15 +81,15 @@
               <div class="customer-label-row">
                 <span class="customer-label">Customer</span>
               </div>
-              <h4 class="customer-name">{{ order.userName || 'Guest user' }}</h4>
+              <h4 class="customer-name">{{ displayedOrder.userName || 'Guest user' }}</h4>
               <div class="customer-contact-row">
                 <div class="customer-contact-item">
                   <i class="fas fa-envelope"></i>
-                  <span class="customer-email">{{ order.userEmail || 'N/A' }}</span>
+                  <span class="customer-email">{{ displayedOrder.userEmail || 'N/A' }}</span>
                 </div>
                 <div class="customer-contact-item">
                   <i class="fas fa-phone-alt"></i>
-                  <span class="customer-phone">{{ order.userPhoneNumber || 'N/A' }}</span>
+                  <span class="customer-phone">{{ displayedOrder.userPhoneNumber || 'N/A' }}</span>
                 </div>
               </div>
             </div>
@@ -95,41 +97,61 @@
 
           <!-- Timeline (reused) -->
           <div class="order-timeline">
+            <!-- Order placed -->
             <div class="timeline-item completed">
               <div class="timeline-dot"></div>
               <div class="timeline-content">
                 <span class="timeline-label">Order Placed</span>
-                <span class="timeline-time">Nov 17, 2:30 PM</span>
+                <span class="timeline-time">
+                  {{ displayedOrder.orderDate | date: 'medium' }}
+                </span>
               </div>
             </div>
-            <div class="timeline-item completed">
+
+            <!-- Payment confirmed -->
+            <div class="timeline-item" [ngClass]="paymentStatusLower === 'paid' ? 'completed' : 'pending'">
               <div class="timeline-dot"></div>
               <div class="timeline-content">
                 <span class="timeline-label">Payment Confirmed</span>
-                <span class="timeline-time">Nov 17, 2:32 PM</span>
+                <span class="timeline-time">
+                  {{ paymentStatusLower === 'paid' && displayedOrder.paidAt ? (displayedOrder.paidAt | date: 'medium') : 'Pending' }}
+                </span>
               </div>
             </div>
-            <div class="timeline-item active">
+
+            <!-- Processing -->
+            <div class="timeline-item"
+                 [ngClass]="statusLower === 'processing' || statusLower === 'pending' ? 'active' : (statusLower === 'shipped' || statusLower === 'delivered' ? 'completed' : 'pending')">
               <div class="timeline-dot">
-                <i class="fas fa-cog fa-spin"></i>
+                <i class="fas fa-cog fa-spin" *ngIf="statusLower === 'processing' || statusLower === 'pending'"></i>
               </div>
               <div class="timeline-content">
                 <span class="timeline-label">Processing</span>
-                <span class="timeline-time">In Progress</span>
+                <span class="timeline-time">
+                  {{ statusLower === 'shipped' || statusLower === 'delivered' ? 'Completed' : 'In Progress' }}
+                </span>
               </div>
             </div>
-            <div class="timeline-item pending">
+
+            <!-- Shipped -->
+            <div class="timeline-item" [ngClass]="displayedOrder.shippedAt || statusLower === 'shipped' || statusLower === 'delivered' ? 'completed' : 'pending'">
               <div class="timeline-dot"></div>
               <div class="timeline-content">
                 <span class="timeline-label">Shipped</span>
-                <span class="timeline-time">Pending</span>
+                <span class="timeline-time">
+                  {{ displayedOrder.shippedAt ? (displayedOrder.shippedAt | date: 'medium') : 'Pending' }}
+                </span>
               </div>
             </div>
-            <div class="timeline-item pending">
+
+            <!-- Delivered -->
+            <div class="timeline-item" [ngClass]="displayedOrder.deliveredAt || statusLower === 'delivered' ? 'completed' : 'pending'">
               <div class="timeline-dot"></div>
               <div class="timeline-content">
                 <span class="timeline-label">Delivered</span>
-                <span class="timeline-time">Pending</span>
+                <span class="timeline-time">
+                  {{ displayedOrder.deliveredAt ? (displayedOrder.deliveredAt | date: 'medium') : 'Pending' }}
+                </span>
               </div>
             </div>
           </div>
@@ -140,62 +162,30 @@
           <!-- Items (reused) -->
           <div class="order-items">
             <div class="items-header">
-              <h5>Order Items ({{ order.items?.length || 0 }})</h5>
+              <h5>Order Items ({{ displayedOrder.items.length }})</h5>
             </div>
             <div class="items-list">
-              <!-- Standard product -->
-              <div class="item-card standard">
+              <div class="item-card standard" *ngFor="let item of displayedOrder.items">
                 <div class="item-image">
-                  <img src="/assets/images/product-placeholder.jpg" alt="Product">
+                  <img [src]="item.productImageUrl || '/assets/images/product-placeholder.jpg'" [alt]="item.productName">
                 </div>
                 <div class="item-details">
                   <div class="item-header">
                     <span class="item-badge standard">Standard</span>
-                    <h6 class="item-name">Premium T-Shirt</h6>
+                    <h6 class="item-name">{{ item.productName }}</h6>
                   </div>
                   <div class="item-specs">
-                    <span class="item-color">
-                      <div class="color-dot" style="background: #FF5722;"></div>
-                      Orange
+                    <span class="item-color" *ngIf="item.colorName">
+                      <div class="color-dot"></div>
+                      {{ item.colorName }}
                     </span>
-                    <span class="item-quantity">Qty: 2</span>
+                    <span class="item-quantity">Qty: {{ item.quantity }}</span>
                   </div>
                   <div class="item-pricing">
                     <span class="item-price-label">Unit</span>
-                    <span class="item-price">$29.99</span>
-                    <span class="item-multiply">× 2</span>
-                    <span class="item-line-total">$59.98</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Custom AI product -->
-              <div class="item-card custom">
-                <div class="item-image ai-preview-image" (click)="openCustomPreviewModal(customPreviewModal)">
-                  <img src="/assets/images/custom-design-placeholder.jpg" alt="Custom Design">
-                </div>
-                <div class="item-details">
-                  <div class="item-header">
-                    <span class="item-badge custom">Custom</span>
-                    <span class="item-badge ai">AI Generated</span>
-                    <h6 class="item-name">Custom Hoodie Design</h6>
-                  </div>
-                  <div class="item-specs">
-                    <span class="item-color">
-                      <div class="color-dot" style="background: #2196F3;"></div>
-                      Custom Blue
-                    </span>
-                    <span class="item-quantity">Qty: 1</span>
-                  </div>
-                  <div class="item-pricing">
-                    <span class="item-price-label">Custom Total</span>
-                    <span class="item-line-total">$89.99</span>
-                  </div>
-                  <div class="custom-status">
-                    <span class="custom-badge approved">
-                      <i class="fas fa-check"></i>
-                      Design Approved
-                    </span>
+                    <span class="item-price">{{ item.unitPrice | currency }}</span>
+                    <span class="item-multiply">× {{ item.quantity }}</span>
+                    <span class="item-line-total">{{ item.totalPrice | currency }}</span>
                   </div>
                 </div>
               </div>
@@ -207,27 +197,29 @@
             <div class="summary-section">
               <div class="summary-row">
                 <span class="summary-label">Subtotal:</span>
-                <span class="summary-value">$149.97</span>
+                <span class="summary-value">{{ displayedOrder.subTotal | currency }}</span>
               </div>
               <div class="summary-row">
                 <span class="summary-label">Shipping:</span>
-                <span class="summary-value">$9.99</span>
+                <span class="summary-value">{{ displayedOrder.shippingCost | currency }}</span>
               </div>
               <div class="summary-row">
                 <span class="summary-label">Tax:</span>
-                <span class="summary-value">$12.80</span>
+                <span class="summary-value">{{ displayedOrder.tax | currency }}</span>
               </div>
               <div class="summary-row total">
                 <span class="summary-label">Total:</span>
-                <span class="summary-value">$172.76</span>
+                <span class="summary-value">{{ displayedOrder.totalAmount | currency }}</span>
               </div>
             </div>
 
             <div class="payment-info">
               <div class="payment-method">
                 <i class="fab fa-cc-visa"></i>
-                <span>•••• 4532</span>
-                <span class="payment-status paid">Paid</span>
+                <span>{{ displayedOrder.paymentMethod || 'N/A' }}</span>
+                <span class="payment-status" [ngClass]="displayedOrder.paymentStatus.toLowerCase()">
+                  {{ displayedOrder.paymentStatus }}
+                </span>
               </div>
             </div>
           </div>
@@ -239,14 +231,14 @@
               Shipping Address
             </h6>
             <div class="shipping-address">
-              <div class="address-line">123 Main Street, Apt 4B</div>
-              <div class="address-line">New York, NY 10001</div>
-              <div class="address-line">United States</div>
+              <div class="address-line">{{ displayedOrder.shippingAddress }}</div>
+              <div class="address-line">{{ displayedOrder.shippingCity }}, {{ displayedOrder.shippingPostalCode }}</div>
+              <div class="address-line">{{ displayedOrder.shippingCountry }}</div>
             </div>
             <div class="tracking-info">
               <div class="tracking-number">
                 <i class="fas fa-barcode"></i>
-                <span>Tracking: TRK123456789</span>
+                <span>Tracking: {{ displayedOrder.trackingNumber || 'N/A' }}</span>
               </div>
             </div>
           </div>
@@ -264,19 +256,19 @@
       </div>
       <div class="order-status-body">
         <div class="status-steps">
-          <button class="status-step active">
+          <button type="button" class="status-step" [ngClass]="{ 'active': selectedStatus === 'Pending' }" (click)="setStatus('Pending')">
             <span class="step-label">Pending</span>
           </button>
-          <button class="status-step">
+          <button type="button" class="status-step" [ngClass]="{ 'active': selectedStatus === 'Processing' }" (click)="setStatus('Processing')">
             <span class="step-label">Processing</span>
           </button>
-          <button class="status-step">
+          <button type="button" class="status-step" [ngClass]="{ 'active': selectedStatus === 'Shipped' }" (click)="setStatus('Shipped')">
             <span class="step-label">Shipped</span>
           </button>
-          <button class="status-step">
+          <button type="button" class="status-step" [ngClass]="{ 'active': selectedStatus === 'Delivered' }" (click)="setStatus('Delivered')">
             <span class="step-label">Delivered</span>
           </button>
-          <button class="status-step alt">
+          <button type="button" class="status-step alt" [ngClass]="{ 'active': selectedStatus === 'Cancelled' }" (click)="setStatus('Cancelled')">
             <span class="step-label">Cancelled</span>
           </button>
         </div>
@@ -284,17 +276,27 @@
         <div class="status-form">
           <div class="form-group">
             <label>Tracking Number (optional)</label>
-            <input type="text" class="form-control form-control-sm" placeholder="Add or update tracking number">
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              placeholder="Add or update tracking number"
+              [(ngModel)]="trackingNumberInput"
+              name="trackingNumber" />
           </div>
           <div class="form-group">
             <label>Admin Notes</label>
-            <textarea class="form-control form-control-sm" rows="3" placeholder="Add internal notes about this status change"></textarea>
+            <textarea
+              class="form-control form-control-sm"
+              rows="3"
+              placeholder="Add internal notes about this status change"
+              [(ngModel)]="statusNotes"
+              name="statusNotes"></textarea>
           </div>
         </div>
       </div>
       <div class="order-status-footer">
         <button type="button" class="btn btn-outline-light btn-sm" (click)="modal.dismiss()">Cancel</button>
-        <button type="button" class="btn btn-primary btn-sm" (click)="modal.close('save')">Save Status</button>
+        <button type="button" class="btn btn-primary btn-sm" (click)="saveStatus(modal)">Save Status</button>
       </div>
     </div>
   </ng-template>
@@ -310,20 +312,20 @@
         <div class="tracking-summary">
           <div class="tracking-number-row">
             <span class="label">Tracking:</span>
-            <span class="value">TRK123456789</span>
+            <span class="value">{{ order.trackingNumber || 'N/A' }}</span>
           </div>
           <div class="tracking-number-row">
             <span class="label">Carrier:</span>
-            <span class="value">DHL Express</span>
+            <span class="value">N/A</span>
           </div>
         </div>
         <div class="tracking-progress">
           <div class="progress-label-row">
-            <span>In Transit</span>
-            <span>60%</span>
+            <span>{{ trackingLabel }}</span>
+            <span>{{ trackingPercent }}%</span>
           </div>
           <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: 60%"></div>
+            <div class="progress-bar" role="progressbar" [style.width.%]="trackingPercent"></div>
           </div>
         </div>
       </div>
@@ -370,3 +372,4 @@
     </div>
   </ng-template>
 </div>
+

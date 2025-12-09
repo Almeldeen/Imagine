@@ -9,6 +9,10 @@
   padding: 2rem;
 }
 
+.customer-grid.list-view {
+  grid-template-columns: 1fr;
+}
+
 /* Responsive Grid */
 @media (max-width: 1200px) {
   .customer-grid {

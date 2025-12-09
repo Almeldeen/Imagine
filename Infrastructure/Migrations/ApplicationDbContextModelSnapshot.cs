@@ -88,6 +88,10 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ProfileImageUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -365,6 +369,58 @@ namespace Infrastructure.Migrations
                     b.ToTable("CustomProductColors", (string)null);
                 });
 
+            modelBuilder.Entity("Core.Entities.CustomizationJob", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeApiRequestId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GeneratedGarmentUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastError")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Prompt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SourceGarmentPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TryOnJobId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TryOnResultUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TryOnStatusUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CustomizationJobs");
+                });
+
             modelBuilder.Entity("Core.Entities.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -544,6 +600,47 @@ namespace Infrastructure.Migrations
                     b.HasIndex("ProductColorId");
 
                     b.ToTable("OrderItems", (string)null);
+                });
+
+            modelBuilder.Entity("Core.Entities.OrderTracking", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AdminUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AdminUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderTrackings");
                 });
 
             modelBuilder.Entity("Core.Entities.Product", b =>
@@ -1129,6 +1226,15 @@ namespace Infrastructure.Migrations
                     b.Navigation("CustomProduct");
                 });
 
+            modelBuilder.Entity("Core.Entities.CustomizationJob", b =>
+                {
+                    b.HasOne("Core.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Core.Entities.Order", b =>
                 {
                     b.HasOne("Core.Entities.ApplicationUser", "User")
@@ -1162,6 +1268,17 @@ namespace Infrastructure.Migrations
                     b.Navigation("Order");
 
                     b.Navigation("ProductColor");
+                });
+
+            modelBuilder.Entity("Core.Entities.OrderTracking", b =>
+                {
+                    b.HasOne("Core.Entities.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("Core.Entities.Product", b =>

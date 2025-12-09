@@ -1,9 +1,19 @@
 <section class="client-dashboard">
   <div class="client-dashboard-header">
     <div class="header-text">
-      <p class="eyebrow">Your AI wardrobe</p>
-      <h1 class="title">Welcome, {{ fullName }}</h1>
-      <p class="subtitle">Manage your orders, favorites, and profile from a single place.</p>
+      <div class="header-avatar">
+        <img
+          [src]="profileImageUrl"
+          alt="Profile"
+          class="dashboard-avatar"
+          loading="lazy"
+          (error)="profileImageUrl = '/assets/images/hero-banner.png'" />
+      </div>
+      <div>
+        <p class="eyebrow">Your AI wardrobe</p>
+        <h1 class="title">Welcome, {{ fullName }}</h1>
+        <p class="subtitle">Manage your orders, favorites, and profile from a single place.</p>
+      </div>
     </div>
     <div class="header-actions">
       <a routerLink="/Products" class="btn-ghost">

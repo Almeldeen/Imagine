@@ -2,10 +2,22 @@
 <div class="customer-card">
   <!-- Customer Avatar -->
   <div class="customer-avatar">
-    <img src="/assets/images/avatar-placeholder.jpg" alt="Customer Avatar">
-    <div class="status-indicator active"></div>
-    <div class="customer-badges">
-      <span class="badge badge-premium">Premium</span>
+    <img
+      [src]="customer.profileImageUrl || '/assets/images/hero-banner.png'"
+      alt="Customer Avatar"
+      (error)="customer.profileImageUrl = '/assets/images/hero-banner.png'" />
+
+    <div
+      class="status-indicator"
+      [ngClass]="customer.isActive ? 'active' : 'inactive'">
+    </div>
+
+    <div class="customer-badges" *ngIf="customer.roles?.length">
+      <span
+        class="badge"
+        *ngFor="let role of customer.roles">
+        {{ role }}
+      </span>
     </div>
   </div>
 
@@ -13,47 +25,31 @@
   <div class="customer-content">
     <!-- Customer Header -->
     <div class="customer-header">
-      <h3 class="customer-name">Sarah Johnson</h3>
-      <div class="customer-email">sarah.johnson@email.com</div>
+      <h3 class="customer-name">{{ customer.fullName }}</h3>
+      <div class="customer-email">{{ customer.email }}</div>
     </div>
 
     <!-- Customer Info -->
     <div class="customer-info">
-      <div class="info-item">
+      <div class="info-item" *ngIf="customer.phoneNumber">
         <i class="fas fa-phone"></i>
-        <span>+1 (555) 123-4567</span>
-      </div>
-      <div class="info-item">
-        <i class="fas fa-map-marker-alt"></i>
-        <span>New York, USA</span>
+        <span>{{ customer.phoneNumber }}</span>
       </div>
       <div class="info-item">
         <i class="fas fa-calendar"></i>
-        <span>Joined: Jan 15, 2024</span>
+        <span>Joined: {{ customer.createdAt | date: 'mediumDate' }}</span>
+      </div>
+      <div class="info-item">
+        <i class="fas" [ngClass]="customer.isActive ? 'fa-check-circle' : 'fa-ban'"></i>
+        <span>{{ customer.isActive ? 'Active' : 'Inactive' }}</span>
       </div>
     </div>
 
-    <!-- Customer Stats -->
-    <div class="customer-stats">
-      <div class="stat-item">
-        <span class="stat-value">24</span>
-        <span class="stat-label">Orders</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-value">$2,847</span>
-        <span class="stat-label">Total Spent</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-value">4.8</span>
-        <span class="stat-label">Rating</span>
-      </div>
-    </div>
-
-    <!-- Customer Tags -->
-    <div class="customer-tags">
-      <span class="tag">VIP</span>
-      <span class="tag">Frequent Buyer</span>
-      <span class="tag">Electronics</span>
+    <!-- Customer Tags (roles as tags) -->
+    <div class="customer-tags" *ngIf="customer.roles?.length">
+      <span class="tag" *ngFor="let role of customer.roles">
+        {{ role }}
+      </span>
     </div>
   </div>
 
@@ -61,19 +57,19 @@
   <div class="customer-footer">
     <div class="footer-left">
       <div class="last-order">
-        <i class="fas fa-shopping-bag"></i>
-        <span>Last order: 3 days ago</span>
+        <i class="fas fa-id-card"></i>
+        <span>ID: {{ customer.id }}</span>
       </div>
     </div>
     <div class="footer-right">
-      <button class="btn-action btn-message" title="Send Message">
-        <i class="fas fa-envelope"></i>
-      </button>
-      <button class="btn-action btn-view" title="View Profile">
+      <button class="btn-action btn-view" title="View Profile" (click)="view.emit(customer)">
         <i class="fas fa-eye"></i>
       </button>
-      <button class="btn-action btn-edit" title="Edit Customer">
+      <button class="btn-action btn-edit" title="Edit Customer" (click)="edit.emit(customer)">
         <i class="fas fa-edit"></i>
+      </button>
+      <button class="btn-action btn-reset" title="Reset Password" (click)="resetPassword.emit(customer)">
+        <i class="fas fa-key"></i>
       </button>
       <button class="btn-action btn-more" title="More Options">
         <i class="fas fa-ellipsis-v"></i>

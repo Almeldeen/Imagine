@@ -1,3 +1,4 @@
+using Application.Common.Interfaces;
 using Application.Common.Models;
 using Application.Features.Users.DTOs;
 using Core.Entities;
@@ -12,15 +13,18 @@ namespace Application.Features.Users.Commands.RegisterUser
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IImageService _imageService;
         private readonly ILogger<RegisterUserCommandHandler> _logger;
 
         public RegisterUserCommandHandler(
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
+            IImageService imageService,
             ILogger<RegisterUserCommandHandler> logger)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _imageService = imageService;
             _logger = logger;
         }
 
@@ -45,6 +49,33 @@ namespace Application.Features.Users.Commands.RegisterUser
             var firstName = names.Length > 0 ? names[0] : dto.FullName ?? string.Empty;
             var lastName = names.Length > 1 ? names[1] : string.Empty;
 
+            const string defaultProfileImageUrl = "/assets/images/hero-banner.png";
+            string profileImageUrl = defaultProfileImageUrl;
+
+            // If a file stream was provided, upload it and use the generated URL
+            if (request.ProfileImageStream != null && !string.IsNullOrWhiteSpace(request.ProfileImageFileName))
+            {
+                var upload = await _imageService.UploadImageAsync(
+                    request.ProfileImageStream,
+                    request.ProfileImageFileName,
+                    folder: "avatars",
+                    cancellationToken: cancellationToken);
+
+                request.ProfileImageStream.Dispose();
+
+                if (!upload.Success || string.IsNullOrWhiteSpace(upload.Data))
+                {
+                    _logger.LogWarning("Failed to upload profile image for {Email}: {Message}", dto.Email, upload.Message);
+                    return BaseResponse<string>.FailureResponse(upload.Message ?? "Failed to upload profile image.");
+                }
+
+                profileImageUrl = upload.Data!;
+            }
+            else if (!string.IsNullOrWhiteSpace(dto.ProfileImageUrl))
+            {
+                profileImageUrl = dto.ProfileImageUrl!;
+            }
+
             var user = new ApplicationUser
             {
                 UserName = dto.Email,
@@ -52,6 +83,7 @@ namespace Application.Features.Users.Commands.RegisterUser
                 PhoneNumber = dto.PhoneNumber,
                 FirstName = firstName,
                 LastName = lastName,
+                ProfileImageUrl = profileImageUrl,
                 IsActive = true
             };
 
