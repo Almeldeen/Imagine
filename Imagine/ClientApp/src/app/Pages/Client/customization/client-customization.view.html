@@ -123,6 +123,45 @@
             </div>
           </div>
 
+          <!-- Generated design preview on selected base garment -->
+          <div class="cz-card cz-preview-card mt-3" [class.has-preview]="preprocessedGarmentUrl">
+            <div class="cz-card-header cz-preview-header">
+              <div>
+                <h2>Step 3 &middot; Preview your AI design</h2>
+                <p>See your prompt applied to the {{ selectedLabel.toLowerCase() }} before ordering.</p>
+              </div>
+            </div>
+
+            <div class="cz-preview-body">
+              <div class="cz-mannequin" [class.has-preview]="preprocessedGarmentUrl">
+                <div class="cz-garment-outline"></div>
+                <div class="cz-print-area" [class.has-preview]="preprocessedGarmentUrl">
+                  <div class="cz-print-skeleton" *ngIf="!preprocessedGarmentUrl && !isGenerating">
+                    <span>Your generated design will appear here after you click "Generate preview".</span>
+                  </div>
+
+                  <div class="cz-print-loading" *ngIf="isGenerating">
+                    <div class="cz-shimmer"></div>
+                  </div>
+
+                  <div class="cz-print-mock" *ngIf="preprocessedGarmentUrl && !isGenerating">
+                    <p class="cz-print-label">AI-generated mockup</p>
+                    <img
+                      [src]="preprocessedGarmentUrl"
+                      alt="AI generated garment"
+                      class="img-fluid rounded-3"
+                      style="max-height: 100%; object-fit: cover;"
+                    />
+                  </div>
+                </div>
+              </div>
+              <p class="cz-preview-note">
+                This image is generated from your prompt and the selected base garment. You can adjust the
+                prompt or upload your own garment image on the right, then generate again.
+              </p>
+            </div>
+          </div>
+
           <div class="cz-card cz-selector-card mt-3">
             <div class="cz-card-header">
               <h2>Step 2 &middot; Choose your base</h2>
@@ -159,34 +198,131 @@
           </div>
         </div>
 
-        <!-- Right column: preview + future step -->
+        <!-- Right column: try-on preview + controls -->
         <div class="col-lg-5">
-          <div class="cz-card cz-preview-card" [class.has-preview]="hasPreview">
+          <div class="cz-card cz-preview-card" [class.has-preview]="tryOnStatus === 'completed' && tryOnImageUrl">
             <div class="cz-card-header cz-preview-header">
               <div>
-                <h2>Live preview</h2>
-                <p>See how your AI artwork will sit on your {{ selectedLabel.toLowerCase() }}.</p>
+                <h2>Virtual try-on preview</h2>
+                <p>Upload your photo and a garment to see a realistic AI try-on.</p>
               </div>
-              <span class="cz-tag">Frontend only &middot; Mock</span>
+              <span class="cz-tag">Beta &middot; AI powered</span>
             </div>
 
             <div class="cz-preview-body">
-              <div class="cz-mannequin" [class.has-preview]="hasPreview">
+              <div class="mb-3">
+                <label class="cz-label">1. Garment image</label>
+                <input
+                  type="file"
+                  class="form-control form-control-sm bg-dark text-light"
+                  accept="image/*"
+                  (change)="onGarmentFileChange($event)"
+                />
+                <small class="text-muted d-block mt-1">
+                  JPG / PNG / WEBP, max 8MB. Ideally a clear product photo.
+                </small>
+                <div class="mt-2" *ngIf="garmentPreviewUrl">
+                  <img
+                    [src]="garmentPreviewUrl"
+                    alt="Garment preview"
+                    class="img-fluid rounded-3 border border-secondary-subtle"
+                  />
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="cz-label">2. Your photo</label>
+                <input
+                  type="file"
+                  class="form-control form-control-sm bg-dark text-light"
+                  accept="image/*"
+                  (change)="onPersonFileChange($event)"
+                />
+                <small class="text-muted d-block mt-1">
+                  Clear front-facing photo, good lighting, minimal background clutter.
+                </small>
+                <div class="mt-2" *ngIf="personPreviewUrl">
+                  <img
+                    [src]="personPreviewUrl"
+                    alt="Person preview"
+                    class="img-fluid rounded-3 border border-secondary-subtle"
+                  />
+                </div>
+              </div>
+
+              <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
+                <button
+                  type="button"
+                  class="btn btn-outline-info btn-sm"
+                  [disabled]="isPreprocessing || isStartingTryOn || isPolling"
+                  (click)="onPreprocessGarment()"
+                >
+                  <span *ngIf="!isPreprocessing">Optional: Clean garment (preprocess)</span>
+                  <span *ngIf="isPreprocessing">
+                    <span class="cz-button-spinner"></span>
+                    Preprocessing garment...
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  class="btn btn-primary-custom btn-sm"
+                  [disabled]="!isTryOnReady || isStartingTryOn || isPolling"
+                  (click)="onStartTryOn()"
+                >
+                  <ng-container *ngIf="!isStartingTryOn && !isPolling">
+                    <i class="fas fa-user-astronaut"></i>
+                    <span>Start try-on</span>
+                  </ng-container>
+                  <ng-container *ngIf="isStartingTryOn || isPolling">
+                    <span class="cz-button-spinner"></span>
+                    <span>Generating your try-on...</span>
+                  </ng-container>
+                </button>
+
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary btn-sm"
+                  [disabled]="!isPolling"
+                  (click)="onCancelTryOn()"
+                >
+                  Cancel
+                </button>
+              </div>
+
+              <div class="small text-muted mb-2">
+                Status: <strong>{{ displayStatusLabel }}</strong>
+                <ng-container *ngIf="tryOnStatus === 'processing' || tryOnStatus === 'queued'">
+                  &mdash; Typically completes in 10&ndash;30 seconds.
+                </ng-container>
+              </div>
+
+              <div *ngIf="tryOnError" class="alert alert-danger py-1 px-2 small mb-2">
+                {{ tryOnError }}
+              </div>
+
+              <div class="cz-mannequin" [class.has-preview]="tryOnStatus === 'completed' && tryOnImageUrl">
                 <div class="cz-garment-outline"></div>
-                <div class="cz-print-area" [class.has-preview]="hasPreview">
-                  <div class="cz-print-skeleton" *ngIf="!hasPreview && !isGenerating">
-                    <span>Preview will appear here after generation</span>
+                <div class="cz-print-area" [class.has-preview]="tryOnStatus === 'completed' && tryOnImageUrl">
+                  <div
+                    class="cz-print-skeleton"
+                    *ngIf="!tryOnImageUrl && !(isStartingTryOn || isPolling) && !tryOnError"
+                  >
+                    <span>Try-on result will appear here once generated.</span>
                   </div>
 
-                  <div class="cz-print-loading" *ngIf="isGenerating">
+                  <div class="cz-print-loading" *ngIf="isStartingTryOn || isPolling">
                     <div class="cz-shimmer"></div>
                   </div>
 
-                  <div class="cz-print-mock" *ngIf="hasPreview && !isGenerating">
-                    <p class="cz-print-label">AI design placeholder</p>
-                    <p class="cz-print-prompt" *ngIf="prompt">
-                      {{ prompt }}
-                    </p>
+                  <div class="cz-print-mock" *ngIf="tryOnStatus === 'completed' && tryOnImageUrl">
+                    <p class="cz-print-label">AI try-on result</p>
+                    <img
+                      [src]="tryOnImageUrl"
+                      alt="Try-on result"
+                      class="img-fluid rounded-3"
+                      style="max-height: 100%; object-fit: cover;"
+                    />
                   </div>
                 </div>
               </div>
@@ -201,30 +337,9 @@
               </div>
 
               <p class="cz-preview-note">
-                This is a visual mock only. In a future update, we&apos;ll plug in real AI generation
-                and high-fidelity garment renders.
+                This is a beta virtual try-on powered by external AI. Images are processed securely and
+                only used to generate your preview.
               </p>
-            </div>
-          </div>
-
-          <div class="cz-card cz-future-card mt-3">
-            <div class="cz-card-header">
-              <h2>Step 3 (coming soon) &middot; See yourself wearing it</h2>
-              <p>Upload a selfie and let AI place your new design on you in real-time.</p>
-            </div>
-            <div class="cz-future-body">
-              <div class="cz-future-avatar">
-                <div class="cz-avatar-ring"></div>
-                <div class="cz-avatar-inner">
-                  <i class="fas fa-user-circle"></i>
-                </div>
-              </div>
-              <div class="cz-future-text">
-                <p>
-                  Soon, you&apos;ll be able to drag in a photo and preview how this hoodie or
-                  T-shirt looks on you, with realistic lighting and fabric effects.
-                </p>
-              </div>
             </div>
           </div>
         </div>

@@ -91,6 +91,9 @@ namespace Application.Features.Orders.Queries.GetAllOrders
                     OrderNumber = o.OrderNumber,
                     OrderDate = o.OrderDate,
                     TotalAmount = o.TotalAmount,
+                    SubTotal = o.SubTotal,
+                    ShippingCost = o.ShippingCost,
+                    Tax = o.Tax,
                     Status = o.Status.ToString(),
                     PaymentStatus = o.PaidAt != null ? "Paid" : "Pending",
                     PaymentMethod = o.PaymentMethod,
@@ -100,6 +103,15 @@ namespace Application.Features.Orders.Queries.GetAllOrders
                         : null,
                     UserEmail = o.User != null ? o.User.Email : null,
                     UserPhoneNumber = o.User != null ? o.User.PhoneNumber : null,
+                    ShippingAddress = o.ShippingAddress,
+                    ShippingCity = o.ShippingCity,
+                    ShippingPostalCode = o.ShippingPostalCode,
+                    ShippingCountry = o.ShippingCountry,
+                    ShippingPhone = o.ShippingPhone,
+                    TrackingNumber = o.TrackingNumber,
+                    PaidAt = o.PaidAt,
+                    ShippedAt = o.ShippedAt,
+                    DeliveredAt = o.DeliveredAt,
                     Items = o.OrderItems
                         .OrderBy(oi => oi.Id)
                         .Select(oi => new AdminOrderItemDto

@@ -69,6 +69,10 @@ namespace Application.Features.Users.Queries.LoginUser
             var roles = await _userManager.GetRolesAsync(user);
             var token = _jwtService.GenerateToken(user, roles);
 
+            var profileImageUrl = string.IsNullOrWhiteSpace(user.ProfileImageUrl)
+                ? "/assets/images/hero-banner.png"
+                : user.ProfileImageUrl;
+
             var result = new LoginResultDto
             {
                 Token = token,
@@ -76,7 +80,8 @@ namespace Application.Features.Users.Queries.LoginUser
                 Email = user.Email ?? string.Empty,
                 PhoneNumber = user.PhoneNumber,
                 FullName = ($"{user.FirstName} {user.LastName}").Trim(),
-                Roles = roles.ToList()
+                Roles = roles.ToList(),
+                ProfileImageUrl = profileImageUrl
             };
 
             _logger.LogInformation("User {UserId} logged in successfully with roles: {Roles}", user.Id, string.Join(",", roles));

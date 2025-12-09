@@ -6,6 +6,7 @@ import { IProduct } from '../../Admin/products/Core/Interface/IProduct';
 import { ProductService } from '../../Admin/products/Core/Service/product.service';
 import { CartService } from '../../../core/cart.service';
 import { OrderService, UserOrderSummary } from '../../../core/order.service';
+import { AuthService } from '../../../core/auth.service';
 import { ToastService } from '../../../core/toast.service';
 import { ApiResponse } from '../../../core/IApiResponse';
 
@@ -42,11 +43,14 @@ export class ClientDashboard implements OnInit {
     wishlistCount: 0,
   };
 
+  profileImageUrl = '/assets/images/hero-banner.png';
+
   private readonly productService = inject(ProductService);
   private readonly cartService = inject(CartService);
   private readonly orderService = inject(OrderService);
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
+  private readonly auth = inject(AuthService);
 
   ngOnInit(): void {
     if (typeof window !== 'undefined') {
@@ -55,6 +59,8 @@ export class ClientDashboard implements OnInit {
         this.fullName = storedName;
       }
     }
+
+    this.profileImageUrl = this.auth.getProfileImageUrl();
 
     this.initializeRecentOrders();
     this.loadRecommendedProducts();

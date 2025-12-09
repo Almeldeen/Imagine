@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { UserLayout } from '../../layout/user-layout/user-layout';
 import { ClientDashboard } from './dashboard/client-dashboard';
 import { ClientSection } from './section/client-section';
+import { ClientProfile } from './profile/client-profile';
 import { ClientCustomization } from './customization/client-customization';
 import { ClientOrders } from './orders/client-orders';
 import { ClientOrderConfirmation } from './orders/client-order-confirmation';
@@ -32,11 +33,7 @@ export const CLIENT_ROUTES: Routes = [
       },
       {
         path: 'profile',
-        component: ClientSection,
-        data: {
-          title: 'Profile',
-          description: 'Manage your personal information and login details.',
-        },
+        component: ClientProfile,
       },
       {
         path: 'addresses',

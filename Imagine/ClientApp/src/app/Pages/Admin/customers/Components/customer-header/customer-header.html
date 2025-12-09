@@ -12,11 +12,11 @@
       </div>
       
       <div class="header-actions">
-        <button class="btn-export">
+        <button class="btn-export" (click)="onExportClick()">
           <i class="fas fa-download"></i>
           Export
         </button>
-        <button class="btn-import">
+        <button class="btn-import" (click)="onImportClick()">
           <i class="fas fa-upload"></i>
           Import
         </button>
@@ -39,21 +39,21 @@
 
       <!-- Filter Buttons -->
       <div class="filter-buttons">
-        <button class="filter-btn active" (click)="onFilterChange('all')">
+        <button class="filter-btn" [ngClass]="{ 'active': currentFilter === 'all' }" (click)="onFilterChange('all')">
           <span class="filter-text">All</span>
-          <span class="filter-count">1,247</span>
+          <span class="filter-count">{{ allCount | number }}</span>
         </button>
-        <button class="filter-btn" (click)="onFilterChange('active')">
+        <button class="filter-btn" [ngClass]="{ 'active': currentFilter === 'active' }" (click)="onFilterChange('active')">
           <span class="filter-text">Active</span>
-          <span class="filter-count">1,156</span>
+          <span class="filter-count">{{ activeCount | number }}</span>
         </button>
-        <button class="filter-btn" (click)="onFilterChange('inactive')">
+        <button class="filter-btn" [ngClass]="{ 'active': currentFilter === 'inactive' }" (click)="onFilterChange('inactive')">
           <span class="filter-text">Inactive</span>
-          <span class="filter-count">91</span>
+          <span class="filter-count">{{ inactiveCount | number }}</span>
         </button>
-        <button class="filter-btn" (click)="onFilterChange('premium')">
+        <button class="filter-btn" [ngClass]="{ 'active': currentFilter === 'premium' }" (click)="onFilterChange('premium')">
           <span class="filter-text">Premium</span>
-          <span class="filter-count">234</span>
+          <span class="filter-count">{{ premiumCount | number }}</span>
         </button>
       </div>
 
@@ -62,21 +62,19 @@
         <!-- Sort Dropdown -->
         <div class="sort-container">
           <select class="sort-select" (change)="onSortChange($event)">
-            <option value="name">Sort by Name</option>
-            <option value="email">Sort by Email</option>
-            <option value="joined">Sort by Join Date</option>
-            <option value="orders">Sort by Orders</option>
-            <option value="spent">Sort by Total Spent</option>
+            <option value="name" [selected]="currentSort === 'name'">Sort by Name</option>
+            <option value="date" [selected]="currentSort === 'date'">Sort by Date</option>
+            <option value="status" [selected]="currentSort === 'status'">Sort by Status</option>
           </select>
           <i class="fas fa-chevron-down sort-icon"></i>
         </div>
 
         <!-- View Toggle -->
         <div class="view-toggle">
-          <button class="view-btn active" (click)="onViewChange('grid')" title="Grid View">
+          <button class="view-btn" [ngClass]="{ 'active': currentView === 'grid' }" (click)="onViewChange('grid')" title="Grid View">
             <i class="fas fa-th"></i>
           </button>
-          <button class="view-btn" (click)="onViewChange('list')" title="List View">
+          <button class="view-btn" [ngClass]="{ 'active': currentView === 'list' }" (click)="onViewChange('list')" title="List View">
             <i class="fas fa-list"></i>
           </button>
         </div>

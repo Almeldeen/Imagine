@@ -9,6 +9,8 @@
     [deliveredCount]="deliveredCount"
     [cancelledCount]="cancelledCount"
     [refundedCount]="refundedCount"
+    [selectedStatus]="selectedStatus"
+    [viewMode]="viewMode"
     (filterChange)="onFilterChange($event)"
     (viewChange)="onViewChange($event)"
     (sortChange)="onSortChange($event)"
@@ -27,7 +29,11 @@
   </div>
 
   <!-- Order List Component (when orders exist) -->
-  <app-order-list *ngIf="!loading && !error && hasOrders" [orders]="filteredOrders"></app-order-list>
+  <app-order-list
+    *ngIf="!loading && !error && hasOrders"
+    [orders]="filteredOrders"
+    [viewMode]="viewMode">
+  </app-order-list>
 
   <!-- Pagination (when more items than one page) -->
   <div class="pagination-wrapper" *ngIf="!loading && !error && totalItems > pageSize">

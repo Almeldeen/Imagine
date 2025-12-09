@@ -28,6 +28,10 @@ export class Navbar implements OnInit {
     this.isAuthenticated = this.authService.isAuthenticated();
   }
 
+  get profileImageUrl(): string {
+    return this.authService.getProfileImageUrl();
+  }
+
   get dashboardLink(): string {
     if (!this.isAuthenticated) {
       return '/Login';
@@ -44,5 +48,10 @@ export class Navbar implements OnInit {
     this.authService.clearSession();
     this.isAuthenticated = false;
     this.router.navigate(['/Home']);
+  }
+
+  onAvatarError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.src = '/assets/images/hero-banner.png';
   }
 }

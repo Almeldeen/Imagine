@@ -9,6 +9,15 @@
   padding: 2rem;
 }
 
+.order-grid-compact {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.2rem;
+}
+
+.order-grid-list {
+  grid-template-columns: 1fr;
+}
+
 /* Responsive Grid */
 @media (max-width: 1200px) {
   .order-grid {

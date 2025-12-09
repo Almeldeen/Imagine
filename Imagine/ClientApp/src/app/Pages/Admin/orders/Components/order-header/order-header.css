@@ -172,12 +172,29 @@
 }
 
 .date-input {
-  background: transparent;
-  border: none;
-  color: #ffffff;
+  background: #0e1b33;
+  border-radius: 8px;
+  border: 1px solid rgba(74, 144, 226, 0.3);
+  color: #e5e7eb;
   font-size: 0.85rem;
   outline: none;
-  width: 120px;
+  width: 130px;
+  padding: 0.25rem 0.5rem;
+  color-scheme: dark;
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+  filter: invert(1) hue-rotate(180deg);
+  cursor: pointer;
+}
+
+.date-input::-webkit-datetime-edit,
+.date-input::-webkit-datetime-edit-fields-wrapper,
+.date-input::-webkit-datetime-edit-text,
+.date-input::-webkit-datetime-edit-month-field,
+.date-input::-webkit-datetime-edit-day-field,
+.date-input::-webkit-datetime-edit-year-field {
+  color: #e5e7eb;
 }
 
 .date-separator {
@@ -293,21 +310,32 @@
 
 .sort-select {
   appearance: none;
-  background: rgba(74, 144, 226, 0.05);
-  border: 1px solid rgba(74, 144, 226, 0.2);
+  background: #0e1b33;
+  border: 1px solid rgba(74, 144, 226, 0.4);
   border-radius: 10px;
   padding: 0.8rem 2.5rem 0.8rem 1rem;
-  color: #ffffff;
+  color: #e5e7eb;
   font-size: 0.85rem;
   cursor: pointer;
-  transition: all 0.3s ease;
-  min-width: 150px;
+  transition: all 0.25s ease;
+  min-width: 160px;
+  box-shadow: 0 0 0 1px rgba(0, 217, 255, 0.1);
 }
 
 .sort-select:focus {
   outline: none;
-  border-color: rgba(0, 217, 255, 0.4);
-  background: rgba(0, 217, 255, 0.05);
+  border-color: rgba(0, 217, 255, 0.6);
+  background: #111827;
+  box-shadow: 0 0 20px rgba(0, 217, 255, 0.25);
+}
+
+.sort-select:hover {
+  background: #111827;
+}
+
+.sort-select option {
+  background: #0b1630;
+  color: #e5e7eb;
 }
 
 .sort-icon {

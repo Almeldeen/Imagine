@@ -11,4 +11,5 @@ import { AdminOrder } from '../../../../../core/order.service';
 })
 export class OrderList {
   @Input() orders: AdminOrder[] = [];
+  @Input() viewMode: 'grid' | 'compact' | 'list' = 'grid';
 }

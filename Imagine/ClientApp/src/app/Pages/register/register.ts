@@ -11,6 +11,7 @@ interface RegisterModel {
   password: string;
   confirmPassword: string;
   phone?: string;
+  profileImageFile?: File | null;
 }
 
 @Component({
@@ -69,6 +70,7 @@ export class Register {
         password: this.model.password,
         confirmPassword: this.model.confirmPassword,
         phoneNumber: this.model.phone,
+        profileImageFile: this.model.profileImageFile ?? null,
       })
       .subscribe({
         next: (res) => {
@@ -80,6 +82,7 @@ export class Register {
           this.toast.success(res.message || 'Account created successfully. You can now log in.');
           this.model.password = '';
           this.model.confirmPassword = '';
+          this.model.profileImageFile = null;
         },
         error: (err) => {
           this.submitting = false;
@@ -87,6 +90,12 @@ export class Register {
           this.toast.error(message);
         },
       });
+  }
+
+  onProfileImageSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files && input.files.length > 0 ? input.files[0] : null;
+    this.model.profileImageFile = file;
   }
 
   togglePasswordVisibility() {

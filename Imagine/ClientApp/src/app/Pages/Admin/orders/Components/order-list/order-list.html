@@ -1,4 +1,13 @@
-<!-- Order List Grid -->
-<div class="order-grid" *ngIf="orders && orders.length">
-  <app-order-item *ngFor="let order of orders" [order]="order"></app-order-item>
+<!-- Order List Grid / Compact / List -->
+<div
+  class="order-grid"
+  *ngIf="orders && orders.length"
+  [ngClass]="{
+    'order-grid-compact': viewMode === 'compact',
+    'order-grid-list': viewMode === 'list'
+  }">
+  <app-order-item
+    *ngFor="let order of orders"
+    [order]="order">
+  </app-order-item>
 </div>

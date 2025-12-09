@@ -5,3 +5,7 @@
 .customers-page {
   padding: 0;
 }
+
+.customers-import-input {
+  display: none;
+}

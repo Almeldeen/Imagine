@@ -1,0 +1,44 @@
+<section class="client-profile">
+  <div class="profile-inner">
+    <div class="profile-header">
+      <div class="profile-avatar-wrapper">
+        <div class="profile-avatar">
+          <img
+            [src]="profileImageUrl"
+            alt="Profile image"
+            class="profile-avatar-img"
+            loading="lazy"
+            (error)="onAvatarError($event)" />
+        </div>
+        <div class="profile-text">
+          <p class="eyebrow">Your account</p>
+          <h1 class="title">{{ fullName }}</h1>
+          <p class="subtitle">
+            Update your profile image so your AI wardrobe feels more personal.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-body">
+      <div class="upload-card">
+        <h2>Profile image</h2>
+        <p class="helper-text">
+          Choose a clear square image (JPG or PNG) for best results.
+        </p>
+
+        <div class="upload-controls">
+          <label class="upload-button">
+            <i class="fas fa-image"></i>
+            <span>{{ isUploading ? 'Uploading...' : 'Choose new image' }}</span>
+            <input
+              type="file"
+              accept="image/*"
+              (change)="onFileSelected($event)"
+              [disabled]="isUploading" />
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

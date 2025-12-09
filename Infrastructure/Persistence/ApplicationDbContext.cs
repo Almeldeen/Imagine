@@ -28,9 +28,11 @@ namespace Infrastructure.Persistence
         public DbSet<CartItem> CartItems { get; set; } = null!;
         public DbSet<Order> Orders { get; set; } = null!;
         public DbSet<OrderItem> OrderItems { get; set; } = null!;
+        public DbSet<OrderTracking> OrderTrackings { get; set; } = null!;
         public DbSet<Review> Reviews { get; set; } = null!;
         public DbSet<Wishlist> Wishlists { get; set; } = null!;
         public DbSet<WishlistItem> WishlistItems { get; set; } = null!;
+        public DbSet<CustomizationJob> CustomizationJobs { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
