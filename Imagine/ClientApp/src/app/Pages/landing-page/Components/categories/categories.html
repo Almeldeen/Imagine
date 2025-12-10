@@ -66,11 +66,11 @@
             </div>
             
             <!-- Explore Button -->
-            <button class="btn-explore">
+            <a class="btn-explore" routerLink="/Products">
               <span>Explore {{ categories[0]?.name || 'Hoodies' }}</span>
               <i class="fas fa-arrow-right"></i>
               <span class="btn-shine"></span>
-            </button>
+            </a>
           </div>
           
           <!-- Floating Particles -->
@@ -129,11 +129,11 @@
             </div>
             
             <!-- Explore Button -->
-            <button class="btn-explore">
+            <a class="btn-explore" routerLink="/Products">
               <span>Explore {{ categories[1]?.name || 'T-Shirts' }}</span>
               <i class="fas fa-arrow-right"></i>
               <span class="btn-shine"></span>
-            </button>
+            </a>
           </div>
           
           <!-- Floating Particles -->
@@ -151,7 +151,7 @@
 
     <!-- View All Link -->
     <div class="text-center mt-5">
-      <a href="#all-products" class="view-all-link">
+      <a routerLink="/Products" class="view-all-link">
         <span>View All Products</span>
         <i class="fas fa-chevron-right"></i>
       </a>

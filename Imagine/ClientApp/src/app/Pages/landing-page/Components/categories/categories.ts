@@ -1,9 +1,11 @@
 import { Component, Input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { ICategory } from '../../../Admin/category/Core/Interface/ICategory';
 
 @Component({
   selector: 'app-categories',
-  imports: [],
+  standalone: true,
+  imports: [RouterLink],
   templateUrl: './categories.html',
   styleUrl: './categories.css',
 })

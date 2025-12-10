@@ -11,6 +11,7 @@ import { Login } from './Pages/login/login';
 import { Register } from './Pages/register/register';
 import { AdminLayout } from './layout/admin-layout/admin-layout';
 import { AdminHome } from './Pages/Admin/admin-home/admin-home';
+import { AdminAnalytics } from './Pages/Admin/analytics/admin-analytics';
 import { Category } from './Pages/Admin/category/category';
 import { Products } from './Pages/Admin/products/products';
 import { AddProduct } from './Pages/Admin/add-product/add-product';
@@ -91,6 +92,10 @@ export const routes: Routes = [
                 component:AdminHome
             },
             {
+                path:"analytics",
+                component:AdminAnalytics
+            },
+            {
                 path:"categories",
                 component:Category
             },
@@ -109,6 +114,16 @@ export const routes: Routes = [
             {
                 path:"orders",
                 component:Orders
+            },
+            {
+                path:"orders/pending",
+                component:Orders,
+                data:{ defaultStatus:'pending' }
+            },
+            {
+                path:"orders/completed",
+                component:Orders,
+                data:{ defaultStatus:'delivered' }
             }
          
         ]

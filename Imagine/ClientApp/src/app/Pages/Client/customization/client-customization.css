@@ -124,6 +124,9 @@
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   opacity: 0.4;
@@ -182,6 +185,52 @@
   margin-top: 0.4rem;
   font-size: 0.8rem;
   color: #9ca3af;
+}
+
+.cz-preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.35rem;
+}
+
+.cz-preset-label {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.cz-preset-pill {
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  padding: 0.25rem 0.75rem;
+  background: rgba(15, 23, 42, 0.9);
+  color: #e5e7eb;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.cz-preset-pill:hover {
+  border-color: rgba(56, 189, 248, 0.9);
+  background: radial-gradient(circle at top, rgba(0, 217, 255, 0.12), rgba(15, 23, 42, 0.98));
+}
+
+.cz-unified-section {
+  margin-top: 0.75rem;
+}
+
+.cz-unified-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cz-unified-column {
+  flex: 1 1 0;
+}
+
+.cz-label-inline {
+  margin-bottom: 0.25rem;
 }
 
 .cz-actions {
@@ -251,8 +300,8 @@
 .cz-type-toggle {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 1rem;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
 }
 
 .cz-type-pill {
@@ -270,9 +319,21 @@
   transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease, background 0.16s ease;
 }
 
+@media (min-width: 992px) {
+  .cz-type-toggle {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .cz-type-pill {
+    flex: 1 1 0;
+    padding: 0.5rem 0.85rem;
+  }
+}
+
 .cz-type-pill .pill-icon {
-  width: 2.2rem;
-  height: 2.2rem;
+  width: 1.8rem;
+  height: 1.8rem;
   border-radius: 999px;
   display: flex;
   align-items: center;
@@ -290,6 +351,32 @@
   color: #9ca3af;
 }
 
+.cz-type-toggle-compact .cz-type-pill {
+  padding: 0.4rem 0.7rem;
+}
+
+.cz-type-toggle-compact .pill-icon {
+  width: 1.4rem;
+  height: 1.4rem;
+  font-size: 0.7rem;
+  background: rgba(15, 23, 42, 0.95);
+}
+
+.cz-type-toggle-compact .pill-title {
+  font-size: 0.8rem;
+}
+
+.cz-type-toggle-compact .pill-subtitle {
+  font-size: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .cz-unified-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
 .cz-type-pill:hover {
   border-color: rgba(56, 189, 248, 0.7);
   transform: translateY(-1px);
@@ -301,8 +388,21 @@
   background: radial-gradient(circle at top, rgba(0, 217, 255, 0.12), rgba(15, 23, 42, 0.98));
 }
 
+.cz-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 999px;
+  border-color: rgba(148, 163, 184, 0.9);
+  font-size: 0.8rem;
+}
+
 .cz-preview-card {
   min-height: 320px;
+}
+
+.cz-main-preview {
+  min-height: 480px;
 }
 
 .cz-preview-header {
@@ -326,11 +426,107 @@
   margin-top: 1rem;
 }
 
+/* Compact virtual try-on controls on the left */
+.cz-tryon-card {
+  margin-bottom: 0;
+}
+
+.cz-user-photo-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.cz-user-photo-thumb-wrapper {
+  width: 130px;
+  max-width: 100%;
+}
+
+.cz-user-photo-thumb {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.cz-user-photo-placeholder {
+  width: 130px;
+  height: 90px;
+  border-radius: 0.75rem;
+  border: 1px dashed rgba(148, 163, 184, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  text-align: center;
+  padding: 0.4rem;
+  background: rgba(15, 23, 42, 0.9);
+}
+
+.cz-garment-thumb-wrapper {
+  margin-top: 0.4rem;
+  width: 96px;
+  max-width: 100%;
+}
+
+.cz-garment-thumb {
+  width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  object-fit: cover;
+}
+
 .cz-mannequin {
   position: relative;
   width: 100%;
   max-width: 260px;
   margin: 0 auto;
+}
+
+.cz-main-preview .cz-mannequin {
+  max-width: 100%;
+}
+
+/* Make the main preview image area larger */
+.cz-main-preview .cz-print-area {
+  top: 8%;
+  width: 88%;
+  height: 80%;
+  border-radius: 1.4rem;
+}
+
+.cz-upload-input {
+  border-radius: 999px;
+  border: 1px dashed rgba(148, 163, 184, 0.7);
+  background: rgba(15, 23, 42, 0.9);
+  color: #e5e7eb;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.9rem;
+}
+
+.cz-upload-input::file-selector-button {
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #00D9FF, #8B5CF6);
+  color: #f9fafb;
+  padding: 0.35rem 0.85rem;
+  margin-right: 0.7rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.cz-upload-input::-webkit-file-upload-button {
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #00D9FF, #8B5CF6);
+  color: #f9fafb;
+  padding: 0.35rem 0.85rem;
+  margin-right: 0.7rem;
+  font-size: 0.8rem;
+  cursor: pointer;
 }
 
 .cz-garment-outline {
@@ -392,11 +588,17 @@
   position: relative;
   width: 100%;
   height: 100%;
-  padding: 0.6rem 0.7rem;
+  padding: 0.3rem 0.35rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 0.25rem;
+}
+
+.cz-print-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .cz-print-label {

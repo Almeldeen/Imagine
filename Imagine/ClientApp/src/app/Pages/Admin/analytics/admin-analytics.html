@@ -1,0 +1,61 @@
+<!-- Admin Analytics Page -->
+<div class="admin-analytics">
+  <div class="analytics-header">
+    <div>
+      <h1 class="analytics-title">Analytics & Insights</h1>
+      <p class="analytics-subtitle">Track your store performance over time.</p>
+    </div>
+  </div>
+
+  <div class="analytics-content" *ngIf="!loading; else analyticsLoading">
+    <div class="analytics-grid">
+      <!-- Reuse main sales chart -->
+      <app-sales-chart></app-sales-chart>
+
+      <!-- Summary table -->
+      <div class="dashboard-card analytics-table" *ngIf="monthly || yearly">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Sales Breakdown</h3>
+            <p class="card-subtitle">Detailed overview by period</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <table class="analytics-data-table" *ngIf="monthly as m">
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th>Revenue</th>
+                <th>Orders</th>
+                <th>Avg. Order Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let p of m.points">
+                <td>{{ p.label }}</td>
+                <td>${{ p.totalRevenue | number: '1.2-2' }}</td>
+                <td>{{ p.totalOrders | number }}</td>
+                <td>${{ p.averageOrderValue | number: '1.2-2' }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="yearly-summary" *ngIf="yearly as y">
+            <h4>Yearly Summary</h4>
+            <p>Total Revenue (last 5 years): <strong>${{ y.totalRevenue | number: '1.2-2' }}</strong></p>
+            <p>Total Orders (last 5 years): <strong>{{ y.totalOrders | number }}</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="analytics-error" *ngIf="error">{{ error }}</p>
+  </div>
+
+  <ng-template #analyticsLoading>
+    <div class="analytics-loading">
+      <i class="fas fa-spinner fa-spin"></i>
+      <span>Loading analytics...</span>
+    </div>
+  </ng-template>
+</div>

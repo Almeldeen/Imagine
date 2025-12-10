@@ -10,6 +10,12 @@ export interface AddToCartRequest {
   quantity: number;
 }
 
+export interface AddCustomProductToCartRequest {
+  userOrSessionId: string;
+  customProductId: number;
+  quantity: number;
+}
+
 export interface CartItemDto {
   id: number;
   name: string;
@@ -53,6 +59,20 @@ export class CartService {
       quantity,
     };
     return this.http.post<ApiResponse<boolean>>(`${this.baseUrl}/add`, payload).pipe(
+      tap(() => {
+        this.refreshCart().subscribe();
+      })
+    );
+  }
+
+  addCustomProductToCart(customProductId: number, quantity: number = 1): Observable<ApiResponse<boolean>> {
+    const payload: AddCustomProductToCartRequest = {
+      userOrSessionId: this.getOrCreateUserOrSessionId(),
+      customProductId,
+      quantity,
+    };
+
+    return this.http.post<ApiResponse<boolean>>(`${this.baseUrl}/add-custom`, payload).pipe(
       tap(() => {
         this.refreshCart().subscribe();
       })

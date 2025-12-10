@@ -12,7 +12,7 @@
           <span class="nav-text">Dashboard</span>
         </a>
         
-        <a href="/admin/analytics" class="nav-item">
+        <a class="nav-item" routerLink="/admin/analytics" routerLinkActive="active">
           <i class="fas fa-chart-line nav-icon"></i>
           <span class="nav-text">Analytics</span>
         </a>
@@ -24,7 +24,7 @@
         <a  class="nav-item" routerLink="/admin/products" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
           <i class="fas fa-box nav-icon"></i>
           <span class="nav-text">All Products</span>
-          <span class="nav-badge">248</span>
+          <span class="nav-badge" *ngIf="stats as s">{{ s.totalProducts | number }}</span>
         </a>
         
         <a  routerLink="/admin/products/add" routerLinkActive="active" class="nav-item">
@@ -44,15 +44,15 @@
         <a class="nav-item" routerLink="/admin/orders" routerLinkActive="active">
           <i class="fas fa-shopping-cart nav-icon"></i>
           <span class="nav-text">All Orders</span>
-          <span class="nav-badge warning">234</span>
+          <span class="nav-badge warning" *ngIf="stats as s">{{ s.totalOrders | number }}</span>
         </a>
         
-        <a href="/admin/orders/pending" class="nav-item">
+        <a class="nav-item" routerLink="/admin/orders/pending" routerLinkActive="active">
           <i class="fas fa-clock nav-icon"></i>
           <span class="nav-text">Pending</span>
         </a>
         
-        <a href="/admin/orders/completed" class="nav-item">
+        <a class="nav-item" routerLink="/admin/orders/completed" routerLinkActive="active">
           <i class="fas fa-check-circle nav-icon"></i>
           <span class="nav-text">Completed</span>
         </a>
@@ -64,7 +64,7 @@
         <a class="nav-item" routerLink="/admin/customers" routerLinkActive="active">
           <i class="fas fa-users nav-icon"></i>
           <span class="nav-text">All Customers</span>
-          <span class="nav-badge">1,247</span>
+          <span class="nav-badge" *ngIf="stats as s">{{ s.totalCustomers | number }}</span>
         </a>
         
         <a href="/admin/reviews" class="nav-item">

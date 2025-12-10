@@ -1,5 +1,5 @@
 <!-- Stats Cards -->
-<div class="stats-grid">
+<div class="stats-grid" *ngIf="!isLoading && stats; else statsLoading">
   <!-- Total Revenue -->
   <div class="stat-card">
     <div class="stat-icon revenue">
@@ -7,10 +7,10 @@
     </div>
     <div class="stat-content">
       <span class="stat-label">Total Revenue</span>
-      <h3 class="stat-value">$45,231.89</h3>
+      <h3 class="stat-value">${{ stats.totalRevenue | number: '1.2-2' }}</h3>
       <div class="stat-change positive">
         <i class="fas fa-arrow-up"></i>
-        <span>+20.1% from last month</span>
+        <span>Live total from all orders</span>
       </div>
     </div>
   </div>
@@ -22,10 +22,10 @@
     </div>
     <div class="stat-content">
       <span class="stat-label">Total Orders</span>
-      <h3 class="stat-value">1,284</h3>
+      <h3 class="stat-value">{{ stats.totalOrders | number }}</h3>
       <div class="stat-change positive">
         <i class="fas fa-arrow-up"></i>
-        <span>+12.5% from last month</span>
+        <span>All orders in the system</span>
       </div>
     </div>
   </div>
@@ -37,10 +37,10 @@
     </div>
     <div class="stat-content">
       <span class="stat-label">Total Customers</span>
-      <h3 class="stat-value">2,845</h3>
+      <h3 class="stat-value">{{ stats.totalCustomers | number }}</h3>
       <div class="stat-change positive">
         <i class="fas fa-arrow-up"></i>
-        <span>+8.3% from last month</span>
+        <span>Registered clients</span>
       </div>
     </div>
   </div>
@@ -52,11 +52,24 @@
     </div>
     <div class="stat-content">
       <span class="stat-label">Pending Orders</span>
-      <h3 class="stat-value">12</h3>
-      <div class="stat-change negative">
-        <i class="fas fa-arrow-down"></i>
-        <span>-4.2% from last month</span>
+      <h3 class="stat-value">{{ stats.pendingOrders | number }}</h3>
+      <div class="stat-change" [ngClass]="{ 'negative': stats.pendingOrders > 0, 'positive': stats.pendingOrders === 0 }">
+        <i class="fas" [ngClass]="stats.pendingOrders > 0 ? 'fa-arrow-up' : 'fa-check-circle'"></i>
+        <span *ngIf="stats.pendingOrders > 0">Awaiting processing</span>
+        <span *ngIf="stats.pendingOrders === 0">No pending orders</span>
       </div>
     </div>
   </div>
 </div>
+
+<ng-template #statsLoading>
+  <div class="stats-grid">
+    <div class="stat-card" *ngFor="let _ of placeholders">
+      <div class="stat-icon skeleton"></div>
+      <div class="stat-content">
+        <span class="stat-label skeleton-text"></span>
+        <h3 class="stat-value skeleton-text"></h3>
+      </div>
+    </div>
+  </div>
+</ng-template>

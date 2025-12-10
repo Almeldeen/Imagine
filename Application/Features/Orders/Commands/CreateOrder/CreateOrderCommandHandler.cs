@@ -42,7 +42,10 @@ namespace Application.Features.Orders.Commands.CreateOrder
                 return BaseResponse<OrderCreatedResponseDto>.FailureResponse("Cart is empty.");
             }
 
+            var cartKey = dto.CartUserOrSessionId ?? string.Empty;
+
             if (!string.IsNullOrWhiteSpace(cart.UserId) &&
+                string.Equals(cart.UserId, cartKey, StringComparison.OrdinalIgnoreCase) &&
                 !string.Equals(cart.UserId, request.UserId, StringComparison.OrdinalIgnoreCase))
             {
                 return BaseResponse<OrderCreatedResponseDto>.FailureResponse("Cart does not belong to the current user.");

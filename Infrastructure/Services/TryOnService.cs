@@ -38,8 +38,6 @@ namespace Infrastructure.Services
             _deApiKey =
                 _configuration["DeApi:ApiKey"] ??
                 _configuration["DEAPI_API_KEY"] ??
-                _configuration["TryOn:ApiKey"] ??
-                _configuration["TRYON_API_KEY"] ??
                 string.Empty;
 
             if (!string.IsNullOrWhiteSpace(_apiKey) && _httpClient.DefaultRequestHeaders.Authorization == null)

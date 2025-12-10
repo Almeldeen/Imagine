@@ -87,7 +87,7 @@
 
         <!-- CTA Button with Enhanced Animation -->
         <div class="hero-cta mb-4">
-          <button class="btn btn-primary-custom btn-lg cta-main">
+          <a class="btn btn-primary-custom btn-lg cta-main" routerLink="/client/customize">
             <span class="btn-content">
               <i class="fas fa-wand-magic-sparkles me-2"></i>
               <span>{{ hero?.primaryCtaText || 'Start Customizing' }}</span>
@@ -98,11 +98,11 @@
               <span class="btn-particle"></span>
               <span class="btn-particle"></span>
             </span>
-          </button>
-          <button class="btn btn-outline-custom btn-lg ms-3">
+          </a>
+          <a class="btn btn-outline-custom btn-lg ms-3" href="#how-it-works">
             <i class="fas fa-play-circle me-2"></i>
             {{ hero?.secondaryCtaText || 'Watch Demo' }}
-          </button>
+          </a>
         </div>
 
         <!-- Feature Highlights -->

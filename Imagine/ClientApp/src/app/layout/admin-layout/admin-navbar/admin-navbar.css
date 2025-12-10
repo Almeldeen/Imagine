@@ -259,6 +259,37 @@
   font-size: 0.8rem;
 }
 
+/* Profile dropdown menu */
+.admin-dropdown-menu {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  min-width: 180px;
+  padding: 0.5rem 0;
+  background: rgba(17, 24, 39, 0.98);
+  border-radius: 0.75rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(75, 85, 99, 0.6);
+  z-index: 1100;
+}
+
+.admin-dropdown-menu .dropdown-item {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: none;
+  text-align: left;
+  color: #e5e7eb;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.admin-dropdown-menu .dropdown-item:hover {
+  background: rgba(55, 65, 81, 0.9);
+  color: #ffffff;
+}
+
 /* ========================================
    RESPONSIVE
    ======================================== */

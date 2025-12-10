@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { OrderHeader } from './Components/order-header/order-header';
 import { OrderList } from './Components/order-list/order-list';
 import { OrderEmptyState } from './Components/order-empty-state/order-empty-state';
@@ -17,6 +18,7 @@ import { ToastService } from '../../../core/toast.service';
 export class Orders implements OnInit {
   private readonly orderService = inject(OrderService);
   private readonly toast = inject(ToastService);
+  private readonly route = inject(ActivatedRoute);
 
   orders: AdminOrder[] = [];
   filteredOrders: AdminOrder[] = [];
@@ -45,6 +47,20 @@ export class Orders implements OnInit {
   refundedCount = 0;
 
   ngOnInit(): void {
+    const defaultStatus = this.route.snapshot.data['defaultStatus'] as
+      | 'all'
+      | 'pending'
+      | 'processing'
+      | 'shipped'
+      | 'delivered'
+      | 'cancelled'
+      | 'refunded'
+      | undefined;
+
+    if (defaultStatus) {
+      this.selectedStatus = defaultStatus;
+    }
+
     this.loadCounts();
     this.loadOrders();
   }

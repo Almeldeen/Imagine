@@ -6,6 +6,13 @@ import { ApiResponse } from './IApiResponse';
 
 export interface PreprocessResult {
   preprocessedImageUrl: string;
+  customizationJobId?: number;
+}
+
+export interface GenerateGarmentResult {
+  customizationJobId: number;
+  deApiRequestId: string;
+  generatedGarmentUrl?: string;
 }
 
 export interface TryOnJobCreated {
@@ -45,10 +52,10 @@ export class TryOnService {
     return this.http.post<ApiResponse<PreprocessResult>>(`${this.baseUrl}/preprocess`, form);
   }
 
-  startTryOn(personImage: File, garmentImage: File): Observable<ApiResponse<TryOnJobCreated>> {
+  startTryOn(personImage: File, customizationJobId: number): Observable<ApiResponse<TryOnJobCreated>> {
     const form = new FormData();
     form.append('personImage', personImage);
-    form.append('garmentImage', garmentImage);
+    form.append('customizationJobId', customizationJobId.toString());
     return this.http.post<ApiResponse<TryOnJobCreated>>(`${this.baseUrl}/tryon`, form);
   }
 

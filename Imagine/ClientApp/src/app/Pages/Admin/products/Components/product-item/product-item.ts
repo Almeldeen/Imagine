@@ -18,7 +18,7 @@ export class ProductItem {
     const url = this.product?.imageUrl;
 
     if (!url) {
-      return '/assets/images/product-placeholder.jpg';
+      return '/assets/images/hero-banner.png';
     }
 
     if (url.startsWith('http')) {

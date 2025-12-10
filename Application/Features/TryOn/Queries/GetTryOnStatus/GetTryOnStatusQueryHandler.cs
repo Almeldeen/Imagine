@@ -9,21 +9,22 @@ namespace Application.Features.TryOn.Queries.GetTryOnStatus
 {
     public class GetTryOnStatusQueryHandler : IRequestHandler<GetTryOnStatusQuery, BaseResponse<TryOnJobStatusDto>>
     {
-        private readonly ITryOnService _tryOnService;
+        private readonly ITryOnPipelineService _pipelineService;
 
-        public GetTryOnStatusQueryHandler(ITryOnService tryOnService)
+        public GetTryOnStatusQueryHandler(ITryOnPipelineService pipelineService)
         {
-            _tryOnService = tryOnService;
+            _pipelineService = pipelineService;
         }
 
-        public Task<BaseResponse<TryOnJobStatusDto>> Handle(GetTryOnStatusQuery request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<TryOnJobStatusDto>> Handle(GetTryOnStatusQuery request, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(request.JobId))
             {
-                return Task.FromResult(BaseResponse<TryOnJobStatusDto>.FailureResponse("Job id is required."));
+                return BaseResponse<TryOnJobStatusDto>.FailureResponse("Job id is required.");
             }
 
-            return _tryOnService.GetTryOnStatusAsync(request.JobId, cancellationToken);
+            var status = await _pipelineService.GetTryOnStatusAsync(request.JobId, cancellationToken);
+            return BaseResponse<TryOnJobStatusDto>.SuccessResponse(status, "Try-on job status retrieved successfully.");
         }
     }
 }

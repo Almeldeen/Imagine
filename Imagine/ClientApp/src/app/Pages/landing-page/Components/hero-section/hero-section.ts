@@ -1,11 +1,13 @@
 import { Component, Input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { HeroSectionModel } from '../../Core/Interface/IHome';
 
 @Component({
   selector: 'app-hero-section',
-  imports: [],
+  standalone: true,
+  imports: [RouterLink],
   templateUrl: './hero-section.html',
-  styleUrl: './hero-section.css',
+  styleUrls: ['./hero-section.css'],
 })
 export class HeroSection {
   @Input() hero: HeroSectionModel | null = null;

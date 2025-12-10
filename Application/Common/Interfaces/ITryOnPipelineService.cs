@@ -16,9 +16,9 @@ namespace Application.Common.Interfaces
 
         Task<TryOnJobCreatedDto> StartTryOnAsync(
             string userId,
+            int customizationJobId,
             Stream personStream,
             string personFileName,
-            string generatedGarmentUrl,
             CancellationToken cancellationToken = default);
 
         Task<TryOnJobStatusDto> GetTryOnStatusAsync(

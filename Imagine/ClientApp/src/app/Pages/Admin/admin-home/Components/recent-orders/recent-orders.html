@@ -5,7 +5,7 @@
       <h3 class="card-title">Recent Orders</h3>
       <p class="card-subtitle">Latest customer orders</p>
     </div>
-    <button class="btn-link">View All <i class="fas fa-arrow-right"></i></button>
+    <button class="btn-link" routerLink="/admin/orders">View All <i class="fas fa-arrow-right"></i></button>
   </div>
   <div class="card-body">
     <div class="table-responsive">
@@ -22,84 +22,23 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td><span class="order-id">#ORD-2845</span></td>
+          <tr *ngFor="let order of orders">
+            <td><span class="order-id">#{{ order.orderNumber }}</span></td>
             <td>
               <div class="customer-cell">
-                <img src="/assets/images/avatar-1.jpg" alt="Customer" class="customer-avatar">
-                <span>John Doe</span>
+                <span>{{ order.userName || 'Customer' }}</span>
               </div>
             </td>
-            <td>AI Custom Hoodie</td>
-            <td>Nov 15, 2024</td>
-            <td><span class="amount">$89.99</span></td>
-            <td><span class="status-badge completed">Completed</span></td>
+            <td>{{ order.items && order.items.length ? order.items[0].productName : '—' }}</td>
+            <td>{{ order.orderDate | date: 'MMM d, y' }}</td>
+            <td><span class="amount">${{ order.totalAmount | number: '1.2-2' }}</span></td>
             <td>
-              <button class="btn-icon"><i class="fas fa-eye"></i></button>
+              <span class="status-badge" [ngClass]="order.status.toLowerCase()">
+                {{ order.status }}
+              </span>
             </td>
-          </tr>
-          <tr>
-            <td><span class="order-id">#ORD-2844</span></td>
             <td>
-              <div class="customer-cell">
-                <img src="/assets/images/avatar-2.jpg" alt="Customer" class="customer-avatar">
-                <span>Jane Smith</span>
-              </div>
-            </td>
-            <td>Designer T-Shirt</td>
-            <td>Nov 15, 2024</td>
-            <td><span class="amount">$45.00</span></td>
-            <td><span class="status-badge pending">Pending</span></td>
-            <td>
-              <button class="btn-icon"><i class="fas fa-eye"></i></button>
-            </td>
-          </tr>
-          <tr>
-            <td><span class="order-id">#ORD-2843</span></td>
-            <td>
-              <div class="customer-cell">
-                <img src="/assets/images/avatar-3.jpg" alt="Customer" class="customer-avatar">
-                <span>Mike Johnson</span>
-              </div>
-            </td>
-            <td>Premium Sweatshirt</td>
-            <td>Nov 14, 2024</td>
-            <td><span class="amount">$65.50</span></td>
-            <td><span class="status-badge processing">Processing</span></td>
-            <td>
-              <button class="btn-icon"><i class="fas fa-eye"></i></button>
-            </td>
-          </tr>
-          <tr>
-            <td><span class="order-id">#ORD-2842</span></td>
-            <td>
-              <div class="customer-cell">
-                <img src="/assets/images/avatar-4.jpg" alt="Customer" class="customer-avatar">
-                <span>Sarah Williams</span>
-              </div>
-            </td>
-            <td>Custom Polo</td>
-            <td>Nov 14, 2024</td>
-            <td><span class="amount">$55.00</span></td>
-            <td><span class="status-badge completed">Completed</span></td>
-            <td>
-              <button class="btn-icon"><i class="fas fa-eye"></i></button>
-            </td>
-          </tr>
-          <tr>
-            <td><span class="order-id">#ORD-2841</span></td>
-            <td>
-              <div class="customer-cell">
-                <img src="/assets/images/avatar-5.jpg" alt="Customer" class="customer-avatar">
-                <span>David Brown</span>
-              </div>
-            </td>
-            <td>AI Custom Hoodie</td>
-            <td>Nov 13, 2024</td>
-            <td><span class="amount">$89.99</span></td>
-            <td><span class="status-badge cancelled">Cancelled</span></td>
-            <td>
-              <button class="btn-icon"><i class="fas fa-eye"></i></button>
+              <button class="btn-icon" [routerLink]="['/admin/orders']"><i class="fas fa-eye"></i></button>
             </td>
           </tr>
         </tbody>

@@ -1,12 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { IProduct } from '../../../Admin/products/Core/Interface/IProduct';
 import { ProductCard } from '../../../../shared/Components/product-card/product-card';
 
 @Component({
   selector: 'app-trending',
   standalone: true,
-  imports: [CommonModule, ProductCard],
+  imports: [CommonModule, ProductCard, RouterLink],
   templateUrl: './trending.html',
   styleUrl: './trending.css',
 })

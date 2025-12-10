@@ -1,0 +1,86 @@
+.admin-analytics {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.analytics-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.analytics-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.analytics-subtitle {
+  font-size: 0.9rem;
+  color: #9ca3af;
+  margin: 0.25rem 0 0;
+}
+
+.analytics-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
+  gap: 1.5rem;
+}
+
+.analytics-table .card-body {
+  overflow-x: auto;
+}
+
+.analytics-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.analytics-data-table th,
+.analytics-data-table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid rgba(75, 85, 99, 0.5);
+}
+
+.analytics-data-table th {
+  text-align: left;
+  color: #9ca3af;
+  font-weight: 600;
+}
+
+.analytics-data-table td {
+  color: #e5e7eb;
+}
+
+.yearly-summary {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #d1d5db;
+}
+
+.analytics-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #e5e7eb;
+}
+
+.analytics-error {
+  color: #fca5a5;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 991px) {
+  .analytics-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

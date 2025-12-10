@@ -1,5 +1,6 @@
 ﻿using Application.Common.Models;
 using Application.Features.Carts.Commands.AddToCart;
+using Application.Features.Carts.Commands.AddCustomProductToCart;
 using Application.Features.Carts.Commands.ClearCart;
 using Application.Features.Carts.Commands.RemoveFromCart;
 using Application.Features.Carts.Commands.UpdateCartItem;
@@ -39,6 +40,13 @@ namespace Imagine.Controllers
 
         [HttpPost("add")]
         public async Task<IActionResult> AddToCart(AddToCartCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+
+        [HttpPost("add-custom")]
+        public async Task<IActionResult> AddCustomProductToCart(AddCustomProductToCartCommand command)
         {
             var result = await _mediator.Send(command);
             return Ok(result);

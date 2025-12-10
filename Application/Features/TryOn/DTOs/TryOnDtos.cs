@@ -5,6 +5,7 @@ namespace Application.Features.TryOn.DTOs
     public class PreprocessResultDto
     {
         public string PreprocessedImageUrl { get; set; } = string.Empty;
+        public int? CustomizationJobId { get; set; }
     }
 
     public class TryOnJobCreatedDto

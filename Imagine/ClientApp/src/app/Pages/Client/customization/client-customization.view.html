@@ -57,7 +57,7 @@
 
       <div class="row g-4 cz-layout">
         <!-- Left column: prompt + selector -->
-        <div class="col-lg-7">
+        <div class="col-lg-6">
           <div class="cz-card cz-prompt-card">
             <div class="cz-prompt-particles">
               <span class="cz-particle-dot d1"></span>
@@ -68,12 +68,38 @@
               <span class="cz-particle-dot d6"></span>
             </div>
             <div class="cz-card-header">
-              <h2>Step 1 &middot; Describe your vision</h2>
-              <p>Write a short prompt for the AI to imagine your perfect print.</p>
+              <h2>Design your AI artwork</h2>
+              <p>Describe what you want printed on your garment and we&rsquo;ll turn it into a detailed design.</p>
             </div>
 
             <div class="cz-prompt-body">
               <label class="cz-label" for="promptTextarea">AI prompt</label>
+
+              <div class="cz-preset-row">
+                <span class="cz-preset-label">Quick presets</span>
+                <button
+                  type="button"
+                  class="cz-preset-pill"
+                  (click)="applyPresetPrompt('comic')"
+                >
+                  Comic Character Bold Print
+                </button>
+                <button
+                  type="button"
+                  class="cz-preset-pill"
+                  (click)="applyPresetPrompt('wolf')"
+                >
+                  Neon Cyber Wolf
+                </button>
+                <button
+                  type="button"
+                  class="cz-preset-pill"
+                  (click)="applyPresetPrompt('monogram')"
+                >
+                  Minimalist Monogram
+                </button>
+              </div>
+
               <textarea
                 id="promptTextarea"
                 [(ngModel)]="prompt"
@@ -82,9 +108,67 @@
                 placeholder="e.g. Neon cyberpunk city at night, soft purple and blue glow, minimal line art, centered composition"
               ></textarea>
               <p class="cz-helper-text">
-                The more specific you are, the more unique your design will feel. Mention style,
-                colors, mood, and layout.
+                This prompt drives the artwork that will be printed on your hoodie or T-shirt.
+                Mention subject, style, colors, and layout for the best results.
               </p>
+
+              <!-- Garment selection and settings -->
+              <div class="cz-unified-section">
+                <div class="cz-unified-row">
+                  <div class="cz-unified-column">
+                    <label class="cz-label cz-label-inline">Garment type</label>
+                    <div class="cz-type-toggle cz-type-toggle-compact">
+                      <button
+                        type="button"
+                        class="cz-type-pill"
+                        [class.selected]="selectedType === 'hoodie'"
+                        (click)="onSelectType('hoodie')"
+                      >
+                        <div class="pill-icon"><i class="fas fa-user-astronaut"></i></div>
+                        <div class="pill-text">
+                          <div class="pill-title">Hoodie</div>
+                          <div class="pill-subtitle">Cozy, heavyweight.</div>
+                        </div>
+                      </button>
+
+                      <button
+                        type="button"
+                        class="cz-type-pill"
+                        [class.selected]="selectedType === 'tshirt'"
+                        (click)="onSelectType('tshirt')"
+                      >
+                        <div class="pill-icon"><i class="fas fa-tshirt"></i></div>
+                        <div class="pill-text">
+                          <div class="pill-title">T-shirt</div>
+                          <div class="pill-subtitle">Lightweight, everyday.</div>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="cz-unified-column">
+                    <label class="cz-label cz-label-inline">Optional product image</label>
+                    <div class="cz-unified-upload">
+                      <input
+                        type="file"
+                        class="form-control form-control-sm bg-dark text-light cz-upload-input"
+                        accept="image/*"
+                        (change)="onGarmentFileChange($event)"
+                      />
+                      <small class="text-muted d-block mt-1">
+                        Use a clear front photo. We&rsquo;ll place your AI artwork onto it.
+                      </small>
+                      <div class="cz-garment-thumb-wrapper" *ngIf="garmentPreviewUrl">
+                        <img
+                          [src]="garmentPreviewUrl"
+                          alt="Garment preview"
+                          class="cz-garment-thumb"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               <div class="cz-actions">
                 <button
@@ -122,151 +206,47 @@
               </div>
             </div>
           </div>
-
-          <!-- Generated design preview on selected base garment -->
-          <div class="cz-card cz-preview-card mt-3" [class.has-preview]="preprocessedGarmentUrl">
-            <div class="cz-card-header cz-preview-header">
-              <div>
-                <h2>Step 3 &middot; Preview your AI design</h2>
-                <p>See your prompt applied to the {{ selectedLabel.toLowerCase() }} before ordering.</p>
-              </div>
-            </div>
-
-            <div class="cz-preview-body">
-              <div class="cz-mannequin" [class.has-preview]="preprocessedGarmentUrl">
-                <div class="cz-garment-outline"></div>
-                <div class="cz-print-area" [class.has-preview]="preprocessedGarmentUrl">
-                  <div class="cz-print-skeleton" *ngIf="!preprocessedGarmentUrl && !isGenerating">
-                    <span>Your generated design will appear here after you click "Generate preview".</span>
-                  </div>
-
-                  <div class="cz-print-loading" *ngIf="isGenerating">
-                    <div class="cz-shimmer"></div>
-                  </div>
-
-                  <div class="cz-print-mock" *ngIf="preprocessedGarmentUrl && !isGenerating">
-                    <p class="cz-print-label">AI-generated mockup</p>
-                    <img
-                      [src]="preprocessedGarmentUrl"
-                      alt="AI generated garment"
-                      class="img-fluid rounded-3"
-                      style="max-height: 100%; object-fit: cover;"
-                    />
-                  </div>
-                </div>
-              </div>
-              <p class="cz-preview-note">
-                This image is generated from your prompt and the selected base garment. You can adjust the
-                prompt or upload your own garment image on the right, then generate again.
-              </p>
-            </div>
-          </div>
-
-          <div class="cz-card cz-selector-card mt-3">
-            <div class="cz-card-header">
-              <h2>Step 2 &middot; Choose your base</h2>
-              <p>Select whether you want this print on a hoodie or a T-shirt.</p>
-            </div>
-
-            <div class="cz-type-toggle">
-              <button
-                type="button"
-                class="cz-type-pill"
-                [class.selected]="selectedType === 'hoodie'"
-                (click)="onSelectType('hoodie')"
-              >
-                <div class="pill-icon"><i class="fas fa-user-astronaut"></i></div>
-                <div class="pill-text">
-                  <div class="pill-title">Hoodie</div>
-                  <div class="pill-subtitle">Cozy, heavyweight, perfect for bold AI art.</div>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                class="cz-type-pill"
-                [class.selected]="selectedType === 'tshirt'"
-                (click)="onSelectType('tshirt')"
-              >
-                <div class="pill-icon"><i class="fas fa-tshirt"></i></div>
-                <div class="pill-text">
-                  <div class="pill-title">T-shirt</div>
-                  <div class="pill-subtitle">Lightweight and everyday-ready, with crisp prints.</div>
-                </div>
-              </button>
-            </div>
-          </div>
         </div>
 
-        <!-- Right column: try-on preview + controls -->
-        <div class="col-lg-5">
-          <div class="cz-card cz-preview-card" [class.has-preview]="tryOnStatus === 'completed' && tryOnImageUrl">
-            <div class="cz-card-header cz-preview-header">
-              <div>
-                <h2>Virtual try-on preview</h2>
-                <p>Upload your photo and a garment to see a realistic AI try-on.</p>
-              </div>
-              <span class="cz-tag">Beta &middot; AI powered</span>
+        <!-- Right column: final preview + try-on -->
+        <div class="col-lg-6">
+          <div class="cz-card cz-tryon-card mb-3" *ngIf="false">
+            <div class="cz-card-header">
+              <h2>Virtual try-on (optional)</h2>
+              <p>Upload your photo to see this design on you.</p>
             </div>
 
             <div class="cz-preview-body">
-              <div class="mb-3">
-                <label class="cz-label">1. Garment image</label>
-                <input
-                  type="file"
-                  class="form-control form-control-sm bg-dark text-light"
-                  accept="image/*"
-                  (change)="onGarmentFileChange($event)"
-                />
-                <small class="text-muted d-block mt-1">
-                  JPG / PNG / WEBP, max 8MB. Ideally a clear product photo.
-                </small>
-                <div class="mt-2" *ngIf="garmentPreviewUrl">
-                  <img
-                    [src]="garmentPreviewUrl"
-                    alt="Garment preview"
-                    class="img-fluid rounded-3 border border-secondary-subtle"
-                  />
-                </div>
-              </div>
+              <label class="cz-label">Your photo</label>
+              <input
+                type="file"
+                class="form-control form-control-sm bg-dark text-light cz-upload-input"
+                accept="image/*"
+                (change)="onPersonFileChange($event)"
+              />
+              <small class="text-muted d-block mt-1">
+                Use a clear, front-facing photo in good lighting.
+              </small>
 
-              <div class="mb-3">
-                <label class="cz-label">2. Your photo</label>
-                <input
-                  type="file"
-                  class="form-control form-control-sm bg-dark text-light"
-                  accept="image/*"
-                  (change)="onPersonFileChange($event)"
-                />
-                <small class="text-muted d-block mt-1">
-                  Clear front-facing photo, good lighting, minimal background clutter.
-                </small>
-                <div class="mt-2" *ngIf="personPreviewUrl">
-                  <img
-                    [src]="personPreviewUrl"
-                    alt="Person preview"
-                    class="img-fluid rounded-3 border border-secondary-subtle"
-                  />
+              <div class="cz-user-photo-stack mt-2">
+                <div class="cz-user-photo-thumb-wrapper">
+                  <ng-container *ngIf="personPreviewUrl; else userPlaceholder">
+                    <img
+                      [src]="personPreviewUrl"
+                      alt="Your photo"
+                      class="cz-user-photo-thumb img-fluid rounded-3 border border-secondary-subtle"
+                    />
+                  </ng-container>
+                  <ng-template #userPlaceholder>
+                    <div class="cz-user-photo-placeholder">
+                      <span>Your photo preview will appear here.</span>
+                    </div>
+                  </ng-template>
                 </div>
-              </div>
-
-              <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
-                <button
-                  type="button"
-                  class="btn btn-outline-info btn-sm"
-                  [disabled]="isPreprocessing || isStartingTryOn || isPolling"
-                  (click)="onPreprocessGarment()"
-                >
-                  <span *ngIf="!isPreprocessing">Optional: Clean garment (preprocess)</span>
-                  <span *ngIf="isPreprocessing">
-                    <span class="cz-button-spinner"></span>
-                    Preprocessing garment...
-                  </span>
-                </button>
 
                 <button
                   type="button"
-                  class="btn btn-primary-custom btn-sm"
+                  class="btn btn-primary-custom btn-sm w-100 mt-2"
                   [disabled]="!isTryOnReady || isStartingTryOn || isPolling"
                   (click)="onStartTryOn()"
                 >
@@ -282,7 +262,7 @@
 
                 <button
                   type="button"
-                  class="btn btn-outline-secondary btn-sm"
+                  class="btn btn-outline-secondary btn-sm w-100"
                   [disabled]="!isPolling"
                   (click)="onCancelTryOn()"
                 >
@@ -290,56 +270,135 @@
                 </button>
               </div>
 
-              <div class="small text-muted mb-2">
+              <div class="small text-muted mt-2">
                 Status: <strong>{{ displayStatusLabel }}</strong>
                 <ng-container *ngIf="tryOnStatus === 'processing' || tryOnStatus === 'queued'">
                   &mdash; Typically completes in 10&ndash;30 seconds.
                 </ng-container>
               </div>
 
-              <div *ngIf="tryOnError" class="alert alert-danger py-1 px-2 small mb-2">
+              <div *ngIf="tryOnError" class="alert alert-danger py-1 px-2 small mt-1 mb-0">
                 {{ tryOnError }}
               </div>
+            </div>
+          </div>
 
-              <div class="cz-mannequin" [class.has-preview]="tryOnStatus === 'completed' && tryOnImageUrl">
+          <div
+            class="cz-card cz-preview-card cz-main-preview"
+            [class.has-preview]="preprocessedGarmentUrl || (tryOnStatus === 'completed' && tryOnImageUrl)"
+          >
+            <div class="cz-card-header cz-preview-header">
+              <div>
+                <h2>Final design preview</h2>
+                <p>
+                  This is your polished AI-generated garment mockup, ready to review or download.
+                </p>
+              </div>
+            </div>
+
+            <div class="cz-preview-body d-flex flex-column align-items-center">
+              <div
+                class="cz-mannequin"
+                [class.has-preview]="preprocessedGarmentUrl || (tryOnStatus === 'completed' && tryOnImageUrl)"
+              >
                 <div class="cz-garment-outline"></div>
-                <div class="cz-print-area" [class.has-preview]="tryOnStatus === 'completed' && tryOnImageUrl">
+                <div
+                  class="cz-print-area"
+                  [class.has-preview]="preprocessedGarmentUrl || (tryOnStatus === 'completed' && tryOnImageUrl)"
+                >
                   <div
                     class="cz-print-skeleton"
-                    *ngIf="!tryOnImageUrl && !(isStartingTryOn || isPolling) && !tryOnError"
+                    *ngIf="
+                      !preprocessedGarmentUrl &&
+                      !(tryOnStatus === 'completed' && tryOnImageUrl) &&
+                      !isGenerating &&
+                      !(isStartingTryOn || isPolling)
+                    "
                   >
-                    <span>Try-on result will appear here once generated.</span>
+                    <span>
+                      Your generated artwork will appear here after you click &quot;Generate preview&quot;.
+                      You can refine the prompt or garment options on the left and generate again to
+                      update this view.
+                    </span>
                   </div>
 
-                  <div class="cz-print-loading" *ngIf="isStartingTryOn || isPolling">
+                  <div
+                    class="cz-print-loading"
+                    *ngIf="isGenerating || isStartingTryOn || isPolling"
+                  >
                     <div class="cz-shimmer"></div>
                   </div>
 
-                  <div class="cz-print-mock" *ngIf="tryOnStatus === 'completed' && tryOnImageUrl">
-                    <p class="cz-print-label">AI try-on result</p>
+                  <div
+                    class="cz-print-mock"
+                    *ngIf="
+                      !isGenerating &&
+                      !(isStartingTryOn || isPolling) &&
+                      (preprocessedGarmentUrl || (tryOnStatus === 'completed' && tryOnImageUrl))
+                    "
+                  >
+                    <p class="cz-print-label">AI-generated garment preview</p>
                     <img
-                      [src]="tryOnImageUrl"
-                      alt="Try-on result"
-                      class="img-fluid rounded-3"
-                      style="max-height: 100%; object-fit: cover;"
+                      [src]="(tryOnStatus === 'completed' && tryOnImageUrl) ? tryOnImageUrl : preprocessedGarmentUrl"
+                      alt="AI preview"
+                      class="img-fluid rounded-3 cz-print-image"
                     />
                   </div>
                 </div>
               </div>
 
-              <div class="cz-preview-orbits" aria-hidden="true">
-                <div class="cz-orbit-icon oi-1 glass-effect">
-                  <i class="fas fa-sparkles"></i>
-                </div>
-                <div class="cz-orbit-icon oi-2 glass-effect">
-                  <i class="fas fa-microchip"></i>
+              <p class="cz-preview-note mt-3">
+                Use the prompt and options on the left to refine your artwork. Each time you generate, this
+                preview updates with your latest design.
+              </p>
+
+              <div
+                class="d-flex justify-content-between align-items-center mt-2 w-100"
+                *ngIf="preprocessedGarmentUrl || (tryOnStatus === 'completed' && tryOnImageUrl)"
+              >
+                <a
+                  class="btn btn-outline-light btn-sm cz-download-btn"
+                  [href]="(tryOnStatus === 'completed' && tryOnImageUrl) ? tryOnImageUrl : preprocessedGarmentUrl"
+                  [attr.download]="(tryOnStatus === 'completed' && tryOnImageUrl) ? 'tryon-result.png' : 'design-preview.png'"
+                >
+                  <i class="fas fa-download"></i>
+                  <span>Download image</span>
+                </a>
+
+                <div class="d-flex gap-2 ms-auto" *ngIf="customizationJobId !== null">
+                  <button
+                    type="button"
+                    class="btn btn-outline-success btn-sm"
+                    [disabled]="isSavingCustomization"
+                    (click)="onSaveCustomization()"
+                  >
+                    <ng-container *ngIf="!isSavingCustomization">
+                      <i class="fas fa-bookmark"></i>
+                      <span>Save design</span>
+                    </ng-container>
+                    <ng-container *ngIf="isSavingCustomization">
+                      <span class="cz-button-spinner"></span>
+                      <span>Working...</span>
+                    </ng-container>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="btn btn-primary-custom btn-sm"
+                    [disabled]="isSavingCustomization"
+                    (click)="onAddDesignToCartAndCheckout()"
+                  >
+                    <ng-container *ngIf="!isSavingCustomization">
+                      <i class="fas fa-shopping-cart"></i>
+                      <span>Order this design</span>
+                    </ng-container>
+                    <ng-container *ngIf="isSavingCustomization">
+                      <span class="cz-button-spinner"></span>
+                      <span>Preparing order...</span>
+                    </ng-container>
+                  </button>
                 </div>
               </div>
-
-              <p class="cz-preview-note">
-                This is a beta virtual try-on powered by external AI. Images are processed securely and
-                only used to generate your preview.
-              </p>
             </div>
           </div>
         </div>

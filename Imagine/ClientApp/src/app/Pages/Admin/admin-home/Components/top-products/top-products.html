@@ -7,39 +7,23 @@
     </div>
   </div>
   <div class="card-body">
-    <div class="product-list">
-      <div class="product-item">
-        <img src="/assets/images/product-1.jpg" alt="Product" class="product-thumb">
+    <div class="product-list" *ngIf="topProducts.length; else noTopProducts">
+      <div class="product-item" *ngFor="let product of topProducts">
+        <img
+          [src]="product.imageUrl || '/assets/images/hero-banner.png'"
+          alt="Product"
+          class="product-thumb"
+        >
         <div class="product-info">
-          <h4 class="product-name">AI Custom Hoodie</h4>
-          <span class="product-sales">248 sold</span>
+          <h4 class="product-name">{{ product.name }}</h4>
+          <span class="product-sales">${{ product.price | number: '1.2-2' }}</span>
         </div>
-        <span class="product-revenue">$4,960</span>
-      </div>
-      <div class="product-item">
-        <img src="/assets/images/product-2.jpg" alt="Product" class="product-thumb">
-        <div class="product-info">
-          <h4 class="product-name">Designer T-Shirt</h4>
-          <span class="product-sales">189 sold</span>
-        </div>
-        <span class="product-revenue">$3,780</span>
-      </div>
-      <div class="product-item">
-        <img src="/assets/images/product-3.jpg" alt="Product" class="product-thumb">
-        <div class="product-info">
-          <h4 class="product-name">Premium Sweatshirt</h4>
-          <span class="product-sales">156 sold</span>
-        </div>
-        <span class="product-revenue">$3,120</span>
-      </div>
-      <div class="product-item">
-        <img src="/assets/images/product-4.jpg" alt="Product" class="product-thumb">
-        <div class="product-info">
-          <h4 class="product-name">Custom Polo</h4>
-          <span class="product-sales">142 sold</span>
-        </div>
-        <span class="product-revenue">$2,840</span>
+        <span class="product-revenue">{{ product.viewCount | number }} views</span>
       </div>
     </div>
+
+    <ng-template #noTopProducts>
+      <p class="text-muted">No popular products found yet.</p>
+    </ng-template>
   </div>
 </div>

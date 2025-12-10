@@ -1,5 +1,7 @@
 using Application.Common.Models;
+using Application.Features.TryOn.Commands.GenerateGarment;
 using Application.Features.TryOn.Commands.PreprocessGarment;
+using Application.Features.TryOn.Commands.StartPipelineTryOn;
 using Application.Features.TryOn.Commands.StartTryOn;
 using Application.Features.TryOn.DTOs;
 using Application.Features.TryOn.Queries.GetTryOnStatus;
@@ -7,6 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -29,18 +32,24 @@ namespace Imagine.Controllers
         private readonly IMediator _mediator;
         private readonly IMemoryCache _memoryCache;
         private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _env;
 
-        public CustomizationController(IMediator mediator, IMemoryCache memoryCache, IConfiguration configuration)
+        public CustomizationController(
+            IMediator mediator,
+            IMemoryCache memoryCache,
+            IConfiguration configuration,
+            IWebHostEnvironment env)
         {
             _mediator = mediator;
             _memoryCache = memoryCache;
             _configuration = configuration;
+            _env = env;
         }
 
         public class StartTryOnForm
         {
             public IFormFile? PersonImage { get; set; }
-            public IFormFile? GarmentImage { get; set; }
+            public int CustomizationJobId { get; set; }
         }
 
         public class PreprocessGarmentForm
@@ -50,16 +59,16 @@ namespace Imagine.Controllers
             public string? GarmentType { get; set; }
         }
 
-        [HttpPost("preprocess")]
-        [ProducesResponseType(typeof(BaseResponse<PreprocessResultDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(BaseResponse<PreprocessResultDto>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(BaseResponse<PreprocessResultDto>), StatusCodes.Status429TooManyRequests)]
-        public async Task<ActionResult<BaseResponse<PreprocessResultDto>>> PreprocessGarment([FromForm] PreprocessGarmentForm form, CancellationToken cancellationToken)
+        [HttpPost("generate")]
+        [ProducesResponseType(typeof(BaseResponse<GenerateGarmentResultDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse<GenerateGarmentResultDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseResponse<GenerateGarmentResultDto>), StatusCodes.Status429TooManyRequests)]
+        public async Task<ActionResult<BaseResponse<GenerateGarmentResultDto>>> GenerateGarment([FromForm] PreprocessGarmentForm form, CancellationToken cancellationToken)
         {
             var userId = GetUserId();
             if (string.IsNullOrWhiteSpace(userId))
             {
-                return BadRequest(BaseResponse<PreprocessResultDto>.FailureResponse("User id was not found in the access token."));
+                return BadRequest(BaseResponse<GenerateGarmentResultDto>.FailureResponse("User id was not found in the access token."));
             }
 
             if (!CheckRateLimit(userId, out var rateLimitResult))
@@ -69,7 +78,7 @@ namespace Imagine.Controllers
 
             if (string.IsNullOrWhiteSpace(form.Prompt))
             {
-                return BadRequest(BaseResponse<PreprocessResultDto>.FailureResponse("Prompt is required."));
+                return BadRequest(BaseResponse<GenerateGarmentResultDto>.FailureResponse("Prompt is required."));
             }
 
             Stream garmentStream;
@@ -80,7 +89,7 @@ namespace Imagine.Controllers
                 var validationError = ValidateImageFile(form.File);
                 if (validationError != null)
                 {
-                    return BadRequest(BaseResponse<PreprocessResultDto>.FailureResponse(validationError));
+                    return BadRequest(BaseResponse<GenerateGarmentResultDto>.FailureResponse(validationError));
                 }
 
                 garmentStream = form.File.OpenReadStream();
@@ -95,18 +104,19 @@ namespace Imagine.Controllers
                 var resolved = ResolveDefaultGarmentImage(garmentType, out var errorMessage);
                 if (resolved == null)
                 {
-                    return BadRequest(BaseResponse<PreprocessResultDto>.FailureResponse(errorMessage ?? "Default garment image not found."));
+                    return BadRequest(BaseResponse<GenerateGarmentResultDto>.FailureResponse(errorMessage ?? "Default garment image not found."));
                 }
 
                 garmentStream = resolved.Value.Stream;
                 fileName = resolved.Value.FileName;
             }
 
-            var command = new PreprocessGarmentCommand
+            var command = new GenerateGarmentCommand
             {
+                UserId = userId,
+                Prompt = form.Prompt!.Trim(),
                 GarmentStream = garmentStream,
-                FileName = fileName,
-                Prompt = form.Prompt!.Trim()
+                FileName = fileName
             };
 
             var result = await _mediator.Send(command, cancellationToken);
@@ -117,6 +127,47 @@ namespace Imagine.Controllers
             }
 
             return Ok(result);
+        }
+
+        [HttpPost("preprocess")]
+        [ProducesResponseType(typeof(BaseResponse<PreprocessResultDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse<PreprocessResultDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseResponse<PreprocessResultDto>), StatusCodes.Status429TooManyRequests)]
+        public async Task<ActionResult<BaseResponse<PreprocessResultDto>>> PreprocessGarment([FromForm] PreprocessGarmentForm form, CancellationToken cancellationToken)
+        {
+            var generateResult = await GenerateGarment(form, cancellationToken);
+
+            BaseResponse<GenerateGarmentResultDto>? generateResponse = null;
+
+            if (generateResult.Result is ObjectResult objectResult && objectResult.Value is BaseResponse<GenerateGarmentResultDto> objectData)
+            {
+                generateResponse = objectData;
+            }
+            else if (generateResult.Value is BaseResponse<GenerateGarmentResultDto> valueData)
+            {
+                generateResponse = valueData;
+            }
+
+            if (generateResponse == null)
+            {
+                return BadRequest(BaseResponse<PreprocessResultDto>.FailureResponse("Failed to preprocess garment."));
+            }
+
+            if (!generateResponse.Success || generateResponse.Data == null || string.IsNullOrWhiteSpace(generateResponse.Data.GeneratedGarmentUrl))
+            {
+                return BadRequest(BaseResponse<PreprocessResultDto>.FailureResponse(string.IsNullOrWhiteSpace(generateResponse.Message)
+                    ? "Failed to preprocess garment."
+                    : generateResponse.Message));
+            }
+
+            var preDto = new PreprocessResultDto
+            {
+                PreprocessedImageUrl = generateResponse.Data.GeneratedGarmentUrl!,
+                CustomizationJobId = generateResponse.Data.CustomizationJobId
+            };
+
+            var mapped = BaseResponse<PreprocessResultDto>.SuccessResponse(preDto, generateResponse.Message);
+            return Ok(mapped);
         }
 
         [HttpPost("tryon")]
@@ -141,9 +192,9 @@ namespace Imagine.Controllers
                 return BadRequest(BaseResponse<TryOnJobCreatedDto>.FailureResponse("Person image file is required."));
             }
 
-            if (form.GarmentImage == null || form.GarmentImage.Length == 0)
+            if (form.CustomizationJobId <= 0)
             {
-                return BadRequest(BaseResponse<TryOnJobCreatedDto>.FailureResponse("Garment image file is required."));
+                return BadRequest(BaseResponse<TryOnJobCreatedDto>.FailureResponse("A valid customization job id is required."));
             }
 
             var personError = ValidateImageFile(form.PersonImage);
@@ -152,18 +203,12 @@ namespace Imagine.Controllers
                 return BadRequest(BaseResponse<TryOnJobCreatedDto>.FailureResponse(personError));
             }
 
-            var garmentError = ValidateImageFile(form.GarmentImage);
-            if (garmentError != null)
+            var command = new StartPipelineTryOnCommand
             {
-                return BadRequest(BaseResponse<TryOnJobCreatedDto>.FailureResponse(garmentError));
-            }
-
-            var command = new StartTryOnCommand
-            {
+                UserId = userId,
+                CustomizationJobId = form.CustomizationJobId,
                 PersonStream = form.PersonImage.OpenReadStream(),
-                PersonFileName = form.PersonImage.FileName,
-                GarmentStream = form.GarmentImage.OpenReadStream(),
-                GarmentFileName = form.GarmentImage.FileName
+                PersonFileName = form.PersonImage.FileName
             };
 
             var result = await _mediator.Send(command, cancellationToken);
@@ -267,18 +312,35 @@ namespace Imagine.Controllers
             var tshirtPathFromConfig = _configuration["TryOn:DefaultGarmentImages:TShirt"];
 
             string path;
+            var contentRoot = _env.ContentRootPath;
 
             if (normalized == "tshirt" || normalized == "t-shirt")
             {
-                path = !string.IsNullOrWhiteSpace(tshirtPathFromConfig)
-                    ? tshirtPathFromConfig
-                    : Path.Combine(Directory.GetCurrentDirectory(), "ClientApp", "public", "assets", "images", "T-Shirt.png");
+                if (!string.IsNullOrWhiteSpace(tshirtPathFromConfig))
+                {
+                    path = tshirtPathFromConfig;
+                }
+                else
+                {
+                    var candidatePublic = Path.Combine(contentRoot, "ClientApp", "public", "assets", "images", "T-Shirt.png");
+                    var candidateDist = Path.Combine(contentRoot, "ClientApp", "dist", "imagine.client", "browser", "assets", "images", "T-Shirt.png");
+
+                    path = System.IO.File.Exists(candidatePublic) ? candidatePublic : candidateDist;
+                }
             }
             else
             {
-                path = !string.IsNullOrWhiteSpace(hoodiePathFromConfig)
-                    ? hoodiePathFromConfig
-                    : Path.Combine(Directory.GetCurrentDirectory(), "ClientApp", "public", "assets", "images", "White Hoodie.png");
+                if (!string.IsNullOrWhiteSpace(hoodiePathFromConfig))
+                {
+                    path = hoodiePathFromConfig;
+                }
+                else
+                {
+                    var candidatePublic = Path.Combine(contentRoot, "ClientApp", "public", "assets", "images", "White Hoodie.png");
+                    var candidateDist = Path.Combine(contentRoot, "ClientApp", "dist", "imagine.client", "browser", "assets", "images", "White Hoodie.png");
+
+                    path = System.IO.File.Exists(candidatePublic) ? candidatePublic : candidateDist;
+                }
             }
 
             if (!System.IO.File.Exists(path))

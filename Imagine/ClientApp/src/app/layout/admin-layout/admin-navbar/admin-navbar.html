@@ -23,24 +23,24 @@
 
     <!-- Right Section - Actions & Profile -->
     <div class="navbar-right">
-      <!-- Notifications -->
-      <div class="navbar-item dropdown">
+      <!-- Notifications (temporarily hidden) -->
+      <div class="navbar-item dropdown" *ngIf="false">
         <button class="icon-button" aria-label="Notifications">
           <i class="fas fa-bell"></i>
           <span class="notification-badge">5</span>
         </button>
       </div>
 
-      <!-- Messages -->
-      <div class="navbar-item dropdown">
+      <!-- Messages (temporarily hidden) -->
+      <div class="navbar-item dropdown" *ngIf="false">
         <button class="icon-button" aria-label="Messages">
           <i class="fas fa-envelope"></i>
           <span class="notification-badge">3</span>
         </button>
       </div>
 
-      <!-- Quick Actions -->
-      <div class="navbar-item">
+      <!-- Quick Actions (temporarily hidden) -->
+      <div class="navbar-item" *ngIf="false">
         <button class="icon-button" aria-label="Quick Actions">
           <i class="fas fa-plus-circle"></i>
         </button>
@@ -51,14 +51,19 @@
 
       <!-- User Profile -->
       <div class="navbar-item dropdown">
-        <button class="user-profile" aria-label="User Menu">
-          <img src="/assets/images/admin-avatar.jpg" alt="Admin" class="user-avatar">
+        <button class="user-profile" aria-label="User Menu" (click)="toggleProfileMenu($event)">
+          <img [src]="profileImageUrl" alt="Admin" class="user-avatar">
           <div class="user-info">
-            <span class="user-name">Admin User</span>
+            <span class="user-name">{{ fullName }}</span>
             <span class="user-role">Administrator</span>
           </div>
           <i class="fas fa-chevron-down"></i>
         </button>
+
+        <div class="admin-dropdown-menu" *ngIf="isProfileMenuOpen">
+          <button class="dropdown-item" routerLink="/client/profile">Profile</button>
+          <button class="dropdown-item" (click)="logout()">Logout</button>
+        </div>
       </div>
     </div>
   </div>

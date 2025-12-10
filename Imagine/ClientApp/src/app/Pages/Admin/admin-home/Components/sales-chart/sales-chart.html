@@ -3,17 +3,67 @@
   <div class="card-header">
     <div>
       <h3 class="card-title">Sales Overview</h3>
-      <p class="card-subtitle">Monthly sales performance</p>
+      <p class="card-subtitle">{{ subtitle }}</p>
     </div>
     <div class="card-actions">
-      <button class="btn-filter active">Month</button>
-      <button class="btn-filter">Year</button>
+      <button
+        class="btn-filter"
+        [class.active]="activePeriod === 'month'"
+        (click)="onPeriodChange('month')"
+      >
+        Month
+      </button>
+      <button
+        class="btn-filter"
+        [class.active]="activePeriod === 'year'"
+        (click)="onPeriodChange('year')"
+      >
+        Year
+      </button>
     </div>
   </div>
+
   <div class="card-body">
-    <div class="chart-placeholder">
-      <i class="fas fa-chart-line"></i>
-      <p>Sales chart visualization</p>
-    </div>
+    <ng-container *ngIf="!loading && overview; else chartLoading">
+      <div class="chart-wrapper" *ngIf="overview.points.length; else noData">
+        <div class="chart-bars">
+          <div
+            class="chart-bar"
+            *ngFor="let point of overview.points"
+          >
+            <div
+              class="chart-bar-fill"
+              [style.height.%]="maxRevenue ? (point.totalRevenue / maxRevenue) * 100 : 0"
+            ></div>
+            <span class="chart-bar-label">{{ point.label }}</span>
+          </div>
+        </div>
+
+        <div class="chart-legend">
+          <div class="legend-item">
+            <span class="legend-label">Total Revenue</span>
+            <span class="legend-value">${{ overview.totalRevenue | number: '1.2-2' }}</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-label">Total Orders</span>
+            <span class="legend-value">{{ overview.totalOrders | number }}</span>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noData>
+        <div class="chart-placeholder">
+          <i class="fas fa-chart-line"></i>
+          <p>No sales data available for this period.</p>
+        </div>
+      </ng-template>
+    </ng-container>
+
+    <ng-template #chartLoading>
+      <div class="chart-placeholder">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Loading sales data...</p>
+      </div>
+    </ng-template>
   </div>
 </div>
