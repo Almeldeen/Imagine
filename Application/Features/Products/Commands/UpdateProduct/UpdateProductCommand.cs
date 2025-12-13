@@ -15,6 +15,11 @@ namespace Application.Features.Products.Commands.UpdateProduct
         public decimal Price { get; set; }
         public bool IsActive { get; set; } = true;
         public int CategoryId { get; set; }
+        public bool IsFeatured { get; set; }
+        public bool IsPopular { get; set; }
+        public bool IsLatest { get; set; }
+        public bool AllowAiCustomization { get; set; }
+        public string? AvailableSizes { get; set; }
 
         // Optional new image
         public Stream? NewImageStream { get; set; }

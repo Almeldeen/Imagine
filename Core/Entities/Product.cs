@@ -15,6 +15,10 @@ namespace Core.Entities
         public bool IsLatest { get; set; } = false;
         public int ViewCount { get; set; } = 0;
 
+        public string? AvailableSizes { get; set; }
+
+        public bool AllowAiCustomization { get; set; } = false;
+
         // Navigation Properties
         public Category Category { get; set; } = null!;
         public ICollection<ProductColor> Colors { get; set; } = new List<ProductColor>();

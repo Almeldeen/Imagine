@@ -8,6 +8,18 @@ namespace Application.Features.TryOn.DTOs
         public int? CustomizationJobId { get; set; }
     }
 
+    public class DesignGeneratedDto
+    {
+        public int CustomizationJobId { get; set; }
+        public string DesignImageUrl { get; set; } = string.Empty;
+    }
+
+    public class ApplyDesignResultDto
+    {
+        public int CustomizationJobId { get; set; }
+        public string FinalProductImageUrl { get; set; } = string.Empty;
+    }
+
     public class TryOnJobCreatedDto
     {
         public string JobId { get; set; } = string.Empty;

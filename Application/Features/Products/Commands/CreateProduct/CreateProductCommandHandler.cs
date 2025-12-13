@@ -69,6 +69,8 @@ namespace Application.Features.Products.Commands.CreateProduct
                         IsFeatured = request.IsFeatured,
                         IsPopular = request.IsPopular,
                         IsLatest = request.IsLatest,
+                        AllowAiCustomization = request.AllowAiCustomization,
+                        AvailableSizes = request.AvailableSizes,
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     };

@@ -49,7 +49,7 @@ namespace Application.Features.Carts.Queries.GetUserCart
                 string name = "Item";
                 string image = string.Empty;
                 string color = string.Empty;
-                string? size = null;
+                string? size = item.Size;
                 decimal basePrice = item.UnitPrice;
                 bool isAiPowered = false;
 

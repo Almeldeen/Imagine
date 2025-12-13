@@ -2,6 +2,12 @@ using Application.Common.Models;
 using Application.Features.Products.Commands.CreateProduct;
 using Application.Features.Products.Commands.DeleteProduct;
 using Application.Features.Products.Commands.UpdateProduct;
+using Application.Features.Products.Commands.ProductColors.AddProductColor;
+using Application.Features.Products.Commands.ProductColors.UpdateProductColor;
+using Application.Features.Products.Commands.ProductColors.DeleteProductColor;
+using Application.Features.Products.Commands.ProductImages.AddProductImage;
+using Application.Features.Products.Commands.ProductImages.DeleteProductImage;
+using Application.Features.Products.Commands.ProductImages.ReorderProductImages;
 using Application.Features.Products.DTOs;
 using Application.Features.Products.Queries.GetProductById;
 using Application.Features.Products.Queries.GetProductsList;
@@ -45,6 +51,11 @@ namespace Imagine.Controllers
             public decimal Price { get; set; }
             public bool IsActive { get; set; } = true;
             public int CategoryId { get; set; }
+            public bool IsFeatured { get; set; } = false;
+            public bool IsPopular { get; set; } = false;
+            public bool IsLatest { get; set; } = false;
+            public bool AllowAiCustomization { get; set; } = false;
+            public string? AvailableSizes { get; set; }
             public IFormFile? ImageFile { get; set; }
         }
 
@@ -87,6 +98,7 @@ namespace Imagine.Controllers
                 IsPopular = dto.IsPopular,
                 IsLatest = dto.IsLatest,
                 CategoryId = dto.CategoryId,
+                AvailableSizes = dto.AvailableSizes,
                 ImageStream = form.MainImageFile?.OpenReadStream(),
                 ImageFileName = form.MainImageFile?.FileName,
                 Colors = dto.Colors
@@ -123,6 +135,11 @@ namespace Imagine.Controllers
                 Price = form.Price,
                 IsActive = form.IsActive,
                 CategoryId = form.CategoryId,
+                IsFeatured = form.IsFeatured,
+                IsPopular = form.IsPopular,
+                IsLatest = form.IsLatest,
+                AllowAiCustomization = form.AllowAiCustomization,
+                AvailableSizes = form.AvailableSizes,
                 NewImageStream = form.ImageFile?.OpenReadStream(),
                 NewImageFileName = form.ImageFile?.FileName
             };
@@ -182,6 +199,94 @@ namespace Imagine.Controllers
         public async Task<ActionResult<BaseResponse<List<ProductListDto>>>> GetPopular([FromQuery] GetPopularProductsQuery query, CancellationToken ct)
         {
             var result = await _mediator.Send(query, ct);
+            return Ok(result);
+        }
+
+        // Product colors
+
+        [HttpPost("{productId:int}/colors")]
+        [ProducesResponseType(typeof(BaseResponse<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse<int>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<BaseResponse<int>>> AddColor([FromRoute] int productId, [FromBody] AddProductColorCommand command, CancellationToken ct)
+        {
+            command.ProductId = productId;
+            var result = await _mediator.Send(command, ct);
+            if (!result.Success) return BadRequest(result);
+            return Ok(result);
+        }
+
+        [HttpPut("colors/{colorId:int}")]
+        [ProducesResponseType(typeof(BaseResponse<bool>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse<bool>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<BaseResponse<bool>>> UpdateColor([FromRoute] int colorId, [FromBody] UpdateProductColorCommand command, CancellationToken ct)
+        {
+            command.Id = colorId;
+            var result = await _mediator.Send(command, ct);
+            if (!result.Success) return BadRequest(result);
+            return Ok(result);
+        }
+
+        [HttpDelete("colors/{colorId:int}")]
+        [ProducesResponseType(typeof(BaseResponse<bool>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse<bool>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<BaseResponse<bool>>> DeleteColor([FromRoute] int colorId, CancellationToken ct)
+        {
+            var result = await _mediator.Send(new DeleteProductColorCommand { Id = colorId }, ct);
+            if (!result.Success) return BadRequest(result);
+            return Ok(result);
+        }
+
+        // Product images
+
+        public class AddProductImageForm
+        {
+            public string? AltText { get; set; }
+            public bool? IsMain { get; set; }
+            public IFormFile? ImageFile { get; set; }
+        }
+
+        [HttpPost("colors/{colorId:int}/images")]
+        [ProducesResponseType(typeof(BaseResponse<int>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse<int>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<BaseResponse<int>>> AddImage([FromRoute] int colorId, [FromForm] AddProductImageForm form, CancellationToken ct)
+        {
+            if (form.ImageFile == null)
+            {
+                return BadRequest(BaseResponse<int>.FailureResponse("Image file is required"));
+            }
+
+            var cmd = new AddProductImageCommand
+            {
+                ProductColorId = colorId,
+                AltText = form.AltText,
+                IsMain = form.IsMain,
+                ImageStream = form.ImageFile.OpenReadStream(),
+                ImageFileName = form.ImageFile.FileName
+            };
+
+            var result = await _mediator.Send(cmd, ct);
+            if (!result.Success) return BadRequest(result);
+            return Ok(result);
+        }
+
+        [HttpDelete("images/{imageId:int}")]
+        [ProducesResponseType(typeof(BaseResponse<bool>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse<bool>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<BaseResponse<bool>>> DeleteImage([FromRoute] int imageId, CancellationToken ct)
+        {
+            var result = await _mediator.Send(new DeleteProductImageCommand { Id = imageId }, ct);
+            if (!result.Success) return BadRequest(result);
+            return Ok(result);
+        }
+
+        [HttpPost("colors/{colorId:int}/images/reorder")]
+        [ProducesResponseType(typeof(BaseResponse<bool>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse<bool>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<BaseResponse<bool>>> ReorderImages([FromRoute] int colorId, [FromBody] ReorderProductImagesCommand command, CancellationToken ct)
+        {
+            command.ProductColorId = colorId;
+            var result = await _mediator.Send(command, ct);
+            if (!result.Success) return BadRequest(result);
             return Ok(result);
         }
     }

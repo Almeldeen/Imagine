@@ -5,11 +5,12 @@ import { ProductColorSelector } from './components/product-color-selector/produc
 import { ProductCustomizationOptions } from './components/product-customization-options/product-customization-options';
 import { ProductInfo } from './components/product-info/product-info';
 import { AddToCartButton } from './components/add-to-cart-button/add-to-cart-button';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../Admin/products/Core/Service/product.service';
 import { IProduct, IProductColor } from '../Admin/products/Core/Interface/IProduct';
 import { CartService } from '../../core/cart.service';
 import Swal from 'sweetalert2';
+import { environment } from '../../../environments/environment';
 
 export interface ProductColorVariant {
   key: string;
@@ -35,6 +36,7 @@ export interface ProductDetailsModel {
   inStock: boolean;
   stockLabel: string;
   isAiPowered?: boolean;
+  availableSizes: string[];
   colors: ProductColorVariant[];
   customizations: CustomizationOption[];
 }
@@ -64,6 +66,7 @@ export class ProductDetails implements OnInit {
     inStock: true,
     stockLabel: 'In stock - Ships in 3-5 business days',
     isAiPowered: true,
+    availableSizes: ['XS', 'S', 'M', 'L', 'XL'],
     colors: [
       {
         key: 'black',
@@ -116,8 +119,11 @@ export class ProductDetails implements OnInit {
   selectedCustomizationId: string | null = this.product.customizations[0]?.id ?? null;
   quantity = 1;
   wishlistActive = false;
+  selectedSize: string | null = null;
+  hasUserSelectedColor = false;
 
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private productService = inject(ProductService);
   private cartService = inject(CartService);
 
@@ -125,6 +131,22 @@ export class ProductDetails implements OnInit {
   isLoading = false;
   loadError = false;
   isAddingToCart = false;
+
+  private resolveImageUrl(url: string | null | undefined): string | null {
+    if (!url) {
+      return null;
+    }
+
+    if (/^https?:\/\//i.test(url)) {
+      return url;
+    }
+
+    if (url.startsWith('/uploads/')) {
+      return `${environment.apiUrl}${url}`;
+    }
+
+    return url;
+  }
 
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
@@ -152,6 +174,71 @@ export class ProductDetails implements OnInit {
     });
   }
 
+  onStartCustomDesign(): void {
+    if (!this.backendProduct) {
+      return;
+    }
+
+    const hasBackendColors = !!(
+      this.backendProduct &&
+      this.backendProduct.colors &&
+      this.backendProduct.colors.length
+    );
+
+    if (hasBackendColors && !this.hasUserSelectedColor) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Choose a color',
+        text: 'Please select a color before starting a custom design.',
+      });
+      return;
+    }
+
+    if (this.hasSizes && !this.selectedSize) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Choose a size',
+        text: 'Please select a size before starting a custom design.',
+      });
+      return;
+    }
+
+    const selectedColor = this.selectedBackendColor;
+
+    if (hasBackendColors && !selectedColor) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Cannot start custom design',
+        text: 'Please select a valid color before starting a custom design.',
+      });
+      return;
+    }
+
+    const studioContext: any = {
+      productId: this.backendProduct.id,
+      size: this.selectedSize || undefined,
+      baseImageUrl: this.resolveImageUrl(this.imageUrl) ?? this.imageUrl,
+    };
+
+    if (selectedColor) {
+      studioContext.colorId = selectedColor.id;
+      studioContext.colorName = selectedColor.colorName;
+      studioContext.colorHex = selectedColor.colorHex;
+    }
+
+    try {
+      sessionStorage.setItem('studioContext', JSON.stringify(studioContext));
+    } catch {
+      // ignore
+    }
+
+    this.router.navigate(['/client/customize'], { state: { studioContext } });
+  }
+
+  get hasSizes(): boolean {
+    return !!(this.product.availableSizes && this.product.availableSizes.length);
+  }
+
   get selectedColor(): ProductColorVariant | undefined {
     return this.product.colors.find((c) => c.key === this.selectedColorKey) ?? this.product.colors[0];
   }
@@ -174,18 +261,65 @@ export class ProductDetails implements OnInit {
     return this.finalPricePerItem * this.quantity;
   }
 
+  get canUseAiCustomization(): boolean {
+    return !!(this.backendProduct && this.backendProduct.allowAiCustomization);
+  }
+
+  get canAddToCart(): boolean {
+    const hasBackendColors = !!(
+      this.backendProduct &&
+      this.backendProduct.colors &&
+      this.backendProduct.colors.length
+    );
+
+    const colorOk = !hasBackendColors || this.hasUserSelectedColor;
+    const sizeOk = !this.hasSizes || !!this.selectedSize;
+
+    return this.product.inStock && colorOk && sizeOk;
+  }
+
+  get addToCartHint(): string | null {
+    if (!this.product.inStock) {
+      return null;
+    }
+
+    const hasBackendColors = !!(
+      this.backendProduct &&
+      this.backendProduct.colors &&
+      this.backendProduct.colors.length
+    );
+
+    const needsColor = hasBackendColors && !this.hasUserSelectedColor;
+    const needsSize = this.hasSizes && !this.selectedSize;
+
+    if (needsColor && needsSize) {
+      return 'Please choose a color and size to add this item to your cart.';
+    }
+
+    if (needsColor) {
+      return 'Please choose a color to add this item to your cart.';
+    }
+
+    if (needsSize) {
+      return 'Please choose a size to add this item to your cart.';
+    }
+
+    return null;
+  }
+
   private applyBackendProduct(p: IProduct): void {
     const colors: ProductColorVariant[] = (p.colors ?? []).map((c) => ({
       key: String(c.id),
       label: c.colorName,
       swatch: c.colorHex ?? '#4A90E2',
       extraPrice: c.additionalPrice,
-      imageUrl:
+      imageUrl: this.resolveImageUrl(
         c.images?.find((i) => i.isMain)?.imageUrl ??
-        c.images?.[0]?.imageUrl ??
-        p.imageUrl ??
-        this.product.colors[0]?.imageUrl ??
-        '/assets/images/Hoodie.png',
+          c.images?.[0]?.imageUrl ??
+          p.imageUrl ??
+          this.product.colors[0]?.imageUrl ??
+          '/assets/images/Hoodie.png'
+      ) ?? '/assets/images/Hoodie.png',
     }));
 
     this.product = {
@@ -198,12 +332,17 @@ export class ProductDetails implements OnInit {
       stockLabel: p.isActive
         ? 'In stock - Ships in 3-5 business days'
         : 'Currently unavailable',
+      availableSizes: p.availableSizes
+        ? p.availableSizes.split(',').map((s) => s.trim()).filter((s) => !!s)
+        : this.product.availableSizes,
       colors,
       // keep customizations from the existing model
     };
 
     this.selectedColorKey = this.product.colors[0]?.key;
     this.selectedCustomizationId = this.product.customizations[0]?.id ?? null;
+    this.hasUserSelectedColor = false;
+    this.selectedSize = null;
   }
 
   private get selectedBackendColor(): IProductColor | undefined {
@@ -221,6 +360,7 @@ export class ProductDetails implements OnInit {
 
   onColorSelected(key: string) {
     this.selectedColorKey = key;
+    this.hasUserSelectedColor = true;
   }
 
   onCustomizationSelected(id: string | null) {
@@ -232,6 +372,30 @@ export class ProductDetails implements OnInit {
   }
 
   onAddToCart() {
+    const hasBackendColors = !!(
+      this.backendProduct &&
+      this.backendProduct.colors &&
+      this.backendProduct.colors.length
+    );
+
+    if (hasBackendColors && !this.hasUserSelectedColor) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Choose a color',
+        text: 'Please select a color before adding this item to your cart.',
+      });
+      return;
+    }
+
+    if (this.hasSizes && !this.selectedSize) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Choose a size',
+        text: 'Please select a size before adding this item to your cart.',
+      });
+      return;
+    }
+
     const selectedColor = this.selectedBackendColor;
 
     if (!selectedColor) {
@@ -246,7 +410,7 @@ export class ProductDetails implements OnInit {
     const quantity = Math.max(1, this.quantity);
     this.isAddingToCart = true;
 
-    this.cartService.addToCart(selectedColor.id, quantity).subscribe({
+    this.cartService.addToCart(selectedColor.id, quantity, this.selectedSize || undefined).subscribe({
       next: () => {
         this.isAddingToCart = false;
         Swal.fire({

@@ -39,11 +39,16 @@ export class TryOnService {
   preprocessGarment(
     prompt: string,
     garmentType: string,
-    file?: File | null
+    file?: File | null,
+    baseImageUrl?: string
   ): Observable<ApiResponse<PreprocessResult>> {
     const form = new FormData();
     form.append('prompt', prompt);
     form.append('garmentType', garmentType);
+
+    if (baseImageUrl) {
+      form.append('baseImageUrl', baseImageUrl);
+    }
 
     if (file) {
       form.append('file', file);

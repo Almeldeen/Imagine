@@ -6,7 +6,8 @@ import { CustomProductService, SaveCustomizationRequest, SavedCustomProduct } fr
 import { ToastService } from '../../../core/toast.service';
 import { ApiResponse } from '../../../core/IApiResponse';
 import { CartService } from '../../../core/cart.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 
 type ProductType = 'tshirt' | 'hoodie';
 type TryOnUiStatus = 'idle' | 'queued' | 'processing' | 'completed' | 'failed';
@@ -24,6 +25,7 @@ export class ClientCustomization {
   private readonly customProductService = inject(CustomProductService);
   private readonly cartService = inject(CartService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   prompt = '';
   selectedType: ProductType = 'hoodie';
@@ -52,6 +54,29 @@ export class ClientCustomization {
   private pollTimeoutHandle: any = null;
   savedCustomProductId: number | null = null;
 
+  // Optional context when coming from a specific product details page
+  originProductId: number | null = null;
+  originColorName: string | null = null;
+  originColorHex: string | null = null;
+  originSize: string | null = null;
+  originBaseImageUrl: string | null = null;
+
+  private resolveImageUrl(url: string | null | undefined): string | null {
+    if (!url) {
+      return null;
+    }
+
+    if (/^https?:\/\//i.test(url)) {
+      return url;
+    }
+
+    if (url.startsWith('/uploads/')) {
+      return `${environment.apiUrl}${url}`;
+    }
+
+    return url;
+  }
+
   get selectedLabel(): string {
     return this.selectedType === 'hoodie' ? 'Hoodie' : 'T-shirt';
   }
@@ -72,6 +97,49 @@ export class ClientCustomization {
         return 'Failed';
       default:
         return 'Idle';
+    }
+  }
+
+  ngOnInit(): void {
+    const fromState = (history.state as any)?.studioContext;
+    let ctx: any = fromState;
+
+    if (!ctx) {
+      try {
+        const raw = sessionStorage.getItem('studioContext');
+        ctx = raw ? JSON.parse(raw) : null;
+      } catch {
+        ctx = null;
+      }
+    }
+
+    if (!ctx) {
+      const qp = this.route.snapshot.queryParamMap;
+      ctx = {
+        productId: qp.get('productId'),
+        colorName: qp.get('colorName'),
+        colorHex: qp.get('colorHex'),
+        size: qp.get('size'),
+        baseImageUrl: qp.get('baseImageUrl'),
+      };
+    }
+
+    const productIdVal = ctx?.productId;
+    const parsedProductId = Number(productIdVal);
+    if (!Number.isNaN(parsedProductId) && parsedProductId > 0) {
+      this.originProductId = parsedProductId;
+    }
+
+    this.originColorName = ctx?.colorName ?? null;
+    this.originColorHex = ctx?.colorHex ?? null;
+    this.originSize = ctx?.size ?? null;
+
+    const baseImageUrl = ctx?.baseImageUrl;
+    if (baseImageUrl) {
+      this.originBaseImageUrl = this.resolveImageUrl(baseImageUrl);
+      if (!this.garmentPreviewUrl) {
+        this.garmentPreviewUrl = this.originBaseImageUrl;
+      }
     }
   }
 
@@ -150,6 +218,11 @@ export class ClientCustomization {
       return;
     }
 
+    const colorConstraint = this.originColorName
+      ? ` Keep the garment color ${this.originColorName} and do not change the base garment color or fabric shade.`
+      : '';
+
+    const effectivePrompt = `${trimmedPrompt}${colorConstraint}`.trim();
     this.isPreprocessing = true;
     this.isGenerating = true;
     this.tryOnError = null;
@@ -157,31 +230,54 @@ export class ClientCustomization {
     this.customizationJobId = null;
     this.hasPreview = false;
 
-    this.tryOnService
-      .preprocessGarment(trimmedPrompt, this.selectedType, this.garmentFile)
-      .subscribe({
-        next: (res: ApiResponse<{ preprocessedImageUrl: string; customizationJobId?: number }>) => {
-          this.isPreprocessing = false;
-          this.isGenerating = false;
+    const startPreprocessWithFile = (file: File | null) => {
+      this.tryOnService
+        .preprocessGarment(effectivePrompt, this.selectedType, file, this.originBaseImageUrl ?? undefined)
+        .subscribe({
+          next: (res: ApiResponse<{ preprocessedImageUrl: string; customizationJobId?: number }>) => {
+            this.isPreprocessing = false;
+            this.isGenerating = false;
 
-          if (!res.success || !res.data) {
-            this.toast.error(res.message || 'Failed to generate design.');
-            return;
-          }
+            if (!res.success || !res.data) {
+              this.toast.error(res.message || 'Failed to generate design.');
+              return;
+            }
 
-          this.preprocessedGarmentUrl = res.data.preprocessedImageUrl;
-          if (typeof res.data.customizationJobId === 'number') {
-            this.customizationJobId = res.data.customizationJobId;
+            this.preprocessedGarmentUrl = res.data.preprocessedImageUrl;
+            if (typeof res.data.customizationJobId === 'number') {
+              this.customizationJobId = res.data.customizationJobId;
+            }
+            this.hasPreview = !!this.preprocessedGarmentUrl;
+            this.toast.success('Design generated successfully.');
+          },
+          error: () => {
+            this.isPreprocessing = false;
+            this.isGenerating = false;
+            this.toast.error('Failed to generate design.');
+          },
+        });
+    };
+
+    if (!this.garmentFile && this.originBaseImageUrl) {
+      fetch(this.originBaseImageUrl)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Failed to load base garment image.');
           }
-          this.hasPreview = !!this.preprocessedGarmentUrl;
-          this.toast.success('Design generated successfully.');
-        },
-        error: () => {
-          this.isPreprocessing = false;
-          this.isGenerating = false;
-          this.toast.error('Failed to generate design.');
-        },
-      });
+          return response.blob();
+        })
+        .then((blob) => {
+          const fileName = (this.originColorName || 'product-mockup') + '.png';
+          this.garmentFile = new File([blob], fileName, { type: blob.type || 'image/png' });
+          startPreprocessWithFile(this.garmentFile);
+        })
+        .catch(() => {
+          startPreprocessWithFile(this.garmentFile);
+        });
+      return;
+    }
+
+    startPreprocessWithFile(this.garmentFile);
   }
 
   onStartTryOn(): void {
@@ -338,7 +434,10 @@ export class ClientCustomization {
 
     const payload: SaveCustomizationRequest = {
       customizationJobId: this.customizationJobId,
-      // Optionally map selectedType to a concrete product later
+      productId: this.originProductId ?? undefined,
+      colorName: this.originColorName ?? undefined,
+      colorHex: this.originColorHex ?? undefined,
+      size: this.originSize ?? undefined,
     };
 
     this.customProductService.saveFromCustomization(payload).subscribe({
@@ -374,6 +473,10 @@ export class ClientCustomization {
 
     const payload: SaveCustomizationRequest = {
       customizationJobId: this.customizationJobId,
+      productId: this.originProductId ?? undefined,
+      colorName: this.originColorName ?? undefined,
+      colorHex: this.originColorHex ?? undefined,
+      size: this.originSize ?? undefined,
     };
 
     this.customProductService.saveFromCustomization(payload).subscribe({
@@ -387,7 +490,7 @@ export class ClientCustomization {
         const customProductId = res.data.id;
         this.savedCustomProductId = customProductId;
 
-        this.cartService.addCustomProductToCart(customProductId, 1).subscribe({
+        this.cartService.addCustomProductToCart(customProductId, 1, this.originSize ?? undefined).subscribe({
           next: (cartRes) => {
             this.isSavingCustomization = false;
 

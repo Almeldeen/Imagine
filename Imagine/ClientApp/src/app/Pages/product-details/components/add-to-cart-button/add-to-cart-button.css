@@ -47,3 +47,9 @@
   font-size: 0.8rem;
   color: #9ca3af;
 }
+
+.pd-add-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}

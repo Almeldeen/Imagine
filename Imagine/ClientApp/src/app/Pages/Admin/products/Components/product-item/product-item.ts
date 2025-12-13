@@ -1,7 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { IProduct } from '../../Core/Interface/IProduct';
 import { environment } from '../../../../../../environments/environment';
+import { ProductService } from '../../Core/Service/product.service';
+import { ToastService } from '../../../../../core/toast.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-product-item',
@@ -12,7 +16,12 @@ import { environment } from '../../../../../../environments/environment';
 export class ProductItem {
   @Input() product!: IProduct;
 
+  @Output() refresh = new EventEmitter<void>();
+
   baseUrl: string = environment.apiUrl;
+  private readonly router = inject(Router);
+  private readonly productService = inject(ProductService);
+  private readonly toast = inject(ToastService);
 
   get imageSrc(): string {
     const url = this.product?.imageUrl;
@@ -30,5 +39,63 @@ export class ProductItem {
     }
 
     return this.baseUrl + '/' + url;
+  }
+
+  viewProduct(): void {
+    if (!this.product?.id) {
+      return;
+    }
+    this.router.navigate(['/admin/products/view', this.product.id]);
+  }
+
+  editProduct(): void {
+    if (!this.product?.id) {
+      return;
+    }
+    this.router.navigate(['/admin/products/edit', this.product.id]);
+  }
+
+  duplicateProduct(): void {
+    if (!this.product?.id) {
+      return;
+    }
+
+    this.router.navigate(['/admin/products/add'], {
+      queryParams: { sourceId: this.product.id },
+    });
+  }
+
+  deleteProduct(): void {
+    if (!this.product?.id) {
+      return;
+    }
+
+    Swal.fire({
+      icon: 'warning',
+      title: 'Delete product?',
+      text: `This will permanently delete "${this.product.name}".`,
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (!result.isConfirmed) {
+        return;
+      }
+
+      this.productService.delete(this.product.id).subscribe({
+        next: (res) => {
+          if (!res.success) {
+            this.toast.error(res.message || 'Failed to delete product.');
+            return;
+          }
+
+          this.toast.success('Product deleted.');
+          this.refresh.emit();
+        },
+        error: () => {
+          this.toast.error('Failed to delete product.');
+        },
+      });
+    });
   }
 }

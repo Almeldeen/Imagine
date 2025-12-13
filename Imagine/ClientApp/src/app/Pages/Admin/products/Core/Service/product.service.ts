@@ -80,6 +80,8 @@ export class ProductService {
       isFeatured: model.isFeatured,
       isPopular: model.isPopular,
       isLatest: model.isLatest,
+      allowAiCustomization: model.allowAiCustomization,
+      availableSizes: model.availableSizes,
       colors: (model.colors || []).map(color => ({
         colorName: color.colorName,
         colorHex: color.colorHex,

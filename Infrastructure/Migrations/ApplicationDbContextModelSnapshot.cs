@@ -190,6 +190,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(1);
 
+                    b.Property<string>("Size")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("TotalPrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
@@ -381,6 +384,12 @@ namespace Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DeApiRequestId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DesignImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FinalProductImageUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("GeneratedGarmentUrl")
@@ -650,6 +659,12 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AllowAiCustomization")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("AvailableSizes")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("BasePrice")
                         .HasPrecision(18, 2)

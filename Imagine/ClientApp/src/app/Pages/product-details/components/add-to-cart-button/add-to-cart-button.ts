@@ -13,6 +13,8 @@ export class AddToCartButton {
   @Input() quantity = 1;
   @Input() finalPricePerItem = 0;
   @Input() totalPrice = 0;
+  @Input() canAdd = true;
+  @Input() hint: string | null = null;
 
   @Output() quantityChange = new EventEmitter<number>();
   @Output() addToCart = new EventEmitter<void>();
@@ -38,7 +40,7 @@ export class AddToCartButton {
   }
 
   onAddToCartClick() {
-    if (!this.inStock) {
+    if (!this.inStock || !this.canAdd) {
       return;
     }
     this.addToCart.emit();

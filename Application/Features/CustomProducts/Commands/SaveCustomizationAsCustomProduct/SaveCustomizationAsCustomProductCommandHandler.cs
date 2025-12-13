@@ -14,13 +14,16 @@ namespace Application.Features.CustomProducts.Commands.SaveCustomizationAsCustom
     {
         private readonly ICustomizationJobRepository _customizationJobRepository;
         private readonly ICustomProductRepository _customProductRepository;
+        private readonly ICustomProductColorRepository _customProductColorRepository;
 
         public SaveCustomizationAsCustomProductCommandHandler(
             ICustomizationJobRepository customizationJobRepository,
-            ICustomProductRepository customProductRepository)
+            ICustomProductRepository customProductRepository,
+            ICustomProductColorRepository customProductColorRepository)
         {
             _customizationJobRepository = customizationJobRepository;
             _customProductRepository = customProductRepository;
+            _customProductColorRepository = customProductColorRepository;
         }
 
         public async Task<BaseResponse<SavedCustomProductDto>> Handle(SaveCustomizationAsCustomProductCommand request, CancellationToken cancellationToken)
@@ -46,18 +49,35 @@ namespace Application.Features.CustomProducts.Commands.SaveCustomizationAsCustom
                 return BaseResponse<SavedCustomProductDto>.FailureResponse("There is no generated design to save as a custom product.");
             }
 
+            var designUrl = job.DesignImageUrl ?? job.GeneratedGarmentUrl;
+            var finalUrl = job.TryOnResultUrl ?? job.FinalProductImageUrl ?? job.GeneratedGarmentUrl;
+
             var customProduct = new CustomProduct
             {
                 UserId = request.UserId,
                 ProductId = request.ProductId,
-                CustomDesignImageUrl = job.GeneratedGarmentUrl,
-                AIRenderedPreviewUrl = job.TryOnResultUrl ?? job.GeneratedGarmentUrl,
+                CustomDesignImageUrl = designUrl,
+                AIRenderedPreviewUrl = finalUrl,
                 Notes = request.Notes,
                 EstimatedPrice = 0m,
                 Status = CustomProductStatus.Draft
             };
 
             var created = await _customProductRepository.AddAsync(customProduct, cancellationToken);
+
+            // If the client provided a specific garment color, persist it as a CustomProductColor
+            if (!string.IsNullOrWhiteSpace(request.ColorName))
+            {
+                var customColor = new CustomProductColor
+                {
+                    CustomProductId = created.Id,
+                    ColorName = request.ColorName!,
+                    ColorHex = request.ColorHex,
+                    ImageUrl = created.AIRenderedPreviewUrl ?? created.CustomDesignImageUrl
+                };
+
+                await _customProductColorRepository.AddAsync(customColor, cancellationToken);
+            }
 
             var dto = new SavedCustomProductDto
             {

@@ -5,6 +5,7 @@ using Application.Features.TryOn.Commands.StartPipelineTryOn;
 using Application.Features.TryOn.Commands.StartTryOn;
 using Application.Features.TryOn.DTOs;
 using Application.Features.TryOn.Queries.GetTryOnStatus;
+using Application.Common.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -30,20 +31,26 @@ namespace Imagine.Controllers
         private const long MaxImageSizeBytes = 8 * 1024 * 1024;
 
         private readonly IMediator _mediator;
+        private readonly ITryOnPipelineService _pipelineService;
         private readonly IMemoryCache _memoryCache;
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
+        private readonly IImageService _imageService;
 
         public CustomizationController(
             IMediator mediator,
+            ITryOnPipelineService pipelineService,
             IMemoryCache memoryCache,
             IConfiguration configuration,
-            IWebHostEnvironment env)
+            IWebHostEnvironment env,
+            IImageService imageService)
         {
             _mediator = mediator;
+            _pipelineService = pipelineService;
             _memoryCache = memoryCache;
             _configuration = configuration;
             _env = env;
+            _imageService = imageService;
         }
 
         public class StartTryOnForm
@@ -57,6 +64,21 @@ namespace Imagine.Controllers
             public IFormFile? File { get; set; }
             public string? Prompt { get; set; }
             public string? GarmentType { get; set; }
+            public string? BaseImageUrl { get; set; }
+        }
+
+        public class GenerateDesignForm
+        {
+            public string? Prompt { get; set; }
+        }
+
+        public class ApplyDesignForm
+        {
+            public int CustomizationJobId { get; set; }
+            public IFormFile? File { get; set; }
+            public string? GarmentType { get; set; }
+            public string? BaseImageUrl { get; set; }
+            public string? ApplyPrompt { get; set; }
         }
 
         [HttpPost("generate")]
@@ -97,6 +119,27 @@ namespace Imagine.Controllers
             }
             else
             {
+                var baseImageUrl = form.BaseImageUrl;
+                if (!string.IsNullOrWhiteSpace(baseImageUrl))
+                {
+                    var pathPart = baseImageUrl;
+                    if (Uri.TryCreate(baseImageUrl, UriKind.Absolute, out var absUri))
+                    {
+                        pathPart = absUri.AbsolutePath;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(pathPart) && pathPart.StartsWith("/uploads/", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var resolvedPath = _imageService.GetImagePath(pathPart);
+                        if (!string.IsNullOrWhiteSpace(resolvedPath) && System.IO.File.Exists(resolvedPath))
+                        {
+                            garmentStream = System.IO.File.OpenRead(resolvedPath);
+                            fileName = Path.GetFileName(resolvedPath);
+                            goto GarmentResolved;
+                        }
+                    }
+                }
+
                 var garmentType = string.IsNullOrWhiteSpace(form.GarmentType)
                     ? "hoodie"
                     : form.GarmentType!.ToLowerInvariant();
@@ -110,6 +153,8 @@ namespace Imagine.Controllers
                 garmentStream = resolved.Value.Stream;
                 fileName = resolved.Value.FileName;
             }
+
+        GarmentResolved:
 
             var command = new GenerateGarmentCommand
             {
@@ -135,39 +180,258 @@ namespace Imagine.Controllers
         [ProducesResponseType(typeof(BaseResponse<PreprocessResultDto>), StatusCodes.Status429TooManyRequests)]
         public async Task<ActionResult<BaseResponse<PreprocessResultDto>>> PreprocessGarment([FromForm] PreprocessGarmentForm form, CancellationToken cancellationToken)
         {
-            var generateResult = await GenerateGarment(form, cancellationToken);
-
-            BaseResponse<GenerateGarmentResultDto>? generateResponse = null;
-
-            if (generateResult.Result is ObjectResult objectResult && objectResult.Value is BaseResponse<GenerateGarmentResultDto> objectData)
+            var userId = GetUserId();
+            if (string.IsNullOrWhiteSpace(userId))
             {
-                generateResponse = objectData;
-            }
-            else if (generateResult.Value is BaseResponse<GenerateGarmentResultDto> valueData)
-            {
-                generateResponse = valueData;
+                return BadRequest(BaseResponse<PreprocessResultDto>.FailureResponse("User id was not found in the access token."));
             }
 
-            if (generateResponse == null)
+            if (!CheckRateLimit(userId, out var rateLimitResult))
             {
-                return BadRequest(BaseResponse<PreprocessResultDto>.FailureResponse("Failed to preprocess garment."));
+                return rateLimitResult!;
             }
 
-            if (!generateResponse.Success || generateResponse.Data == null || string.IsNullOrWhiteSpace(generateResponse.Data.GeneratedGarmentUrl))
+            if (string.IsNullOrWhiteSpace(form.Prompt))
             {
-                return BadRequest(BaseResponse<PreprocessResultDto>.FailureResponse(string.IsNullOrWhiteSpace(generateResponse.Message)
-                    ? "Failed to preprocess garment."
-                    : generateResponse.Message));
+                return BadRequest(BaseResponse<PreprocessResultDto>.FailureResponse("Prompt is required."));
             }
 
-            var preDto = new PreprocessResultDto
-            {
-                PreprocessedImageUrl = generateResponse.Data.GeneratedGarmentUrl!,
-                CustomizationJobId = generateResponse.Data.CustomizationJobId
-            };
+            Stream garmentStream;
+            string fileName;
 
-            var mapped = BaseResponse<PreprocessResultDto>.SuccessResponse(preDto, generateResponse.Message);
-            return Ok(mapped);
+            if (form.File != null && form.File.Length > 0)
+            {
+                var validationError = ValidateImageFile(form.File);
+                if (validationError != null)
+                {
+                    return BadRequest(BaseResponse<PreprocessResultDto>.FailureResponse(validationError));
+                }
+
+                garmentStream = form.File.OpenReadStream();
+                fileName = form.File.FileName;
+            }
+            else
+            {
+                var baseImageUrl = form.BaseImageUrl;
+                if (!string.IsNullOrWhiteSpace(baseImageUrl))
+                {
+                    var pathPart = baseImageUrl;
+                    if (Uri.TryCreate(baseImageUrl, UriKind.Absolute, out var absUri))
+                    {
+                        pathPart = absUri.AbsolutePath;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(pathPart) && pathPart.StartsWith("/uploads/", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var resolvedPath = _imageService.GetImagePath(pathPart);
+                        if (!string.IsNullOrWhiteSpace(resolvedPath) && System.IO.File.Exists(resolvedPath))
+                        {
+                            garmentStream = System.IO.File.OpenRead(resolvedPath);
+                            fileName = Path.GetFileName(resolvedPath);
+                            goto GarmentResolved;
+                        }
+                    }
+                }
+
+                var garmentType = string.IsNullOrWhiteSpace(form.GarmentType)
+                    ? "hoodie"
+                    : form.GarmentType!.ToLowerInvariant();
+
+                var resolved = ResolveDefaultGarmentImage(garmentType, out var errorMessage);
+                if (resolved == null)
+                {
+                    return BadRequest(BaseResponse<PreprocessResultDto>.FailureResponse(errorMessage ?? "Default garment image not found."));
+                }
+
+                garmentStream = resolved.Value.Stream;
+                fileName = resolved.Value.FileName;
+            }
+
+        GarmentResolved:
+
+            byte[] garmentBytes;
+            await using (garmentStream)
+            {
+                using var tempMs = new MemoryStream();
+                await garmentStream.CopyToAsync(tempMs, cancellationToken);
+                garmentBytes = tempMs.ToArray();
+            }
+
+            var prompt = form.Prompt!.Trim();
+
+            try
+            {
+                var (jobId, _) = await _pipelineService.GenerateDesignFromPromptAsync(userId, prompt, cancellationToken);
+
+                await using var applyMs = new MemoryStream(garmentBytes);
+                var (_, finalUrl) = await _pipelineService.ApplyDesignToGarmentAsync(
+                    userId,
+                    jobId,
+                    applyMs,
+                    fileName,
+                    applyPrompt: null,
+                    cancellationToken);
+
+                var preDto = new PreprocessResultDto
+                {
+                    PreprocessedImageUrl = finalUrl,
+                    CustomizationJobId = jobId
+                };
+
+                return Ok(BaseResponse<PreprocessResultDto>.SuccessResponse(preDto, "Design generated successfully."));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(BaseResponse<PreprocessResultDto>.FailureResponse(ex.Message));
+            }
+        }
+
+        [HttpPost("design")]
+        [ProducesResponseType(typeof(BaseResponse<DesignGeneratedDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse<DesignGeneratedDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseResponse<DesignGeneratedDto>), StatusCodes.Status429TooManyRequests)]
+        public async Task<ActionResult<BaseResponse<DesignGeneratedDto>>> GenerateDesign([FromForm] GenerateDesignForm form, CancellationToken cancellationToken)
+        {
+            var userId = GetUserId();
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return BadRequest(BaseResponse<DesignGeneratedDto>.FailureResponse("User id was not found in the access token."));
+            }
+
+            if (!CheckRateLimit(userId, out var rateLimitResult))
+            {
+                return rateLimitResult!;
+            }
+
+            if (string.IsNullOrWhiteSpace(form.Prompt))
+            {
+                return BadRequest(BaseResponse<DesignGeneratedDto>.FailureResponse("Prompt is required."));
+            }
+
+            try
+            {
+                var (jobId, designUrl) = await _pipelineService.GenerateDesignFromPromptAsync(userId, form.Prompt.Trim(), cancellationToken);
+
+                var dto = new DesignGeneratedDto
+                {
+                    CustomizationJobId = jobId,
+                    DesignImageUrl = designUrl
+                };
+
+                return Ok(BaseResponse<DesignGeneratedDto>.SuccessResponse(dto, "Design generated successfully."));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(BaseResponse<DesignGeneratedDto>.FailureResponse(ex.Message));
+            }
+        }
+
+        [HttpPost("apply")]
+        [ProducesResponseType(typeof(BaseResponse<ApplyDesignResultDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse<ApplyDesignResultDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BaseResponse<ApplyDesignResultDto>), StatusCodes.Status429TooManyRequests)]
+        public async Task<ActionResult<BaseResponse<ApplyDesignResultDto>>> ApplyDesign([FromForm] ApplyDesignForm form, CancellationToken cancellationToken)
+        {
+            var userId = GetUserId();
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return BadRequest(BaseResponse<ApplyDesignResultDto>.FailureResponse("User id was not found in the access token."));
+            }
+
+            if (!CheckRateLimit(userId, out var rateLimitResult))
+            {
+                return rateLimitResult!;
+            }
+
+            if (form.CustomizationJobId <= 0)
+            {
+                return BadRequest(BaseResponse<ApplyDesignResultDto>.FailureResponse("A valid customization job id is required."));
+            }
+
+            Stream garmentStream;
+            string fileName;
+
+            if (form.File != null && form.File.Length > 0)
+            {
+                var validationError = ValidateImageFile(form.File);
+                if (validationError != null)
+                {
+                    return BadRequest(BaseResponse<ApplyDesignResultDto>.FailureResponse(validationError));
+                }
+
+                garmentStream = form.File.OpenReadStream();
+                fileName = form.File.FileName;
+            }
+            else
+            {
+                var baseImageUrl = form.BaseImageUrl;
+                if (!string.IsNullOrWhiteSpace(baseImageUrl))
+                {
+                    var pathPart = baseImageUrl;
+                    if (Uri.TryCreate(baseImageUrl, UriKind.Absolute, out var absUri))
+                    {
+                        pathPart = absUri.AbsolutePath;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(pathPart) && pathPart.StartsWith("/uploads/", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var resolvedPath = _imageService.GetImagePath(pathPart);
+                        if (!string.IsNullOrWhiteSpace(resolvedPath) && System.IO.File.Exists(resolvedPath))
+                        {
+                            garmentStream = System.IO.File.OpenRead(resolvedPath);
+                            fileName = Path.GetFileName(resolvedPath);
+                            goto ApplyGarmentResolved;
+                        }
+                    }
+                }
+
+                var garmentType = string.IsNullOrWhiteSpace(form.GarmentType)
+                    ? "hoodie"
+                    : form.GarmentType!.ToLowerInvariant();
+
+                var resolved = ResolveDefaultGarmentImage(garmentType, out var errorMessage);
+                if (resolved == null)
+                {
+                    return BadRequest(BaseResponse<ApplyDesignResultDto>.FailureResponse(errorMessage ?? "Default garment image not found."));
+                }
+
+                garmentStream = resolved.Value.Stream;
+                fileName = resolved.Value.FileName;
+            }
+
+        ApplyGarmentResolved:
+
+            byte[] garmentBytes;
+            await using (garmentStream)
+            {
+                using var tempMs = new MemoryStream();
+                await garmentStream.CopyToAsync(tempMs, cancellationToken);
+                garmentBytes = tempMs.ToArray();
+            }
+
+            try
+            {
+                await using var applyMs = new MemoryStream(garmentBytes);
+                var (_, finalUrl) = await _pipelineService.ApplyDesignToGarmentAsync(
+                    userId,
+                    form.CustomizationJobId,
+                    applyMs,
+                    fileName,
+                    form.ApplyPrompt,
+                    cancellationToken);
+
+                var dto = new ApplyDesignResultDto
+                {
+                    CustomizationJobId = form.CustomizationJobId,
+                    FinalProductImageUrl = finalUrl
+                };
+
+                return Ok(BaseResponse<ApplyDesignResultDto>.SuccessResponse(dto, "Design applied successfully."));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(BaseResponse<ApplyDesignResultDto>.FailureResponse(ex.Message));
+            }
         }
 
         [HttpPost("tryon")]

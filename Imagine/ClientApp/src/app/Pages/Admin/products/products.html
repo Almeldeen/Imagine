@@ -16,7 +16,8 @@
   <app-product-list
     *ngIf="hasProducts"
     [products]="products"
-    [viewMode]="currentView">
+    [viewMode]="currentView"
+    (refresh)="onRefreshRequested()">
   </app-product-list>
 
   <!-- Pagination (when more items than current page size) -->

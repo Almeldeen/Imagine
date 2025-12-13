@@ -28,6 +28,11 @@ namespace Application.Features.Products.Commands.UpdateProduct
             product.BasePrice = request.Price;
             product.IsActive = request.IsActive;
             product.CategoryId = request.CategoryId;
+            product.IsFeatured = request.IsFeatured;
+            product.IsPopular = request.IsPopular;
+            product.IsLatest = request.IsLatest;
+            product.AllowAiCustomization = request.AllowAiCustomization;
+            product.AvailableSizes = request.AvailableSizes;
 
             if (request.NewImageStream != null && !string.IsNullOrWhiteSpace(request.NewImageFileName))
             {

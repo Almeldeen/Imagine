@@ -7,5 +7,8 @@ namespace Application.Features.Carts.Commands.AddCustomProductToCart
         string UserOrSessionId,
         int CustomProductId,
         int Quantity
-    ) : IRequest<BaseResponse<bool>>;
+    ) : IRequest<BaseResponse<bool>>
+    {
+        public string? Size { get; init; }
+    }
 }

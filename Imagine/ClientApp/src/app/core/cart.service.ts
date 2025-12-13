@@ -8,12 +8,14 @@ export interface AddToCartRequest {
   userOrSessionId: string;
   productColorId: number;
   quantity: number;
+  size?: string;
 }
 
 export interface AddCustomProductToCartRequest {
   userOrSessionId: string;
   customProductId: number;
   quantity: number;
+  size?: string;
 }
 
 export interface CartItemDto {
@@ -52,11 +54,12 @@ export class CartService {
 
   constructor(private http: HttpClient) {}
 
-  addToCart(productColorId: number, quantity: number = 1): Observable<ApiResponse<boolean>> {
+  addToCart(productColorId: number, quantity: number = 1, size?: string): Observable<ApiResponse<boolean>> {
     const payload: AddToCartRequest = {
       userOrSessionId: this.getOrCreateUserOrSessionId(),
       productColorId,
       quantity,
+      size,
     };
     return this.http.post<ApiResponse<boolean>>(`${this.baseUrl}/add`, payload).pipe(
       tap(() => {
@@ -65,11 +68,12 @@ export class CartService {
     );
   }
 
-  addCustomProductToCart(customProductId: number, quantity: number = 1): Observable<ApiResponse<boolean>> {
+  addCustomProductToCart(customProductId: number, quantity: number = 1, size?: string): Observable<ApiResponse<boolean>> {
     const payload: AddCustomProductToCartRequest = {
       userOrSessionId: this.getOrCreateUserOrSessionId(),
       customProductId,
       quantity,
+      size,
     };
 
     return this.http.post<ApiResponse<boolean>>(`${this.baseUrl}/add-custom`, payload).pipe(

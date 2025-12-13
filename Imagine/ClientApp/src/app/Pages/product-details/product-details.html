@@ -40,6 +40,24 @@
             (wishlistToggle)="onToggleWishlist()"
           ></app-product-info>
 
+          <div class="pd-section mt-2" *ngIf="hasSizes">
+            <div class="sizes-label-row">
+              <span class="sizes-title">Available sizes</span>
+              <span class="sizes-helper" *ngIf="!selectedSize">Choose one</span>
+            </div>
+            <div class="sizes-chips">
+              <button
+                type="button"
+                class="size-chip"
+                *ngFor="let size of product.availableSizes"
+                [class.selected]="size === selectedSize"
+                (click)="selectedSize = size"
+              >
+                {{ size }}
+              </button>
+            </div>
+          </div>
+
           <div class="pd-section mt-3">
             <app-product-color-selector
               [colors]="product.colors"
@@ -57,12 +75,37 @@
             ></app-product-customization-options>
           </div>
 
+          <div class="pd-section mt-3" *ngIf="canUseAiCustomization">
+            <div class="ai-custom-card">
+              <div class="ai-custom-icon">
+                <i class="fas fa-sparkles"></i>
+              </div>
+              <div class="ai-custom-body">
+                <h3 class="ai-custom-title">Customize with AI</h3>
+                <p class="ai-custom-text">
+                  Turn this {{ selectedColor?.label || 'product' }} into a one-of-a-kind piece by
+                  generating a custom print in our AI studio.
+                </p>
+                <button
+                  type="button"
+                  class="btn btn-outline-light btn-sm ai-custom-btn"
+                  (click)="onStartCustomDesign()"
+                >
+                  <span>Start custom design</span>
+                  <i class="fas fa-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
           <div class="pd-section mt-4">
             <app-add-to-cart-button
               [inStock]="product.inStock"
               [quantity]="quantity"
               [finalPricePerItem]="finalPricePerItem"
               [totalPrice]="totalPrice"
+              [canAdd]="canAddToCart && !isAddingToCart"
+              [hint]="addToCartHint"
               (quantityChange)="onQuantityChange($event)"
               (addToCart)="onAddToCart()"
             ></app-add-to-cart-button>

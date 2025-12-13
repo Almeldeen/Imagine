@@ -10,5 +10,10 @@ namespace Application.Features.CustomProducts.Commands.SaveCustomizationAsCustom
         public int CustomizationJobId { get; set; }
         public int? ProductId { get; set; }
         public string? Notes { get; set; }
+
+        // Optional variant metadata coming from the client studio
+        public string? ColorName { get; set; }
+        public string? ColorHex { get; set; }
+        public string? Size { get; set; }
     }
 }

@@ -71,7 +71,13 @@ namespace Imagine
 
             app.UseHttpsRedirection();
             // Serve static files from wwwroot (e.g. /uploads/...)
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                OnPrepareResponse = ctx =>
+                {
+                    ctx.Context.Response.Headers["Access-Control-Allow-Origin"] = "*";
+                }
+            });
 
             app.UseCors();
 
