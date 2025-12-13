@@ -153,6 +153,7 @@ export class AddProduct implements OnInit {
             isFeatured: data.isFeatured ?? false,
             isPopular: data.isPopular ?? false,
             isLatest: data.isLatest ?? false,
+            allowAiCustomization: data.allowAiCustomization ?? false,
             colors: [],
           };
           

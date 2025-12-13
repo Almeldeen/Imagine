@@ -32,9 +32,9 @@ export class ProductCard implements OnChanges {
     return this.product?.colors ?? [];
   }
 
-  get displayPrice(): number {
+  get displayPrice(): string {
     const extra = this.activeColor?.additionalPrice ?? 0;
-    return this.product.price + extra;
+    return (this.product.price + extra).toFixed(2);
   }
 
   selectColor(color: IProductColor, event?: Event): void {
