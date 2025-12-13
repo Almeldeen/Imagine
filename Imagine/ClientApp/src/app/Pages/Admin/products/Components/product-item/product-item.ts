@@ -15,6 +15,9 @@ import Swal from 'sweetalert2';
 })
 export class ProductItem {
   @Input() product!: IProduct;
+  @Output() onEdit = new EventEmitter<number>();
+  @Output() onDelete = new EventEmitter<number>();
+  @Output() onView = new EventEmitter<number>();
 
   @Output() refresh = new EventEmitter<void>();
 

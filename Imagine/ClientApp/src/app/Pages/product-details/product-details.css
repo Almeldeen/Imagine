@@ -2,12 +2,11 @@
   position: relative;
   padding: 7rem 0 5rem 0;
   background: linear-gradient(135deg,
-    #1a1a2e 0%,
-    #16213e 25%,
-    #0f3460 50%,
-    #16213e 75%,
-    #1a1a2e 100%
-  );
+      #1a1a2e 0%,
+      #16213e 25%,
+      #0f3460 50%,
+      #16213e 75%,
+      #1a1a2e 100%);
   overflow: hidden;
 }
 
@@ -48,6 +47,67 @@
   opacity: 0.4;
 }
 
+.back-button-wrapper {
+  margin-bottom: 1.5rem;
+  display: inline-block;
+}
+
+.back-button {
+  text-decoration: none !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #ffffff !important;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(74, 144, 226, 0.4);
+  border-radius: 0.75rem;
+  padding: 0.6rem 1.2rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  outline: none;
+}
+
+.back-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(74, 144, 226, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.back-button:hover {
+  background: rgba(15, 23, 42, 0.9);
+  border-color: rgba(74, 144, 226, 0.7);
+  transform: translateX(-3px);
+  box-shadow: 0 6px 20px rgba(74, 144, 226, 0.3);
+}
+
+.back-button:hover::before {
+  left: 100%;
+}
+
+.back-button i {
+  font-size: 0.9rem;
+  transition: transform 0.3s ease;
+}
+
+.back-button:hover i {
+  transform: translateX(-3px);
+}
+
+.back-button:active {
+  transform: translateX(-2px) scale(0.98);
+}
+
 .badge-text {
   display: inline-flex;
   align-items: center;
@@ -85,7 +145,7 @@
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65);
 }
 
-.pd-section + .pd-section {
+.pd-section+.pd-section {
   margin-top: 1rem;
 }
 
@@ -204,9 +264,12 @@
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-16px);
   }
@@ -219,5 +282,15 @@
 
   .pd-right-column {
     margin-top: 1rem;
+  }
+
+  .back-button {
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+    gap: 0.5rem;
+  }
+
+  .back-button-wrapper {
+    margin-bottom: 1rem;
   }
 }

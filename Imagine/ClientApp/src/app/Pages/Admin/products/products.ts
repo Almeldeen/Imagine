@@ -1,5 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 import { ProductHeader } from './Components/product-header/product-header';
 import { ProductList } from './Components/product-list/product-list';
 import { ProductEmptyState } from './Components/product-empty-state/product-empty-state';
@@ -16,6 +18,7 @@ import { IProduct } from './Core/Interface/IProduct';
 })
 export class Products implements OnInit {
   private productService = inject(ProductService);
+  private router = inject(Router);
 
   products: IProduct[] = [];
   hasProducts = false;
@@ -165,5 +168,55 @@ export class Products implements OnInit {
   onPageChange(page: number) {
     this.currentPage = page;
     this.loadProducts();
+  }
+
+  onEdit(id: number) {
+    this.router.navigate(['/admin/products/edit', id]);
+  }
+
+  onView(id: number) {
+    // Navigate to product details with admin context
+    this.router.navigate(['/Product', id], { queryParams: { from: 'admin' } });
+  }
+
+  onDelete(id: number) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.productService.delete(id).subscribe({
+          next: (res) => {
+            if (res.success) {
+              Swal.fire(
+                'Deleted!',
+                'Product has been deleted.',
+                'success'
+              );
+              this.loadProducts();
+              this.loadCounts();
+            } else {
+              Swal.fire(
+                'Error!',
+                'Failed to delete product.',
+                'error'
+              );
+            }
+          },
+          error: (err) => {
+             Swal.fire(
+                'Error!',
+                'Failed to delete product.',
+                'error'
+              );
+          }
+        });
+      }
+    });
   }
 }

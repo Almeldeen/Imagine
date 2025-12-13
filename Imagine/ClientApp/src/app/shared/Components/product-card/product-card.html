@@ -7,7 +7,8 @@
     <img
       [src]="activeImage?.imageUrl || product.imageUrl || '/assets/images/Hoodie.png'"
       [alt]="activeImage?.altText || product.name"
-      class="product-image" />
+      class="product-image"
+    />
 
     <div class="product-overlay"></div>
 
@@ -41,11 +42,15 @@
           [class.active]="activeColor?.id === color.id"
           [ngStyle]="{
             background:
-              'linear-gradient(135deg,' + (color.colorHex || '#4A90E2') + ' 0%, ' +
-              (color.colorHex || '#00D9FF') + ' 100%)'
+              'linear-gradient(135deg,' +
+              (color.colorHex || '#4A90E2') +
+              ' 0%, ' +
+              (color.colorHex || '#00D9FF') +
+              ' 100%)'
           }"
           (click)="selectColor(color, $event)"
-          [title]="color.colorName">
+          [title]="color.colorName"
+        >
           <span class="swatch-check"><i class="fas fa-check"></i></span>
         </button>
       </div>
@@ -55,14 +60,15 @@
     <div class="product-footer">
       <div class="product-price">
         <span class="price-label">From</span>
-        <span class="price-value">${{ displayPrice }}</span>
+        <span class="price-value">{{ displayPrice | currency : 'EGP' : 'code' }}</span>
       </div>
       <div class="product-actions">
         <button
           type="button"
           class="btn-add"
           [disabled]="isAdding || !activeColor"
-          (click)="addToCart($event)">
+          (click)="addToCart($event)"
+        >
           <i class="fas fa-shopping-cart"></i>
           <span>{{ isAdding ? 'Adding...' : 'Add to Cart' }}</span>
         </button>

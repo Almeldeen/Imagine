@@ -2,7 +2,7 @@ import { Component, inject, ViewChild, ElementRef, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ProductService } from '../products/Core/Service/product.service';
 import Swal from 'sweetalert2';
 import { CreateProductRequestModel } from '../products/Core/Interface/IProduct';
@@ -53,11 +53,15 @@ interface Product {
 export class AddProduct implements OnInit {
   private modalService = inject(NgbModal);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private productService = inject(ProductService);
   private categoryService = inject(CategoryService);
 
   @ViewChild('mainImageInput') mainImageInput!: ElementRef<HTMLInputElement>;
   @ViewChild('colorImageInput') colorImageInput!: ElementRef<HTMLInputElement>;
+
+  isEditMode = false;
+  currentProductId: number | null = null;
 
   // Product model based on database structure
   product: Product = {
@@ -91,6 +95,149 @@ export class AddProduct implements OnInit {
 
   ngOnInit(): void {
     this.loadCategories();
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.isEditMode = true;
+        this.currentProductId = +id;
+        this.loadProductData(this.currentProductId);
+      }
+    });
+  }
+
+  private loadProductData(id: number) {
+    this.productService.getById(id).subscribe({
+      next: (res) => {
+        if (res.success && res.data) {
+          const data = res.data;
+          console.log('Loaded product data:', data);
+          console.log('CategoryId from API:', data.categoryId, 'Type:', typeof data.categoryId);
+          
+          // Ensure categoryId is properly set
+          let loadedCategoryId = 0;
+          if (data.categoryId !== undefined && data.categoryId !== null) {
+            loadedCategoryId = Number(data.categoryId);
+            if (isNaN(loadedCategoryId)) {
+              console.error('CategoryId is not a valid number:', data.categoryId);
+              loadedCategoryId = 0;
+            }
+          } else {
+            console.warn('CategoryId is missing from API response. Product may need a category assigned.');
+          }
+          
+          // Ensure price is properly set
+          let loadedPrice = 0;
+          if (data.price !== undefined && data.price !== null) {
+            loadedPrice = Number(data.price);
+            if (isNaN(loadedPrice)) {
+              console.error('Price is not a valid number:', data.price);
+              loadedPrice = 0;
+            }
+          } else {
+            console.warn('Price is missing from API response.');
+          }
+          
+          // Ensure name is properly set
+          const loadedName = data.name || '';
+          if (!loadedName) {
+            console.warn('Product name is missing from API response.');
+          }
+          
+          this.product = {
+            categoryId: loadedCategoryId,
+            name: loadedName,
+            description: data.description || '',
+            basePrice: loadedPrice,
+            mainImageUrl: data.imageUrl || '', // API returns 'imageUrl'
+            isActive: data.isActive ?? true,
+            isFeatured: data.isFeatured ?? false,
+            isPopular: data.isPopular ?? false,
+            isLatest: data.isLatest ?? false,
+            allowAiCustomization: data.allowAiCustomization ?? false,
+            colors: [],
+          };
+          
+          console.log('Product after mapping:', this.product);
+          console.log('Data validation:', {
+            categoryId: {
+              original: data.categoryId,
+              converted: loadedCategoryId,
+              type: typeof loadedCategoryId,
+              isValid: loadedCategoryId > 0
+            },
+            price: {
+              original: data.price,
+              converted: loadedPrice,
+              type: typeof loadedPrice,
+              isValid: loadedPrice > 0
+            },
+            name: {
+              original: data.name,
+              converted: loadedName,
+              isValid: loadedName.length > 0
+            }
+          });
+          
+          // Show warning if critical data is missing
+          if (loadedCategoryId === 0) {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Category Missing',
+              text: 'This product does not have a category assigned. Please select a category before saving.',
+              timer: 5000,
+              showConfirmButton: true
+            });
+          }
+          
+          if (loadedPrice === 0) {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Price Missing',
+              text: 'This product does not have a price. Please set a price before saving.',
+              timer: 5000,
+              showConfirmButton: true
+            });
+          }
+          
+          if (!loadedName) {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Name Missing',
+              text: 'This product does not have a name. Please set a name before saving.',
+              timer: 5000,
+              showConfirmButton: true
+            });
+          }
+          
+          this.mainImagePreview = this.product.mainImageUrl;
+          
+          // Map colors from IProductColor interface
+          if (data.colors && Array.isArray(data.colors)) {
+             this.product.colors = data.colors.map((c) => ({
+                id: c.id,
+                colorName: c.colorName || '',
+                colorHex: c.colorHex || '#000000',
+                stock: c.stock || 0,
+                additionalPrice: c.additionalPrice || 0,
+                isAvailable: c.isAvailable ?? true,
+                images: (c.images || []).map((img) => ({
+                   id: img.id,
+                   imageUrl: img.imageUrl || '',
+                   altText: img.altText || '',
+                   isMain: !!img.isMain,
+                   displayOrder: img.displayOrder || 0,
+                   fileKey: undefined, // Will be set if new file is added
+                   file: undefined // Will be set if new file is added
+                }))
+             }));
+          }
+        }
+      },
+      error: (err) => {
+        Swal.fire('Error', 'Failed to load product', 'error');
+        this.router.navigate(['/admin/products']);
+      }
+    });
   }
 
   isSizeSelected(size: string): boolean {
@@ -118,6 +265,11 @@ export class AddProduct implements OnInit {
         this.categories = [];
       },
     });
+  }
+
+  onCategoryChange(value: any): void {
+    // Ensure categoryId is always a number
+    this.product.categoryId = value ? Number(value) : 0;
   }
 
   // File input click handlers
@@ -258,7 +410,8 @@ export class AddProduct implements OnInit {
       return;
     }
 
-    // Build create request model matching backend CreateProductRequestDto
+    // Prepare payload (reused for both create and update)
+    // Note: For update, backend might expect the same structure in a 'Payload' field
     const createModel: CreateProductRequestModel = {
       categoryId: this.product.categoryId,
       name: this.product.name,
@@ -277,12 +430,11 @@ export class AddProduct implements OnInit {
         additionalPrice: color.additionalPrice,
         isAvailable: color.isAvailable,
         images: color.images.map((img, imgIndex) => {
-          // Ensure each image has a stable fileKey
-          if (!img.fileKey) {
-            img.fileKey = `color_${colorIndex}_image_${imgIndex}`;
+          if (!img.fileKey) { // Only generate key if new file or missing
+             img.fileKey = `color_${colorIndex}_image_${imgIndex}`;
           }
           return {
-            fileKey: img.fileKey,
+            fileKey: img.fileKey || `color_${colorIndex}_image_${imgIndex}`, // Fallback to ensure string
             altText: img.altText,
             isMain: img.isMain,
             displayOrder: img.displayOrder,
@@ -292,28 +444,217 @@ export class AddProduct implements OnInit {
       })),
     };
 
-    this.productService.createFullProduct(createModel, this.product.mainImageFile).subscribe({
-      next: (res) => {
-        Swal.fire({
-          icon: res.success ? 'success' : 'error',
-          title: res.success ? 'Product created' : 'Create failed',
-          text:
-            res.message ||
-            (res.success ? 'Product created successfully' : 'Failed to create product'),
-        }).then(() => {
-          if (res.success) {
-            this.router.navigate(['/admin/products']);
+    if (this.isEditMode && this.currentProductId) {
+       // UPDATE MODE
+       // We'll reuse createFullProduct logic but call update. 
+       // However, product.service.update takes (id, formData). 
+       // We need to construct FormData same as createFullProduct.
+       
+       // Validate required fields before constructing payload
+       const name = (this.product.name || '').trim();
+       const categoryId = this.product.categoryId ? Number(this.product.categoryId) : 0;
+       const price = this.product.basePrice ? Number(this.product.basePrice) : 0;
+       
+       console.log('Validation Check:', {
+         name: name,
+         nameLength: name.length,
+         categoryId: categoryId,
+         categoryIdType: typeof categoryId,
+         price: price,
+         priceType: typeof price,
+         productCategoryId: this.product.categoryId,
+         productBasePrice: this.product.basePrice
+       });
+       
+       if (!name || name.length === 0) {
+         Swal.fire({
+           icon: 'error',
+           title: 'Validation Error',
+           text: 'Product name is required.',
+         });
+         return;
+       }
+       
+       if (!categoryId || categoryId <= 0 || isNaN(categoryId)) {
+         Swal.fire({
+           icon: 'error',
+           title: 'Validation Error',
+           text: `Please select a valid category. Current value: ${this.product.categoryId}`,
+         });
+         return;
+       }
+       
+       if (!price || price <= 0 || isNaN(price)) {
+         Swal.fire({
+           icon: 'error',
+           title: 'Validation Error',
+           text: `Price must be greater than 0. Current value: ${this.product.basePrice}`,
+         });
+         return;
+       }
+       
+       const form = new FormData();
+       
+       // Transform payload for backend (remove file objects, keep structure)
+       // Use validated values directly from product - ensure all are correct types
+       // Match the exact format used in createFullProduct
+       const apiPayload = {
+          categoryId: Number(categoryId), // Ensure it's a number
+          name: String(name).trim(), // Ensure it's a string
+          description: (this.product.description || '').trim() || undefined,
+          price: Number(price), // Ensure it's a number
+          isActive: Boolean(this.product.isActive ?? true),
+          isFeatured: Boolean(this.product.isFeatured ?? false),
+          isPopular: Boolean(this.product.isPopular ?? false),
+          isLatest: Boolean(this.product.isLatest ?? false),
+          colors: (this.product.colors || []).map(color => {
+            const colorPayload: any = {
+              colorName: color.colorName.trim(),
+              colorHex: color.colorHex,
+              stock: Number(color.stock),
+              additionalPrice: Number(color.additionalPrice),
+              isAvailable: color.isAvailable,
+              images: (color.images || [])
+                .filter(img => img.id || (img.file && img.fileKey)) // Only include images with id or new file
+                .map(img => {
+                  const imagePayload: any = {
+                    altText: img.altText || '',
+                    isMain: img.isMain,
+                    displayOrder: Number(img.displayOrder),
+                  };
+                  // Only include fileKey if it's a new image (has file), otherwise include id for existing images
+                  if (img.file && img.fileKey) {
+                    imagePayload.fileKey = img.fileKey;
+                  } else if (img.id) {
+                    imagePayload.id = img.id;
+                  }
+                  return imagePayload;
+                }),
+            };
+            // Only include color id if it exists (for updates)
+            if (color.id) {
+              colorPayload.id = color.id;
+            }
+            return colorPayload;
+          }),
+        };
+
+       // Final validation check before sending
+       if (!apiPayload.name || apiPayload.name.length === 0) {
+         Swal.fire({
+           icon: 'error',
+           title: 'Validation Error',
+           text: 'Product name cannot be empty after processing.',
+         });
+         return;
+       }
+       
+       if (!apiPayload.categoryId || apiPayload.categoryId <= 0) {
+         Swal.fire({
+           icon: 'error',
+           title: 'Validation Error',
+           text: `Category ID is invalid: ${apiPayload.categoryId}. Please select a valid category.`,
+         });
+         return;
+       }
+       
+       if (!apiPayload.price || apiPayload.price <= 0) {
+         Swal.fire({
+           icon: 'error',
+           title: 'Validation Error',
+           text: `Price is invalid: ${apiPayload.price}. Price must be greater than 0.`,
+         });
+         return;
+       }
+
+       // Debug: Log the payload to console
+       console.log('=== UPDATE PAYLOAD DEBUG ===');
+       console.log('Product Data (before validation):', {
+         name: this.product.name,
+         categoryId: this.product.categoryId,
+         basePrice: this.product.basePrice,
+         categoryIdType: typeof this.product.categoryId,
+         basePriceType: typeof this.product.basePrice
+       });
+       console.log('Validated Values:', {
+         name: name,
+         nameLength: name.length,
+         categoryId: categoryId,
+         categoryIdType: typeof categoryId,
+         price: price,
+         priceType: typeof price
+       });
+       console.log('API Payload Object:', apiPayload);
+       console.log('API Payload Types:', {
+         categoryId: typeof apiPayload.categoryId,
+         name: typeof apiPayload.name,
+         price: typeof apiPayload.price
+       });
+       console.log('API Payload JSON:', JSON.stringify(apiPayload, null, 2));
+       console.log('===========================');
+
+       form.append('Payload', JSON.stringify(apiPayload));
+
+       if (this.product.mainImageFile) {
+         form.append('MainImageFile', this.product.mainImageFile);
+       }
+
+       // Append color images
+       (this.product.colors || []).forEach(color => {
+          (color.images || []).forEach(img => {
+            if (img.file && img.fileKey) {
+              form.append(img.fileKey, img.file);
+            }
+          });
+        });
+
+       this.productService.update(this.currentProductId, form).subscribe({
+          next: (res) => {
+             Swal.fire({
+              icon: res.success ? 'success' : 'error',
+              title: res.success ? 'Product updated' : 'Update failed',
+              text: res.message || (res.success ? 'Product updated successfully' : 'Failed to update product'),
+            }).then(() => {
+              if (res.success) this.router.navigate(['/admin/products']);
+            });
+          },
+          error: (err) => {
+             console.error('Update error:', err);
+             const errorMessage = err?.error?.message || err?.error?.errors || err?.message || 'Unknown error';
+             Swal.fire({
+               icon: 'error',
+               title: 'Update failed',
+               text: `Error: ${errorMessage}`,
+               footer: err?.error ? JSON.stringify(err.error, null, 2) : undefined
+             });
           }
-        });
-      },
-      error: (err) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Create failed',
-          text: 'Error: ' + (err?.error?.message || JSON.stringify(err)),
-        });
-      },
-    });
+       });
+
+    } else {
+      // CREATE MODE
+      this.productService.createFullProduct(createModel, this.product.mainImageFile).subscribe({
+        next: (res) => {
+          Swal.fire({
+            icon: res.success ? 'success' : 'error',
+            title: res.success ? 'Product created' : 'Create failed',
+            text:
+              res.message ||
+              (res.success ? 'Product created successfully' : 'Failed to create product'),
+          }).then(() => {
+            if (res.success) {
+              this.router.navigate(['/admin/products']);
+            }
+          });
+        },
+        error: (err) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Create failed',
+            text: 'Error: ' + (err?.error?.message || JSON.stringify(err)),
+          });
+        },
+      });
+    }
   }
 
   onCancel() {
@@ -322,10 +663,10 @@ export class AddProduct implements OnInit {
 
   // Utility methods
   formatPrice(price: number): string {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(price);
+    // Format price in English with EGP currency code
+    // Use toFixed to ensure 2 decimal places, then format with EGP
+    const formattedNumber = Number(price).toFixed(2);
+    return `EGP ${formattedNumber}`;
   }
 
   getTotalPrice(basePrice: number, additionalPrice: number): string {

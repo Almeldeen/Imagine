@@ -39,8 +39,8 @@ export class ProductsCard {
     this.activeColor = color;
   }
 
-  get displayPrice(): string {
+  get displayPrice(): number {
     const extra = this.activeColor?.extraPrice ?? 0;
-    return (this.product.basePrice + extra).toFixed(2);
+    return this.product.basePrice + extra;
   }
 }

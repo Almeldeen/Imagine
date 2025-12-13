@@ -133,7 +133,7 @@
               <div class="item-main">
                 <div class="item-title-row">
                   <span class="item-name">{{ item.name }}</span>
-                  <span class="item-total">{{ item.basePrice * item.quantity | currency:'USD':'symbol' }}</span>
+                  <span class="item-total">{{ item.basePrice * item.quantity | currency:'EGP':'code' }}</span>
                 </div>
                 <div class="item-meta">
                   <span class="pill">Qty {{ item.quantity }}</span>
@@ -143,7 +143,7 @@
                 </div>
                 <div class="item-price-row">
                   <span>Price per item</span>
-                  <span>{{ item.basePrice | currency:'USD':'symbol' }}</span>
+                  <span>{{ item.basePrice | currency:'EGP':'code' }}</span>
                 </div>
               </div>
             </div>
@@ -153,15 +153,15 @@
 
           <div class="summary-row">
             <span>Subtotal</span>
-            <span>{{ subtotal | currency:'USD':'symbol' }}</span>
+            <span>{{ subtotal | currency:'EGP':'code' }}</span>
           </div>
           <div class="summary-row">
             <span>Tax</span>
-            <span>{{ tax | currency:'USD':'symbol' }}</span>
+            <span>{{ tax | currency:'EGP':'code' }}</span>
           </div>
           <div class="summary-row">
             <span>Shipping</span>
-            <span *ngIf="shipping > 0">{{ shipping | currency:'USD':'symbol' }}</span>
+            <span *ngIf="shipping > 0">{{ shipping | currency:'EGP':'code' }}</span>
             <span *ngIf="shipping === 0">Free</span>
           </div>
 
@@ -169,7 +169,7 @@
 
           <div class="summary-row summary-total">
             <span>Total</span>
-            <span>{{ total | currency:'USD':'symbol' }}</span>
+            <span>{{ total | currency:'EGP':'code' }}</span>
           </div>
 
           <p class="ghost-text mt-3">

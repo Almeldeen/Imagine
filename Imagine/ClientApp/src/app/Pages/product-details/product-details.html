@@ -8,6 +8,16 @@
   <div class="container position-relative">
     <div class="row mb-4">
       <div class="col-12">
+        <div class="back-button-wrapper">
+          <button
+            class="back-button"
+            (click)="goBack()"
+            title="{{ isAdminContext ? 'Back to Admin Products' : 'Back to All Products' }}"
+          >
+            <i class="fas fa-arrow-left"></i>
+            <span>{{ isAdminContext ? 'Back to Admin Products' : 'Back to Products' }}</span>
+          </button>
+        </div>
         <p class="badge-text">Product</p>
         <h1 class="pd-title">
           {{ product.name }}

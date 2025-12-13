@@ -13,7 +13,7 @@
         <span class="badge" *ngIf="opt.badge">{{ opt.badge }}</span>
       </div>
       <p class="description mb-1">{{ opt.description }}</p>
-      <p class="price" *ngIf="opt.extraPrice > 0">+{{ opt.extraPrice | currency:'USD':'symbol' }}</p>
+      <p class="price" *ngIf="opt.extraPrice > 0">+{{ opt.extraPrice | currency:'EGP':'code' }}</p>
       <p class="price" *ngIf="opt.extraPrice === 0">Included</p>
     </button>
   </div>

@@ -4,7 +4,7 @@
   <div class="product-image-wrapper">
     <div class="product-glow-ring"></div>
 
-    <img [src]="product.image" [alt]="product.name" class="product-image active">
+    <img [src]="product.image" [alt]="product.name" class="product-image active" />
 
     <div class="product-overlay"></div>
 
@@ -31,9 +31,12 @@
           class="color-swatch"
           *ngFor="let color of product.colors"
           [class.active]="activeColor?.value === color.value"
-          [ngStyle]="{ 'background': 'linear-gradient(135deg,' + color.value + ' 0%, ' + color.value + ' 100%)' }"
+          [ngStyle]="{
+            background: 'linear-gradient(135deg,' + color.value + ' 0%, ' + color.value + ' 100%)'
+          }"
           (click)="selectColor(color, $event)"
-          [title]="color.name">
+          [title]="color.name"
+        >
           <span class="swatch-check"><i class="fas fa-check"></i></span>
         </button>
       </div>
@@ -43,9 +46,9 @@
     <div class="product-footer">
       <div class="product-price">
         <span class="price-label">From</span>
-        <span class="price-value">${{ displayPrice }}</span>
+        <span class="price-value">{{ displayPrice | currency : 'EGP' : 'code' }}</span>
         <span class="price-extra" *ngIf="activeColor?.extraPrice">
-          +{{ activeColor?.extraPrice | number:'1.0-0' }} for color
+          +{{ activeColor?.extraPrice | currency : 'EGP' : 'code' }} for color
         </span>
       </div>
       <div class="product-actions">
