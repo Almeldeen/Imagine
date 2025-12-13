@@ -29,8 +29,13 @@ namespace Application.Features.Products.Commands.CreateProduct
         // Latest flag for latest drops sections
         public bool IsLatest { get; set; } = false;
 
+        // Whether this product can be customized in the AI studio
+        public bool AllowAiCustomization { get; set; } = false;
+
         // Required relationship: Product requires CategoryId in domain
         public int CategoryId { get; set; }
+
+        public string? AvailableSizes { get; set; }
 
         // Image upload carried as a stream to keep Application independent of ASP.NET IFormFile
         public Stream? ImageStream { get; set; }

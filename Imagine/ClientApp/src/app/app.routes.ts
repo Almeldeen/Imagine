@@ -15,6 +15,8 @@ import { AdminAnalytics } from './Pages/Admin/analytics/admin-analytics';
 import { Category } from './Pages/Admin/category/category';
 import { Products } from './Pages/Admin/products/products';
 import { AddProduct } from './Pages/Admin/add-product/add-product';
+import { AdminProductView } from './Pages/Admin/products/view-product/admin-product-view';
+import { AdminEditProduct } from './Pages/Admin/products/edit-product/admin-edit-product';
 import { Customers } from './Pages/Admin/customers/customers';
 import { Orders } from './Pages/Admin/orders/orders';
 import { Unauthorized } from './Pages/unauthorized/unauthorized';
@@ -108,8 +110,12 @@ export const routes: Routes = [
                 component:AddProduct
             },
             {
+                path:"products/view/:id",
+                component:AdminProductView
+            },
+            {
                 path:"products/edit/:id",
-                component:AddProduct
+                component:AdminEditProduct
             },
             {
                 path:"customers",

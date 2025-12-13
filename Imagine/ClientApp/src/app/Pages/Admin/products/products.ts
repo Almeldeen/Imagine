@@ -136,6 +136,12 @@ export class Products implements OnInit {
     return undefined; // 'all' or unknown -> no status filter
   }
 
+  onRefreshRequested(): void {
+    // When a product is deleted from the list, reload counts and products
+    this.loadCounts();
+    this.loadProducts();
+  }
+
   onSearchChange(term: string) {
     this.searchTerm = term;
     this.currentPage = 1;

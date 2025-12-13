@@ -14,5 +14,6 @@ namespace Application.Features.Products.DTOs
         public bool IsFeatured { get; set; } = false;
         public bool IsPopular { get; set; } = false;
         public bool IsLatest { get; set; } = false;
+        public bool AllowAiCustomization { get; set; } = false;
     }
 }

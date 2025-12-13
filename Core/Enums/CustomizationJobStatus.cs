@@ -6,6 +6,8 @@ namespace Core.Enums
         GarmentGenerated = 1,
         TryOnStarted = 2,
         Completed = 3,
-        Failed = 4
+        Failed = 4,
+        DesignGenerated = 5,
+        ProductImageGenerated = 6
     }
 }

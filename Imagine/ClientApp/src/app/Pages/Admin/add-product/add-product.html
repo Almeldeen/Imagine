@@ -62,6 +62,43 @@
               </div>
             </div>
 
+            <!-- Available Sizes Section -->
+            <div class="form-group full-width">
+              <label class="form-label">
+                <i class="fas fa-ruler-combined"></i>
+                Available Sizes
+              </label>
+              <div class="sizes-container">
+                <div class="sizes-list">
+                  <button
+                    type="button"
+                    class="size-chip"
+                    *ngFor="let size of allSizes"
+                    [class.selected]="isSizeSelected(size)"
+                    (click)="toggleSize(size)"
+                  >
+                    {{ size }}
+                  </button>
+                </div>
+
+                <div class="sizes-selected" *ngIf="selectedSizes.length > 0">
+                  <span class="sizes-label">Selected:</span>
+                  <div class="sizes-tags">
+                    <span class="size-tag" *ngFor="let size of selectedSizes">
+                      {{ size }}
+                      <button type="button" class="tag-remove" (click)="toggleSize(size)">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="sizes-empty" *ngIf="selectedSizes.length === 0">
+                  <span>No sizes selected yet.</span>
+                </div>
+              </div>
+            </div>
+
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">
@@ -155,6 +192,19 @@
                   <span class="checkbox-text">
                     <i class="fas fa-sparkles"></i>
                     Latest Drop
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group full-width">
+                <label class="checkbox-label">
+                  <input type="checkbox" [(ngModel)]="product.allowAiCustomization" class="checkbox-input">
+                  <span class="checkbox-custom"></span>
+                  <span class="checkbox-text">
+                    <i class="fas fa-robot"></i>
+                    Allow AI Customization
                   </span>
                 </label>
               </div>

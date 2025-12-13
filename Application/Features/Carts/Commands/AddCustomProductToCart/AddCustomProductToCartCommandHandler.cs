@@ -52,7 +52,9 @@ namespace Application.Features.Carts.Commands.AddCustomProductToCart
                 await _cartRepo.SaveChangeAsync(cancellationToken);
             }
 
-            var existing = cart.Items.FirstOrDefault(i => i.CustomProductId == request.CustomProductId);
+            var existing = cart.Items.FirstOrDefault(i =>
+                i.CustomProductId == request.CustomProductId &&
+                i.Size == request.Size);
 
             var unitPrice = customProduct.EstimatedPrice > 0 ? customProduct.EstimatedPrice : 49.99m;
 
@@ -68,6 +70,7 @@ namespace Application.Features.Carts.Commands.AddCustomProductToCart
                 {
                     CustomProductId = request.CustomProductId,
                     Quantity = request.Quantity,
+                    Size = request.Size,
                     UnitPrice = unitPrice,
                     TotalPrice = unitPrice * request.Quantity,
                     CartId = cart.Id

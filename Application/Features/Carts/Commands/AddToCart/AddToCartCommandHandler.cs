@@ -35,7 +35,9 @@ namespace Application.Features.Carts.Commands.AddToCart
                 await _cartRepo.SaveChangeAsync(cancellationToken);
             }
 
-            var existed = cart.Items.FirstOrDefault(i => i.ProductColorId == request.ProductColorId);
+            var existed = cart.Items.FirstOrDefault(i =>
+                i.ProductColorId == request.ProductColorId &&
+                i.Size == request.Size);
 
             if (existed != null)
             {
@@ -62,7 +64,8 @@ namespace Application.Features.Carts.Commands.AddToCart
                     Quantity = request.Quantity,
                     UnitPrice = unitPrice,
                     TotalPrice = unitPrice * request.Quantity,
-                    CartId = cart.Id
+                    CartId = cart.Id,
+                    Size = request.Size
                 };
 
                 await _cartRepo.AddCartItemAsync(newItem, cancellationToken);

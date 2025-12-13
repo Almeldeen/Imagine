@@ -8,6 +8,9 @@ export interface SaveCustomizationRequest {
   customizationJobId: number;
   productId?: number;
   notes?: string;
+  colorName?: string;
+  colorHex?: string;
+  size?: string;
 }
 
 export interface SavedCustomProduct {

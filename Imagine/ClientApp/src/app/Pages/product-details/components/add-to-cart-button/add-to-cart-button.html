@@ -18,7 +18,7 @@
   <button
     class="btn btn-primary-custom flex-grow-1 pd-add-btn"
     type="button"
-    [disabled]="!inStock"
+    [disabled]="!inStock || !canAdd"
     (click)="onAddToCartClick()"
   >
     <div class="d-flex justify-content-between align-items-center w-100">
@@ -28,7 +28,16 @@
   </button>
 
   <p class="pd-add-caption mb-0 w-100">
-    <span *ngIf="inStock">Per item: {{ finalPricePerItem | currency:'EGP':'code' }}</span>
-    <span *ngIf="!inStock">Currently out of stock</span>
+    <ng-container *ngIf="inStock; else outOfStock">
+      <ng-container *ngIf="hint; else perItem">
+        {{ hint }}
+      </ng-container>
+      <ng-template #perItem>
+        Per item: {{ finalPricePerItem | currency:'USD':'symbol' }}
+      </ng-template>
+    </ng-container>
+    <ng-template #outOfStock>
+      <span>Currently out of stock</span>
+    </ng-template>
   </p>
 </div>

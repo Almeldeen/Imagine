@@ -7,6 +7,7 @@ namespace Application.Features.Carts.Commands.AddToCart
     public record AddToCartCommand(
       string UserOrSessionId,
       int ProductColorId,
-      int Quantity
+      int Quantity,
+      string? Size
   ) : IRequest<BaseResponse<bool>>;
 }

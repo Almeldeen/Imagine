@@ -1,0 +1,576 @@
+<!-- Edit Product Page -->
+<div class="edit-product-page" *ngIf="!isLoading; else loadingState">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-left">
+        <button class="btn-back" type="button" (click)="onCancel()">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="header-text">
+          <h1 class="page-title">Edit Product</h1>
+          <p class="page-subtitle">Update product details, colors, and images</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn-cancel" type="button" (click)="onCancel()">
+          <i class="fas fa-times"></i>
+          Cancel
+        </button>
+        <button class="btn-save" type="button" (click)="onSave()" [disabled]="!isFormValid() || isSaving">
+          <i class="fas fa-save"></i>
+          Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="page-content">
+    <div class="content-grid">
+      <!-- Left Column - Form Sections -->
+      <div class="form-column">
+
+        <!-- Basic Information Section -->
+        <div class="form-section">
+          <div class="section-header">
+            <h2 class="section-title">
+              <i class="fas fa-info-circle"></i>
+              Basic Information
+            </h2>
+            <p class="section-description">Edit core product details and pricing</p>
+          </div>
+
+          <div class="section-content">
+            <div class="form-row">
+              <div class="form-group full-width">
+                <label class="form-label">
+                  <i class="fas fa-box"></i>
+                  Product Name *
+                </label>
+                <input
+                  type="text"
+                  class="form-input"
+                  [(ngModel)]="form.name"
+                  name="name"
+                  placeholder="Product name"
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-tags"></i>
+                  Category *
+                </label>
+                <select class="form-select" [(ngModel)]="form.categoryId" name="categoryId">
+                  <option [value]="0">Select Category</option>
+                  <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-dollar-sign"></i>
+                  Base Price *
+                </label>
+                <input
+                  type="number"
+                  class="form-input"
+                  [(ngModel)]="form.price"
+                  name="price"
+                  placeholder="0.00"
+                  step="0.01"
+                  min="0"
+                />
+              </div>
+            </div>
+
+            <!-- Available Sizes Section -->
+            <div class="form-group full-width">
+              <label class="form-label">
+                <i class="fas fa-ruler-combined"></i>
+                Available Sizes
+              </label>
+              <div class="sizes-container">
+                <div class="sizes-list">
+                  <button
+                    type="button"
+                    class="size-chip"
+                    *ngFor="let size of allSizes"
+                    [class.selected]="isSizeSelected(size)"
+                    (click)="toggleSize(size)"
+                  >
+                    {{ size }}
+                  </button>
+                </div>
+
+                <div class="sizes-selected" *ngIf="selectedSizes.length > 0">
+                  <span class="sizes-label">Selected:</span>
+                  <div class="sizes-tags">
+                    <span class="size-tag" *ngFor="let size of selectedSizes">
+                      {{ size }}
+                      <button type="button" class="tag-remove" (click)="toggleSize(size)">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="sizes-empty" *ngIf="selectedSizes.length === 0">
+                  <span>No sizes selected yet.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-align-left"></i>
+                Description
+              </label>
+              <textarea
+                class="form-textarea"
+                rows="4"
+                [(ngModel)]="form.description"
+                name="description"
+                placeholder="Describe your product features and benefits..."
+              ></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" [(ngModel)]="form.isActive" name="isActive" class="checkbox-input" />
+                  <span class="checkbox-custom"></span>
+                  <span class="checkbox-text">
+                    <i class="fas fa-eye"></i>
+                    Active (Visible to customers)
+                  </span>
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" [(ngModel)]="form.isFeatured" name="isFeatured" class="checkbox-input" />
+                  <span class="checkbox-custom"></span>
+                  <span class="checkbox-text">
+                    <i class="fas fa-star"></i>
+                    Featured Product
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" [(ngModel)]="form.isPopular" name="isPopular" class="checkbox-input" />
+                  <span class="checkbox-custom"></span>
+                  <span class="checkbox-text">
+                    <i class="fas fa-fire"></i>
+                    Popular Product
+                  </span>
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" [(ngModel)]="form.isLatest" name="isLatest" class="checkbox-input" />
+                  <span class="checkbox-custom"></span>
+                  <span class="checkbox-text">
+                    <i class="fas fa-sparkles"></i>
+                    Latest Drop
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group full-width">
+                <label class="checkbox-label">
+                  <input type="checkbox" [(ngModel)]="form.allowAiCustomization" name="allowAiCustomization" class="checkbox-input" />
+                  <span class="checkbox-custom"></span>
+                  <span class="checkbox-text">
+                    <i class="fas fa-robot"></i>
+                    Allow AI Customization
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Product Image Section (edit) -->
+        <div class="form-section">
+          <div class="section-header">
+            <h2 class="section-title">
+              <i class="fas fa-image"></i>
+              Main Product Image
+            </h2>
+            <p class="section-description">Current main image with option to replace</p>
+          </div>
+
+          <div class="section-content">
+            <div class="main-image-upload">
+              <div class="image-preview" *ngIf="mainImagePreview; else uploadArea">
+                <img [src]="mainImagePreview" alt="Main product image" />
+                <div class="image-overlay">
+                  <button class="btn-change" type="button" (click)="triggerMainImageInput()">
+                    <i class="fas fa-edit"></i>
+                    Change
+                  </button>
+                  <button class="btn-remove" type="button" (click)="mainImagePreview = null; mainImageFile = null;">
+                    <i class="fas fa-trash"></i>
+                    Remove
+                  </button>
+                </div>
+              </div>
+
+              <ng-template #uploadArea>
+                <div class="upload-area" (click)="triggerMainImageInput()">
+                  <i class="fas fa-cloud-upload-alt"></i>
+                  <p class="upload-text">Click to upload or replace main product image</p>
+                  <span class="upload-hint">PNG, JPG up to 5MB</span>
+                </div>
+              </ng-template>
+
+              <input
+                #mainImageInput
+                type="file"
+                class="hidden-file-input"
+                accept="image/*"
+                (change)="onMainImageSelected($event)"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Product Colors Section (edit mode) -->
+        <div class="form-section">
+          <div class="section-header">
+            <h2 class="section-title">
+              <i class="fas fa-palette"></i>
+              Product Colors & Variants
+            </h2>
+            <p class="section-description">Edit color variations, pricing, and stock</p>
+          </div>
+
+          <div class="section-content">
+            <div class="colors-container">
+              <div class="colors-header">
+                <h3 class="colors-title">Color Variants ({{ colors.length }})</h3>
+                <button class="btn-add-color" type="button" (click)="addColor()">
+                  <i class="fas fa-plus"></i>
+                  Add Color
+                </button>
+              </div>
+
+              <!-- Colors list -->
+              <div class="colors-list" *ngIf="colors.length; else noColors">
+                <div
+                  class="color-item"
+                  *ngFor="let color of colors; let i = index"
+                  [class.active]="selectedColorIndex === i"
+                  (click)="selectColor(i)"
+                >
+                  <div class="color-preview">
+                    <div class="color-swatch" [style.background-color]="color.colorHex || '#000000'"></div>
+                    <div class="color-info">
+                      <h4 class="color-name">{{ color.colorName || 'Unnamed Color' }}</h4>
+                      <p class="color-details">
+                        Stock: {{ color.stock }} |
+                        Price: {{ getTotalPrice(form.price, color.additionalPrice) }}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="color-actions">
+                    <span class="color-status" [class.available]="color.isAvailable">
+                      <i class="fas fa-circle"></i>
+                      {{ color.isAvailable ? 'Available' : 'Unavailable' }}
+                    </span>
+                    <button
+                      type="button"
+                      class="btn-remove-color"
+                      (click)="deleteColor(i); $event.stopPropagation()"
+                    >
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+      <ng-template #noColors>
+        <div class="colors-empty">
+          <i class="fas fa-palette"></i>
+          <p>No colors defined for this product.</p>
+          <button type="button" class="btn-add-first-color" (click)="addColor()">
+            <i class="fas fa-plus"></i>
+            Add Your First Color
+          </button>
+        </div>
+      </ng-template>
+
+              <!-- Selected color details -->
+              <div
+                class="color-details-panel"
+                *ngIf="selectedColorIndex >= 0 && colors[selectedColorIndex] as selected"
+              >
+                <div class="panel-header">
+                  <h3 class="panel-title">
+                    <i class="fas fa-edit"></i>
+                    Edit Color: {{ selected.colorName || 'Unnamed' }}
+                  </h3>
+                </div>
+
+                <div class="panel-content">
+                  <!-- Color Basic Info -->
+                  <div class="color-form">
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label">
+                          <i class="fas fa-tag"></i>
+                          Color Name *
+                        </label>
+                        <input
+                          type="text"
+                          class="form-input"
+                          [(ngModel)]="selected.colorName"
+                          name="colorName_{{ selectedColorIndex }}"
+                          placeholder="e.g., Midnight Black"
+                        />
+                      </div>
+
+                      <div class="form-group">
+                        <label class="form-label">
+                          <i class="fas fa-eye-dropper"></i>
+                          Color Code
+                        </label>
+                        <div class="color-picker-group">
+                          <input
+                            type="color"
+                            class="color-picker"
+                            [(ngModel)]="selected.colorHex"
+                            name="colorHexPicker_{{ selectedColorIndex }}"
+                          />
+                          <input
+                            type="text"
+                            class="form-input color-hex"
+                            [(ngModel)]="selected.colorHex"
+                            name="colorHex_{{ selectedColorIndex }}"
+                            placeholder="#000000"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label">
+                          <i class="fas fa-cubes"></i>
+                          Stock Quantity
+                        </label>
+                        <input
+                          type="number"
+                          class="form-input"
+                          [(ngModel)]="selected.stock"
+                          name="stock_{{ selectedColorIndex }}"
+                          min="0"
+                          placeholder="0"
+                        />
+                      </div>
+
+                      <div class="form-group">
+                        <label class="form-label">
+                          <i class="fas fa-plus-circle"></i>
+                          Additional Price
+                        </label>
+                        <input
+                          type="number"
+                          class="form-input"
+                          [(ngModel)]="selected.additionalPrice"
+                          name="additionalPrice_{{ selectedColorIndex }}"
+                          step="0.01"
+                          placeholder="0.00"
+                        />
+                      </div>
+
+                      <div class="form-group">
+                        <label class="checkbox-label">
+                          <input
+                            type="checkbox"
+                            [(ngModel)]="selected.isAvailable"
+                            name="isAvailable_{{ selectedColorIndex }}"
+                            class="checkbox-input"
+                          />
+                          <span class="checkbox-custom"></span>
+                          <span class="checkbox-text">
+                            <i class="fas fa-check-circle"></i>
+                            Available for Purchase
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Color Images -->
+                  <div class="color-images-section">
+                    <div class="images-header">
+                      <h4 class="images-title">
+                        <i class="fas fa-images"></i>
+                        Color Images ({{ selected.images?.length || 0 }})
+                      </h4>
+                      <button class="btn-add-images" type="button" (click)="triggerColorImageInput()">
+                        <i class="fas fa-plus"></i>
+                        Add Images
+                      </button>
+                      <input
+                        #colorImageInput
+                        type="file"
+                        class="file-input"
+                        accept="image/*"
+                        multiple
+                        (change)="onColorImageSelected($event, selectedColorIndex)"
+                      />
+                    </div>
+
+                    <div class="images-grid" *ngIf="selected.images?.length; else noImages">
+                      <div
+                        class="image-item"
+                        *ngFor="let img of selected.images; let imgIndex = index"
+                        [class.main]="img.isMain"
+                      >
+                        <div class="image-container">
+                          <img [src]="img.imageUrl" [alt]="img.altText || selected.colorName" />
+                          <div class="image-overlay">
+                            <button
+                              class="btn-remove-image"
+                              type="button"
+                              (click)="removeColorImage(selectedColorIndex, imgIndex)"
+                            >
+                              <i class="fas fa-trash"></i>
+                            </button>
+                          </div>
+                          <div class="main-badge" *ngIf="img.isMain">
+                            <i class="fas fa-star"></i>
+                            Main
+                          </div>
+                        </div>
+
+                        <div class="image-info">
+                          <input
+                            type="text"
+                            class="image-alt"
+                            [(ngModel)]="img.altText"
+                            name="altText_{{ selectedColorIndex }}_{{ imgIndex }}"
+                            placeholder="Alt text for accessibility"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <ng-template #noImages>
+                      <div class="images-empty">
+                        <i class="fas fa-images"></i>
+                        <p>No images for this color.</p>
+                      </div>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column - Live Preview -->
+      <div class="preview-column">
+        <div class="preview-panel">
+          <div class="preview-header">
+            <h3 class="preview-title">
+              <i class="fas fa-eye"></i>
+              Live Preview
+            </h3>
+            <p class="preview-subtitle">How this product currently appears</p>
+          </div>
+
+          <div class="preview-content">
+            <!-- Product Card Preview -->
+            <div class="product-preview-card">
+              <div class="preview-image">
+                <img
+                  [src]="mainImagePreview || '/assets/images/product-placeholder.jpg'"
+                  alt="Product preview"
+                />
+                <div class="preview-badges" *ngIf="form.isFeatured">
+                  <span class="badge-featured">Featured</span>
+                </div>
+              </div>
+
+              <div class="preview-info">
+                <h4 class="preview-name">{{ form.name || 'Product Name' }}</h4>
+                <p class="preview-description">
+                  {{ form.description || 'Product description will appear here...' }}
+                </p>
+
+                <div class="preview-price">
+                  <span class="base-price">{{ formatPrice(form.price) }}</span>
+                  <span class="price-range" *ngIf="colors.length > 0">
+                    - {{ formatPrice(form.price + getMaxAdditionalPrice()) }}
+                  </span>
+                </div>
+
+                <div class="preview-colors" *ngIf="colors.length > 0">
+                  <span class="colors-label">Available Colors:</span>
+                  <div class="color-swatches">
+                    <div
+                      class="color-swatch-mini"
+                      *ngFor="let color of colors"
+                      [style.background-color]="color.colorHex"
+                      [title]="color.colorName"
+                    ></div>
+                  </div>
+                </div>
+
+                <div class="preview-status">
+                  <span class="status-badge" [class.active]="form.isActive">
+                    <i class="fas fa-circle"></i>
+                    {{ form.isActive ? 'Active' : 'Inactive' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Color Variants Summary -->
+            <div class="variants-summary" *ngIf="colors.length > 0">
+              <h4 class="summary-title">Color Variants Summary</h4>
+              <div class="variant-list">
+                <div class="variant-item" *ngFor="let color of colors">
+                  <div class="variant-color">
+                    <div class="variant-swatch" [style.background-color]="color.colorHex"></div>
+                    <span class="variant-name">{{ color.colorName }}</span>
+                  </div>
+                  <div class="variant-details">
+                    <span class="variant-stock">{{ color.stock }} in stock</span>
+                    <span class="variant-price">
+                      {{ getTotalPrice(form.price, color.additionalPrice) }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="error" *ngIf="error">{{ error }}</div>
+  </div>
+</div>
+
+<ng-template #loadingState>
+  <div class="state">
+    <i class="fas fa-spinner fa-spin"></i>
+    <span>Loading product...</span>
+  </div>
+</ng-template>

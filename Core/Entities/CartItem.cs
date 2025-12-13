@@ -8,6 +8,7 @@ namespace Core.Entities
         public int Quantity { get; set; } = 1;
         public decimal UnitPrice { get; set; }
         public decimal TotalPrice { get; set; }
+        public string? Size { get; set; }
 
         // Navigation Properties
         public Cart Cart { get; set; } = null!;

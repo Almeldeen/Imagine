@@ -39,6 +39,7 @@ interface Product {
   isFeatured: boolean;
   isPopular: boolean;
   isLatest: boolean;
+  allowAiCustomization: boolean;
   colors: ProductColor[];
   mainImageFile?: File;
 }
@@ -73,11 +74,15 @@ export class AddProduct implements OnInit {
     isFeatured: false,
     isPopular: false,
     isLatest: false,
+     allowAiCustomization: false,
     colors: []
   };
 
   // Available categories (loaded from API)
   categories: ICategory[] = [];
+
+  allSizes: string[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+  selectedSizes: string[] = [];
 
   // Main image preview
   mainImagePreview: string | null = null;
@@ -232,6 +237,18 @@ export class AddProduct implements OnInit {
         this.router.navigate(['/admin/products']);
       }
     });
+  }
+
+  isSizeSelected(size: string): boolean {
+    return this.selectedSizes.includes(size);
+  }
+
+  toggleSize(size: string) {
+    if (this.isSizeSelected(size)) {
+      this.selectedSizes = this.selectedSizes.filter((s) => s !== size);
+    } else {
+      this.selectedSizes = [...this.selectedSizes, size];
+    }
   }
 
   private loadCategories(): void {
@@ -403,6 +420,8 @@ export class AddProduct implements OnInit {
       isFeatured: this.product.isFeatured,
       isPopular: this.product.isPopular,
       isLatest: this.product.isLatest,
+      allowAiCustomization: this.product.allowAiCustomization,
+      availableSizes: this.selectedSizes.length ? this.selectedSizes.join(',') : undefined,
       colors: this.product.colors.map((color, colorIndex) => ({
         colorName: color.colorName,
         colorHex: color.colorHex,

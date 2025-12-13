@@ -29,15 +29,20 @@ namespace Application.Features.Products.Queries.GetProductById
                 {
                     Id = p.Id,
                     CategoryId = p.CategoryId,
+                    CategoryName = p.Category.Name,
                     Name = p.Name,
                     Description = p.Description,
                     Price = p.BasePrice,
                     IsActive = p.IsActive,
                     IsFeatured = p.IsFeatured,
+                    IsPopular = p.IsPopular,
+                    IsLatest = p.IsLatest,
                     ViewCount = p.ViewCount,
+                    AllowAiCustomization = p.AllowAiCustomization,
                     ImageUrl = p.MainImageUrl,
                     CreatedAt = p.CreatedAt,
                     UpdatedAt = p.UpdatedAt,
+                    AvailableSizes = p.AvailableSizes,
                     Colors = p.Colors
                         .Where(c => c.IsAvailable)
                         .Select(c => new ProductColorDto

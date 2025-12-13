@@ -22,6 +22,7 @@ export interface IProductColor {
 export interface IProduct {
   id: number;
   categoryId?: number;
+  categoryName?: string;
   name: string;
   description?: string;
   price: number;
@@ -33,6 +34,8 @@ export interface IProduct {
   imageUrl?: string;
   createdAt: string;
   updatedAt?: string;
+  availableSizes?: string;
+  allowAiCustomization?: boolean;
   colors?: IProductColor[];
 }
 
@@ -63,5 +66,7 @@ export interface CreateProductRequestModel {
   isFeatured: boolean;
   isPopular: boolean;
   isLatest: boolean;
+  allowAiCustomization: boolean;
+  availableSizes?: string;
   colors: CreateProductColorModel[];
 }

@@ -1,0 +1,189 @@
+<!-- Admin Product View -->
+<div class="admin-product-view" *ngIf="!isLoading && product as p; else loadingOrError">
+  <div class="view-header">
+    <div>
+      <h1 class="view-title">Product Details</h1>
+      <p class="view-subtitle">ID: {{ p.id }}</p>
+    </div>
+    <div class="view-actions">
+      <a class="btn" [routerLink]="['/admin/products/edit', p.id]">
+        <i class="fas fa-edit"></i>
+        Edit
+      </a>
+      <a class="btn btn-secondary" [routerLink]="['/admin/products']">
+        <i class="fas fa-arrow-left"></i>
+        Back to Products
+      </a>
+    </div>
+  </div>
+
+  <div class="view-content">
+    <div class="view-main">
+      <div class="image-card">
+        <div class="main-image">
+          <img [src]="mainImageUrl" [alt]="p.name" (click)="openImageModal(mainImageUrl)" />
+        </div>
+        <div class="image-gallery" *ngIf="galleryImages.length > 1">
+          <div
+            class="gallery-thumb"
+            *ngFor="let img of galleryImages"
+            [class.main]="img.isMain"
+            (click)="openImageModal(img.url)"
+          >
+            <img [src]="resolveImageUrl(img.url)" [alt]="img.alt || p.name" />
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-header">
+          <div class="info-title">
+            <h2>{{ p.name }}</h2>
+            <p class="description" *ngIf="p.description">{{ p.description }}</p>
+          </div>
+          <div class="info-badges">
+            <span class="badge badge-status" [class.active]="p.isActive">
+              {{ p.isActive ? 'Active' : 'Inactive' }}
+            </span>
+            <span class="badge badge-featured" *ngIf="p.isFeatured">Featured</span>
+            <span class="badge badge-popular" *ngIf="p.isPopular">Popular</span>
+            <span class="badge badge-latest" *ngIf="p.isLatest">Latest Drop</span>
+          </div>
+        </div>
+
+        <div class="meta-grid">
+          <div class="meta-item">
+            <span class="meta-label">Price</span>
+            <span class="meta-value price">{{ p.price | currency }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Category</span>
+            <span class="meta-value">
+              {{ p.categoryName || (p.categoryId != null ? ('#' + p.categoryId) : '-') }}
+            </span>
+          </div>
+          <div class="meta-item" *ngIf="p.availableSizes">
+            <span class="meta-label">Available Sizes</span>
+            <span class="meta-value sizes-value">
+              <span
+                class="size-chip"
+                *ngFor="let size of p.availableSizes.split(',')"
+              >
+                {{ size.trim() }}
+              </span>
+            </span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Views</span>
+            <span class="meta-value">{{ p.viewCount || 0 }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Created</span>
+            <span class="meta-value">{{ p.createdAt | date: 'medium' }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Last Updated</span>
+            <span class="meta-value">{{ p.updatedAt | date: 'medium' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Colors & Variants -->
+    <div class="colors-section" *ngIf="p.colors?.length">
+      <h2 class="section-title">Color Variants ({{ p.colors?.length || 0 }})</h2>
+
+      <div class="colors-grid">
+        <div class="color-card" *ngFor="let color of p.colors; let i = index">
+          <div class="color-header">
+            <div class="color-swatch" [style.background-color]="color.colorHex || '#000000'"></div>
+            <div class="color-info">
+              <div class="color-name-row">
+                <div class="color-name">{{ color.colorName || 'Unnamed color' }}</div>
+                <span class="color-index">#{{ i + 1 }}</span>
+              </div>
+              <div class="color-meta">
+                <span *ngIf="color.colorHex">Hex: {{ color.colorHex }}</span>
+                <span>Stock: {{ color.stock }}</span>
+                <span>Extra: {{ color.additionalPrice | currency }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="color-flags">
+            <span class="flag" [class.available]="color.isAvailable">
+              {{ color.isAvailable ? 'Available' : 'Unavailable' }}
+            </span>
+          </div>
+
+          <div class="color-images" *ngIf="color.images?.length">
+            <div class="images-header">
+              <span class="images-title">
+                <i class="fas fa-images"></i>
+                Images ({{ color.images?.length || 0 }})
+              </span>
+            </div>
+            <div class="images-row">
+              <div
+                class="image-thumb"
+                *ngFor="let img of color.images"
+                [class.main]="img.isMain"
+              >
+                <div class="thumb-image">
+                  <img
+                    [src]="resolveImageUrl(img.imageUrl)"
+                    [alt]="img.altText || color.colorName"
+                    (click)="openImageModal(img.imageUrl)"
+                  />
+                </div>
+                <div class="thumb-meta">
+                  <span class="thumb-label" *ngIf="img.isMain">Main</span>
+                  <span class="thumb-order">#{{ img.displayOrder + 1 }}</span>
+                  <span class="thumb-alt" *ngIf="img.altText">{{ img.altText }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="color-images-empty" *ngIf="!color.images?.length">
+            <span>No images for this color.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="image-modal-backdrop"
+    *ngIf="selectedImageUrl as imgUrl"
+    (click)="closeImageModal()"
+  >
+    <div class="image-modal" (click)="$event.stopPropagation()">
+      <button type="button" class="image-modal-close" (click)="closeImageModal()">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="image-modal-content">
+        <img [src]="resolveImageUrl(imgUrl)" [alt]="p.name" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingOrError>
+  <div class="state" *ngIf="isLoading; else errorState">
+    <i class="fas fa-spinner fa-spin"></i>
+    <span>Loading product...</span>
+  </div>
+  <ng-template #errorState>
+    <div class="state" *ngIf="error; else noData">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span>{{ error }}</span>
+    </div>
+    <ng-template #noData>
+      <div class="state">
+        <i class="fas fa-box-open"></i>
+        <span>No product found.</span>
+      </div>
+    </ng-template>
+  </ng-template>
+</ng-template>

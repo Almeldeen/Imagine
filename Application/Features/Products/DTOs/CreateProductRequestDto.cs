@@ -17,6 +17,10 @@ namespace Application.Features.Products.DTOs
         public bool IsPopular { get; set; } = false;
         public bool IsLatest { get; set; } = false;
 
+        public bool AllowAiCustomization { get; set; } = false;
+
+        public string? AvailableSizes { get; set; }
+
         public List<CreateProductColorDto> Colors { get; set; } = new();
     }
 }
