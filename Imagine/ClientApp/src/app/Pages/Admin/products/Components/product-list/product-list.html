@@ -1,6 +1,10 @@
 <!-- Product List Grid -->
 <div class="product-grid" *ngIf="products && products.length > 0">
-  @for (product of products; track product.id) {
-    <app-product-item [product]="product"></app-product-item>
-  }
+  <app-product-item 
+        *ngFor="let product of products" 
+        [product]="product"
+        (onEdit)="onEdit.emit($event)"
+        (onDelete)="onDelete.emit($event)"
+        (onView)="onView.emit($event)"
+      ></app-product-item>
 </div>

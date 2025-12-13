@@ -22,7 +22,7 @@
   <div class="order-card-summary">
     <div class="order-card-total">
       <span class="order-card-total-label">Total</span>
-      <span class="order-card-total-value">{{ order.totalAmount | currency }}</span>
+      <span class="order-card-total-value">{{ order.totalAmount | currency:'EGP':'code' }}</span>
     </div>
   </div>
 
@@ -183,9 +183,9 @@
                   </div>
                   <div class="item-pricing">
                     <span class="item-price-label">Unit</span>
-                    <span class="item-price">{{ item.unitPrice | currency }}</span>
+                    <span class="item-price">{{ item.unitPrice | currency:'EGP':'code' }}</span>
                     <span class="item-multiply">× {{ item.quantity }}</span>
-                    <span class="item-line-total">{{ item.totalPrice | currency }}</span>
+                    <span class="item-line-total">{{ item.totalPrice | currency:'EGP':'code' }}</span>
                   </div>
                 </div>
               </div>
@@ -197,19 +197,19 @@
             <div class="summary-section">
               <div class="summary-row">
                 <span class="summary-label">Subtotal:</span>
-                <span class="summary-value">{{ displayedOrder.subTotal | currency }}</span>
+                <span class="summary-value">{{ displayedOrder.subTotal | currency:'EGP':'code' }}</span>
               </div>
               <div class="summary-row">
                 <span class="summary-label">Shipping:</span>
-                <span class="summary-value">{{ displayedOrder.shippingCost | currency }}</span>
+                <span class="summary-value">{{ displayedOrder.shippingCost | currency:'EGP':'code' }}</span>
               </div>
               <div class="summary-row">
                 <span class="summary-label">Tax:</span>
-                <span class="summary-value">{{ displayedOrder.tax | currency }}</span>
+                <span class="summary-value">{{ displayedOrder.tax | currency:'EGP':'code' }}</span>
               </div>
               <div class="summary-row total">
                 <span class="summary-label">Total:</span>
-                <span class="summary-value">{{ displayedOrder.totalAmount | currency }}</span>
+                <span class="summary-value">{{ displayedOrder.totalAmount | currency:'EGP':'code' }}</span>
               </div>
             </div>
 

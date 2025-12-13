@@ -5,7 +5,7 @@ import { ProductColorSelector } from './components/product-color-selector/produc
 import { ProductCustomizationOptions } from './components/product-customization-options/product-customization-options';
 import { ProductInfo } from './components/product-info/product-info';
 import { AddToCartButton } from './components/add-to-cart-button/add-to-cart-button';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../Admin/products/Core/Service/product.service';
 import { IProduct, IProductColor } from '../Admin/products/Core/Interface/IProduct';
 import { CartService } from '../../core/cart.service';
@@ -118,6 +118,7 @@ export class ProductDetails implements OnInit {
   wishlistActive = false;
 
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private productService = inject(ProductService);
   private cartService = inject(CartService);
 
@@ -125,8 +126,31 @@ export class ProductDetails implements OnInit {
   isLoading = false;
   loadError = false;
   isAddingToCart = false;
+  isAdminContext = false;
+
+  goBack() {
+    // Check if we're in admin context by checking query params or referrer
+    const fromParam = this.route.snapshot.queryParams['from'];
+    const referrer = document.referrer;
+    const isAdminContext = fromParam === 'admin' || 
+                          !!(referrer && referrer.includes('/admin/products'));
+    
+    if (isAdminContext) {
+      // Navigate back to admin products page
+      this.router.navigate(['/admin/products']);
+    } else {
+      // Navigate back to client products page
+      this.router.navigate(['/Products']);
+    }
+  }
 
   ngOnInit(): void {
+    // Check if we're in admin context
+    const fromParam = this.route.snapshot.queryParams['from'];
+    const referrer = document.referrer;
+    this.isAdminContext = fromParam === 'admin' || 
+                          !!(referrer && referrer.includes('/admin/products'));
+
     const idParam = this.route.snapshot.paramMap.get('id');
     const id = idParam ? Number(idParam) : NaN;
 

@@ -19,7 +19,7 @@
           </span>
         </p>
         <p class="cart-item-price mb-0">
-          {{ item.basePrice | currency:'USD':'symbol' }}
+          {{ item.basePrice | currency:'EGP':'code' }}
         </p>
       </div>
 
@@ -47,7 +47,7 @@
 
       <div class="cart-item-total text-end ms-auto">
         <div class="label">Total</div>
-        <div class="value">{{ totalPrice | currency:'USD':'symbol' }}</div>
+        <div class="value">{{ totalPrice | currency:'EGP':'code' }}</div>
       </div>
     </div>
   </div>

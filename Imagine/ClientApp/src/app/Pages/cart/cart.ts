@@ -33,7 +33,7 @@ export class Cart implements OnInit {
   items: CartItemModel[] = [];
 
   taxRate = 0.15;
-  shippingFlat = 9.99;
+  shippingFlat = 30.00;
 
   isLoading = false;
   hasError = false;

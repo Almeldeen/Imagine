@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductItem } from '../product-item/product-item';
 import { IProduct } from '../../Core/Interface/IProduct';
@@ -12,4 +12,8 @@ import { IProduct } from '../../Core/Interface/IProduct';
 export class ProductList {
   @Input() products: IProduct[] = [];
   @Input() viewMode: 'grid' | 'list' = 'grid';
+
+  @Output() onEdit = new EventEmitter<number>();
+  @Output() onDelete = new EventEmitter<number>();
+  @Output() onView = new EventEmitter<number>();
 }

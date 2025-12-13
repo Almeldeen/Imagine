@@ -108,6 +108,10 @@ export const routes: Routes = [
                 component:AddProduct
             },
             {
+                path:"products/edit/:id",
+                component:AddProduct
+            },
+            {
                 path:"customers",
                 component:Customers
             },
