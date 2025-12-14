@@ -144,28 +144,28 @@ export class ClientCustomization {
   }
 
   applyPresetPrompt(preset: 'comic' | 'wolf' | 'monogram'): void {
-    switch (preset) {
-      case 'comic':
-        this.prompt =
-          'High-contrast centered chest print of a stylized Spiderman figure, bold comic-book linework, dynamic pose, dramatic lighting. ' +
-          'Style: vibrant comic, halftone accents, slight painterly texture. Colors: deep red, electric cyan highlights, black outlines. ' +
-          'Composition: centered, full-bleed circular frame, transparent background, high contrast, crisp edges, print-ready. ' +
-          'Output: high resolution 3000x3000 PNG with transparent background.';
-        break;
-      case 'wolf':
-        this.prompt =
-          'Center-chest print: a fierce neon wolf head with glowing circuitry accents. ' +
-          'Style: cyberpunk painterly, neon gradients, luminous linework. Colors: electric cyan, magenta, deep indigo, black. ' +
-          'Composition: symmetrical, high contrast, transparent background, subtle halftone grain. ' +
-          'Make high-resolution 3000x3000 PNG, print-ready, crisp edges.';
-        break;
-      case 'monogram':
-        this.prompt =
-          "Minimalist centered monogram logo reading 'IMAGINE' with geometric grid lines, soft shadow, gold foil feel on transparent background. " +
-          'Style: clean vector-like, high contrast, centered composition, 2500x2500 PNG, transparent.';
-        break;
-    }
+  switch (preset) {
+
+    case 'comic':
+      this.prompt =
+        'spider-man illustration, centered, transparent background, print-ready PNG, ' +
+        'no clothing, no model, no mockup, no background';
+      break;
+
+    case 'wolf':
+      this.prompt =
+        'wolf illustration, centered, transparent background, print-ready PNG, ' +
+        'no clothing, no model, no mockup, no background';
+      break;
+
+    case 'monogram':
+      this.prompt =
+        "IMAGINE text logo, centered, transparent background, print-ready PNG, " +
+        'no clothing, no model, no mockup, no background';
+      break;
   }
+}
+
 
   onSelectType(type: ProductType) {
     if (this.selectedType === type) {

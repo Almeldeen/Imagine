@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text;
+using Infrastructure.Configuration;
 
 namespace Infrastructure
 {
@@ -90,6 +91,10 @@ namespace Infrastructure
             services.AddScoped<IQueryService, QueryService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IJwtService, JwtService>();
+
+            services.Configure<SmtpEmailOptions>(configuration.GetSection("Email:Smtp"));
+            services.AddScoped<IEmailSender, SmtpEmailSender>();
+            services.AddScoped<IPasswordResetEmailTemplate, PasswordResetEmailTemplate>();
 
             // Options for third-party services (DEAPI, TryOn)
             services.Configure<Infrastructure.Configuration.ThirdPartyOptions>(

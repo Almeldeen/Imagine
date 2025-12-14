@@ -5,6 +5,10 @@ import { ICustomer, ICustomerDetails, ICustomerListResult, IImportCustomersResul
 import { environment } from '../../../../../../environments/environment';
 import { ApiResponse } from '../../../../../core/IApiResponse';
 
+export interface PasswordResetResult {
+  emailSent: boolean;
+}
+
 export interface CustomerFilterParams {
   search?: string;
   role?: string;
@@ -43,8 +47,8 @@ export class AdminCustomersService {
     return this.http.put<ApiResponse<boolean>>(`${this.baseUrl}/${id}`, form);
   }
 
-  resetPassword(id: string): Observable<ApiResponse<string>> {
-    return this.http.post<ApiResponse<string>>(`${this.baseUrl}/${id}/reset-password`, {});
+  resetPassword(id: string): Observable<ApiResponse<PasswordResetResult>> {
+    return this.http.post<ApiResponse<PasswordResetResult>>(`${this.baseUrl}/${id}/reset-password`, {});
   }
 
   export(params?: CustomerFilterParams): Observable<Blob> {
