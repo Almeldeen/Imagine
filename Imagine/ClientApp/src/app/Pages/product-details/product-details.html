@@ -77,13 +77,13 @@
             ></app-product-color-selector>
           </div>
 
-          <div class="pd-section mt-3">
+          <!--<div class="pd-section mt-3">
             <app-product-customization-options
               [options]="product.customizations"
               [selectedId]="selectedCustomizationId"
               (selectedChange)="onCustomizationSelected($event)"
             ></app-product-customization-options>
-          </div>
+          </div>-->
 
           <div class="pd-section mt-3" *ngIf="canUseAiCustomization">
             <div class="ai-custom-card">

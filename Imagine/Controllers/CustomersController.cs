@@ -113,9 +113,9 @@ namespace Imagine.Controllers
         }
 
         [HttpPost("{id}/reset-password")]
-        [ProducesResponseType(typeof(BaseResponse<string>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(BaseResponse<string>), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<BaseResponse<string>>> ResetPassword(string id, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(BaseResponse<PasswordResetResultDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseResponse<PasswordResetResultDto>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<BaseResponse<PasswordResetResultDto>>> ResetPassword(string id, CancellationToken cancellationToken)
         {
             var command = new ResetCustomerPasswordCommand
             {

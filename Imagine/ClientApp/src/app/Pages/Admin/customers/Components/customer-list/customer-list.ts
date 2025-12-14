@@ -82,16 +82,14 @@ export class CustomerList {
 
       this.service.resetPassword(customer.id).subscribe({
         next: (res) => {
-          if (!res.success || !res.data) {
+          if (!res.success) {
             this.toast.error(res.message || 'Failed to reset password.');
             return;
           }
 
-          Swal.fire({
-            icon: 'success',
-            title: 'Password reset',
-            html: `New password for <strong>${customer.fullName}</strong>:<br/><code>${res.data}</code>`,
-          });
+          this.toast.success(
+            "Password reset successfully. The new password has been sent to the customer’s email."
+          );
         },
         error: () => {
           this.toast.error('Failed to reset password.');
